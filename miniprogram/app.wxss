@@ -7,3 +7,12 @@ page {
   flex-direction: column;
   justify-content: flex-start;
 }
+.footer{
+  display:flex;
+  justify-content:center;
+  overflow:hidden;
+  margin-bottom:0;
+  width:100%;
+  position:fixed;
+  bottom:120rpx;
+}
