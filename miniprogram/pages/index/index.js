@@ -29,8 +29,6 @@ Page({
     db.collection("canteen")
       .get()
       .then(val => {
-        console.log(val)
-        //同时保存notice
         that.setData({
           canteen: val.data,
         })
@@ -41,19 +39,24 @@ Page({
     wx.showLoading({
       title: '获取公告中',
     })
-    wx.cloud.callFunction({
+    wx.cloud.callFunction({ //调用云函数获取notices
       name: "getNotices"
     }).then(res => {
       wx.hideLoading()
-      console.log(res)
       let result = res.result
-      console.log(result)
       if (result.success) {
         that.setData({
           notices: result.data
         })
-      } else {
-        console.log("notice获取失败")
+      } else { //notice获取失败
+        wx.showModal({
+          title: '提示',
+          content: '公告获取失败'
+        }).then(res => {
+          that.setData({
+            pageCurr: "shop"
+          })
+        })
       }
     })
 
@@ -72,12 +75,11 @@ Page({
     })
   },
 
-  showNoticeDetail: function(event) {
-    console.log(event)
+  showNoticeDetail: function (event) {
     //notice数据_id
     let id = event.currentTarget.dataset.id
     wx.navigateTo({
-      url: '../notice_detail/notice_detail?id=' + id
+      url: '../noticeDetail/noticeDetail?id=' + id
     })
   }
 

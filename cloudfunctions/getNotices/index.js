@@ -13,7 +13,8 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
-function mysort(a,b){
+
+function mysort(a,b){ //辅助函数 用于sort排序
   if(a.top !== b.top){
        return a.top > b.top ? -1 : 1;
    }

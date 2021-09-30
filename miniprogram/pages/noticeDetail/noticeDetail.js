@@ -16,7 +16,6 @@ Page({
     //读取id对应公告数据
     db.collection('notices').doc(id).get()
       .then(res => {
-        console.log(res)
         that.setData({
           notice: res.data
         })

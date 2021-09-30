@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/notice_detail/notice_detail"
+    "pages/noticeDetail/noticeDetail"
   ],
   "window": {
     "navigationStyle": "custom"
