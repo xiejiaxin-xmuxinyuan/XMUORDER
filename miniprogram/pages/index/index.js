@@ -10,9 +10,24 @@ Page({
   data: {
     pageCurr: "info",
     name: null,
-    phone:null,
+    phone: null,
     address: null,
     canteen: [],
+    notices: [{
+        "top": false,
+        "title": "普通测试标题",
+        "content": "测试内容bbbbbbbbbbb结束",
+        "date": "2021-9-29",
+        "org": "测试org2"
+      },
+      {
+        "top": true,
+        "title": "置顶测试标题",
+        "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "date": "2021年9月30日",
+        "org": "测试org"
+      }
+    ]
   },
 
   /**
@@ -39,11 +54,11 @@ Page({
   onShow: function () {
 
   },
-  onNavChange:function(e){
+  onNavChange: function (e) {
     console.log(e)
     var pageChange = e.currentTarget.dataset.cur
     that.setData({
-      pageCurr : pageChange
+      pageCurr: pageChange
     })
   }
 })
