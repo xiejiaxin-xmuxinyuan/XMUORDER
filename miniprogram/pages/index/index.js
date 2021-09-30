@@ -18,14 +18,16 @@ Page({
         "title": "普通测试标题",
         "content": "测试内容bbbbbbbbbbb结束",
         "date": "2021-9-29",
-        "org": "测试org2"
+        "org": "测试org2"        
       },
       {
         "top": true,
         "title": "置顶测试标题",
-        "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content": "内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1",
         "date": "2021年9月30日",
-        "org": "测试org"
+        "org": "测试org",
+        "coverImg" : "https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg",
+        "images": ["https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"]
       }
     ]
   },
