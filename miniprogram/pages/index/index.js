@@ -12,6 +12,7 @@ Page({
     phone:null,
     address: null,
     canteen: [],
+    identity:null
   },
   /**
    * 生命周期函数--监听页面加载
@@ -24,9 +25,8 @@ Page({
     db.collection("canteen")
       .get()
       .then(val => {
-        console.log(val)
         that.setData({
-          canteen: val.data
+          canteen: val.data,
         })
         wx.hideLoading()
       })
@@ -41,8 +41,8 @@ Page({
     if (app.globalData.isActive){
       const pageCurr = e.currentTarget.dataset.cur
       if (e.currentTarget.dataset.cur === 'user') {
-        const {name, address,phone} = app.globalData
-        that.setData({name,address, pageCurr,phone})
+        const {name, address,phone,identity} = app.globalData
+        that.setData({name,address, pageCurr,phone,identity})
       } else {
         that.setData({pageCurr})
       }
@@ -76,6 +76,11 @@ Page({
         }
       },
       fail: err => console.error(err)
+    })
+  },
+  toAdmin:function(){
+    wx.navigateTo({
+      url: '../admin/admin',
     })
   }
 })
