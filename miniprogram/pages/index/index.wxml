@@ -9,10 +9,10 @@
 	<cu-custom bgColor="bg-gradual-blue">
 	<view slot="content">我知盘中餐</view>
 </cu-custom>
-<view class="cu-card case {{isCard?'no-card':''}}" wx:for="{{canteen}}" >
-  <view class="cu-item shadow" bindtap="toOrder">
+<view class="cu-card case {{isCard?'no-card':''}}" wx:for="{{canteen}}">
+  <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
     <view class="image">
-      <image src="{{item.image}}" mode="widthFix"></image>
+      <image src="{{item.image}}" mode="aspectFit"></image>
       <view class="cu-tag bg-blue">好评</view>
       <view class="cu-bar bg-shadeBottom">
         <text class="text-cut">{{item.name}}</text>
@@ -25,18 +25,16 @@
           <view class="text-grey">{{item.name}}</view>
           <view class="text-gray text-sm flex justify-between">
             <view class="text-gray text-sm">
-              <text class="cuIcon-attentionfill margin-lr-xs"></text>99+
               <text class="cuIcon-appreciatefill margin-lr-xs"></text>99+
-              <text class="cuIcon-messagefill margin-lr-xs"></text>99+
             </view>
           </view>
         </view>
       </view>
     </view>
   </view>
-	<view class="footer">
+	<!-- <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-</view>
+</view> -->
 
 </view>
 </view>
