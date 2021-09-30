@@ -1,0 +1,9 @@
+	<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+	<view slot="content">{{canteen.name}}</view>
+</cu-custom>
+
+<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
+  <swiper-item>
+    <image src="{{canteen.image}}" mode='aspectFill'></image>
+  </swiper-item>
+</swiper>
