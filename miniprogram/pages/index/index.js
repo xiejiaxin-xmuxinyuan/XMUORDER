@@ -79,7 +79,7 @@ Page({
     //notice数据_id
     let id = event.currentTarget.dataset.id
     wx.navigateTo({
-      url: '../noticeDetail/noticeDetail?id=' + id
+      url: './noticeDetail?id=' + id
     })
   }
 
