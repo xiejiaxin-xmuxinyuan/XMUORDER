@@ -4,7 +4,7 @@
     <view slot="content">信息</view>
   </cu-custom>
   <view class="cu-card article " wx:for="{{notices}}">
-    <view class="cu-item shadow">
+    <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-id="{{item._id}}" catchtap="showNoticeDetail">
       <view class="title">
         <view class="text-cut">
           <text class="cuIcon-top" wx:if="{{item.top==true}}"></text>
@@ -14,13 +14,12 @@
       <view class="content">
         <image wx:if="{{ item.coverImg }}" src="{{ item.coverImg }}" mode="aspectFill"></image>
         <view class="desc">
-          <!-- 避免内容过长导致部分内容不可见 -->
           <view class="text-content" style="width: 100%;">
             {{item.content}}
           </view>
           <view class="margin-top-sm">
-            <view class="cu-tag bg-red light lg round">{{item.date}}</view>
-            <view class="cu-tag bg-green light lg round">{{item.org}}</view>
+            <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
+            <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
           </view>
         </view>
       </view>

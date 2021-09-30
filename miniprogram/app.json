@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/notice_detail/notice_detail"
   ],
   "window": {
     "navigationStyle": "custom"

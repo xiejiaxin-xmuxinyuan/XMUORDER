@@ -1,0 +1,37 @@
+<!--公告详情-->
+<cu-custom bgColor="bg-gradual-blue" isBack="true">
+  <view slot="content">公告详情</view>
+</cu-custom>
+
+<view wx:if="{{notice.coverImg}}">
+  <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000"
+    duration="500">
+    <swiper-item wx:for="{{notice.images}}">
+      <image src="{{item}}" mode="aspectFill"></image>
+    </swiper-item>
+  </swiper>
+</view>
+
+<view class="cu-card article no-card">
+  <view class="cu-item radius shadow-warp" style="margin: 1rem;">
+    <view class="title text-center" style="font-size: 50rpx;line-height: normal; margin: 1rem;">
+      {{notice.title}}
+    </view>
+    <view class="content">
+      <view class="desc">
+        <view style="color: #444444;font-size: 1rem; text-indent:1rem;"> 
+          {{notice.content}}
+        </view>
+        <view>
+        </view>
+        <view style="margin-left: auto;margin-top: 1em;">
+          <view class="cu-tag bg-brown light round">{{notice.date}}</view>
+          <view class="cu-tag bg-olive light round">{{notice.org}}</view>
+        </view>
+      </view>
+
+
+    </view>
+
+  </view>
+</view>

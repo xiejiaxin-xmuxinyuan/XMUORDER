@@ -15,22 +15,25 @@ App({
       success: e => {
         this.globalData.StatusBar = e.statusBarHeight;
         let custom = wx.getMenuButtonBoundingClientRect();
-        this.globalData.Custom = custom;  
+        this.globalData.Custom = custom;
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     })
-    await wx.cloud.callFunction({name: "checkLogin"})
-    .then(res => {
-      this.globalData.isActive = res.result.isActive
-      // 如果已登录，在本地保存用户信息
-      if (this.globalData.isActive) {
-        this.globalData.phone = res.result.phone
-        this.globalData.name = res.result.name,
-        this.globalData.address = res.result.address
-      }
-    })
-    .catch(err => {
-      console.error(err)
-    })
+
+    // await wx.cloud.callFunction({
+    //     name: "checkLogin"
+    //   })
+    //   .then(res => {
+    //     this.globalData.isActive = res.result.isActive
+    //     // 如果已登录，在本地保存用户信息
+    //     if (this.globalData.isActive) {
+    //       this.globalData.phone = res.result.phone
+    //       this.globalData.name = res.result.name,
+    //         this.globalData.address = res.result.address
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error(err)
+    //   })
   }
 })

@@ -13,23 +13,7 @@ Page({
     phone: null,
     address: null,
     canteen: [],
-    notices: [{
-        "top": false,
-        "title": "普通测试标题",
-        "content": "测试内容bbbbbbbbbbb结束",
-        "date": "2021-9-29",
-        "org": "测试org2"        
-      },
-      {
-        "top": true,
-        "title": "置顶测试标题",
-        "content": "内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1内容1",
-        "date": "2021年9月30日",
-        "org": "测试org",
-        "coverImg" : "https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg",
-        "images": ["https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg"]
-      }
-    ]
+    notices: []
   },
 
   /**
@@ -37,6 +21,8 @@ Page({
    */
   onLoad: function (options) {
     that = this
+
+    //canteen
     wx.showLoading({
       title: '获取活动信息中',
     })
@@ -44,12 +30,35 @@ Page({
       .get()
       .then(val => {
         console.log(val)
+        //同时保存notice
         that.setData({
-          canteen: val.data
+          canteen: val.data,
         })
         wx.hideLoading()
       })
+
+    //notices
+    wx.showLoading({
+      title: '获取公告中',
+    })
+    wx.cloud.callFunction({
+      name: "getNotices"
+    }).then(res => {
+      wx.hideLoading()
+      console.log(res)
+      let result = res.result
+      console.log(result)
+      if (result.success) {
+        that.setData({
+          notices: result.data
+        })
+      } else {
+        console.log("notice获取失败")
+      }
+    })
+
   },
+
   /**
    * 生命周期函数--监听页面显示
    */
@@ -57,10 +66,19 @@ Page({
 
   },
   onNavChange: function (e) {
-    console.log(e)
     var pageChange = e.currentTarget.dataset.cur
     that.setData({
       pageCurr: pageChange
     })
+  },
+
+  showNoticeDetail: function(event) {
+    console.log(event)
+    //notice数据_id
+    let id = event.currentTarget.dataset.id
+    wx.navigateTo({
+      url: '../notice_detail/notice_detail?id=' + id
+    })
   }
+
 })
