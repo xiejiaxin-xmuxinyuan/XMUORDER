@@ -1,5 +1,5 @@
 <!-- 信息页面 -->
-<view wx:if="{{pageCurr === 'info'}}">
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">信息</view>
   </cu-custom>
@@ -7,7 +7,7 @@
     <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-id="{{item._id}}" catchtap="showNoticeDetail">
       <view class="title">
         <view class="text-cut">
-          <text class="cuIcon-top" wx:if="{{item.top==true}}"></text>
+          <text class="cuIcon-top" wx:if="{{item.top}}"></text>
           {{item.title}}
         </view>
       </view>
@@ -27,7 +27,7 @@
   </view>
 </view>
 <!-- 点餐页面 -->
-<view wx:if="{{pageCurr === 'shop'}}">
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'shop'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">我知盘中餐</view>
   </cu-custom>
@@ -64,7 +64,7 @@
   </view>
 </view>
 <!-- 个人中心页面 -->
-<view wx:if="{{pageCurr === 'user'}}">
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">个人中心</view>
   </cu-custom>

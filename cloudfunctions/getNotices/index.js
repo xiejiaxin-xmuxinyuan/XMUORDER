@@ -2,15 +2,28 @@
  * 获取数据库notices表中hidden字段为false的数据
  * 参数： 无
  * 返回： object 
- *       如果成功，对象 包含为 true 的 isActive 字段，
- *       以及用户信息字段；
- *       如果用户未登录，对象仅包含为 false 的 isActive 字段。
+ *       若成功 返回对象
+ *         res: 以top字段、date字段排序的notices表数据
+ *         success: true
+ *       若失败 返回对象
+ *         success: false
  */
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
+function mysort(a,b){
+  if(a.top !== b.top){
+       return a.top > b.top ? -1 : 1;
+   }
+   else if(a.date !== b.date){
+       return a.date > b.date ? -1 : 1;
+   }
+   else{
+       return 1;
+   }
+}
 
 exports.main = async (event, context) => {
   try {
@@ -38,6 +51,7 @@ exports.main = async (event, context) => {
         notices: acc.data.concat(cur.data)
       }
     })
+    res.data.sort(mysort)
     console.log(res)
 
     return {
