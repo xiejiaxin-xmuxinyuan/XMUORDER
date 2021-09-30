@@ -21,6 +21,7 @@ App({
     })
     await wx.cloud.callFunction({name: "checkLogin"})
     .then(res => {
+      console.log(res)
       this.globalData.isActive = res.result.isActive
       // 如果已登录，在本地保存用户信息
       if (this.globalData.isActive) {
