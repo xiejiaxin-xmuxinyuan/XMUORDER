@@ -15,7 +15,7 @@ App({
       success: e => {
         this.globalData.StatusBar = e.statusBarHeight;
         let custom = wx.getMenuButtonBoundingClientRect();
-        this.globalData.Custom = custom;  
+        this.globalData.Custom = custom;
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     })
@@ -26,7 +26,8 @@ App({
       if (this.globalData.isActive) {
         this.globalData.phone = res.result.phone
         this.globalData.name = res.result.name,
-        this.globalData.address = res.result.address
+        this.globalData.address = res.result.address,
+        this.globalData.identity = res.result.identity
       }
     })
     .catch(err => {
