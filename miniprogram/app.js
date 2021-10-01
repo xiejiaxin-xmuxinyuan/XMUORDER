@@ -31,8 +31,6 @@ App({
       }
     })
     .catch(err => {
-      console.log(this.globalData)
-
       console.error(err)
     })
   }
