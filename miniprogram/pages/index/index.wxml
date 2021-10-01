@@ -37,7 +37,7 @@
   <view class="cu-card case" wx:for="{{canteen}}">
     <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
       <view class="image">
-        <image src="{{item.image}}" mode="aspectFit"></image>
+        <image src="{{item.image[0]}}" mode="aspectFit"></image>
         <view class="cu-tag bg-blue" wx:if="{{item.favor >= 50 && item.favor > item.bad}}">好评</view>
         <view class="cu-tag bg-red" wx:if="{{item.bad >= 50 && item.favor<item.bad}}">差评</view>
         <view class="cu-bar bg-shadeBottom">
@@ -46,8 +46,7 @@
       </view>
       <view class="cu-list menu-avatar">
         <view class="cu-item">
-          <view class="cu-avatar round lg"
-            style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+          <image src="{{item.image[0]}}" class="cu-avatar lg round"></image>
           <view class="content flex-sub">
             <view class="text-grey">{{item.name}}</view>
             <view class="text-gray text-sm flex justify-between">
@@ -58,13 +57,11 @@
           </view>
         </view>
       </view>
-      <view class="footer">
+    </view>
+  </view>
+  <view class="footer">
         <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
       </view>
-
-    </view>
-    =======
-  </view>
 </view>
 <!-- 个人中心页面 -->
 <view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
