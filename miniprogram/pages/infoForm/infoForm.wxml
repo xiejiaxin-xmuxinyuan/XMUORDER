@@ -1,0 +1,40 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="content">完善信息</view>
+</cu-custom>
+
+
+<form bindsubmit="onSubmit">
+	<view class="cu-form-group margin-top">
+		<view class="title">姓名</view>
+		<input placeholder="请输入姓名" name="name"></input>
+	</view>
+
+  <view class="cu-form-group margin-top">
+		<view class="title">地址</view>
+		<input placeholder="请输入地址" name="address"></input>
+	</view>
+
+	<view class="cu-form-group margin-top">
+		<!-- 若已经获取手机号码，此按钮无效 phoneNumber !== ''-->
+			<button 
+				disabled="{{ phoneNumber === '' ? false : true }}"
+				type=""
+				class="cu-btn round bg-green shadow "
+				open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber"
+				>
+				点击获取手机号码
+			<text 
+			  class="margin-right" 
+				class="{{showLoading ? 'cuIcon-loading2 iconfont-spin' : ''}}"></text>
+		</button>
+		<text>{{phoneNumber}}</text>
+	</view>
+
+	<view class="padding margin-top">
+		<button disabled="{{subBtnDisabled}}" class="lg text-white" style="background-color: rgb(215, 66, 42);"
+			form-type="submit">
+			提交
+		</button>
+	</view>
+
+</form>

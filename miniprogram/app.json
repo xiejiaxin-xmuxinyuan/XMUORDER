@@ -1,8 +1,11 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/index/noticeDetail"
-    ],
+    "pages/index/noticeDetail",
+    "pages/canteen/canteen",
+    "pages/infoForm/infoForm",
+    "pages/admin/admin"
+  ],
   "window": {
     "navigationStyle": "custom"
   },
