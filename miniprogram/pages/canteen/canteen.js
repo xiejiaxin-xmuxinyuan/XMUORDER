@@ -81,7 +81,6 @@ Page({
   },
   //餐厅信息折叠
   toggleInfo: function(event){
-    that = this
     this.setData({
       showInfo : !that.data.showInfo 
     })
