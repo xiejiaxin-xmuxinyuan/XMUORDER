@@ -68,10 +68,11 @@ Page({
 
   },
   showNoticeDetail: function (event) {
-    //notice数据_id
-    let id = event.currentTarget.dataset.id
+    //保存当前notice详情到全局
+    app.globalData.notice = event.currentTarget.dataset.notice
+    console.log(app.globalData)
     wx.navigateTo({
-      url: './noticeDetail?id=' + id
+      url: './noticeDetail'
     })
   },
   onNavChange:function(e){
