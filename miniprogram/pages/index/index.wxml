@@ -1,106 +1,121 @@
 <!-- 信息页面 -->
-<view wx:if="{{pageCurr === 'info'}}">
-	<cu-custom bgColor="bg-gradual-blue">
-	<view slot="content">信息</view>
-</cu-custom>
-<view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-</view>
-</view>
-<!-- 点餐页面 -->
-<view wx:if="{{pageCurr === 'shop'}}">
-	<cu-custom bgColor="bg-gradual-blue">
-	<view slot="content">我知盘中餐</view>
-</cu-custom>
-<view class="cu-card case {{isCard?'no-card':''}}" wx:for="{{canteen}}">
-  <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
-    <view class="image">
-      <image src="{{item.image[0]}}" mode="aspectFit"></image>
-      <view class="cu-tag bg-blue" wx:if="{{item.favor >= 50 && item.favor > item.bad}}">好评</view>
-			<view class="cu-tag bg-red" wx:if="{{item.bad >= 50 && item.favor<item.bad}}">差评</view>
-      <view class="cu-bar bg-shadeBottom">
-        <text class="text-cut">{{item.name}}</text>
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'info'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">信息</view>
+  </cu-custom>
+  <view class="cu-card article " wx:for="{{notices}}" wx:key="_id">
+    <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
+      <view class="title">
+        <view class="text-cut">
+          <text class="cuIcon-top" wx:if="{{item.top}}"></text>
+          {{item.title}}
+        </view>
       </view>
-    </view>
-    <view class="cu-list menu-avatar">
-      <view class="cu-item">
-        <!-- <view class="cu-avatar round lg" style="background-image:url();"></view> -->
-        <image src="{{item.image[0]}}" class="cu-avatar round lg"></image>
-        <view class="content flex-sub">
-          <view class="text-grey">{{item.name}}</view>
-          <view class="text-gray text-sm flex justify-between">
-            <view class="text-gray text-sm">
-              <text class="cuIcon-appreciatefill margin-lr-xs"></text>{{item.favor}}
-            </view>
+      <view class="content">
+        <image wx:if="{{ item.coverImg }}" src="{{ item.coverImg }}" mode="aspectFill"></image>
+        <view class="desc">
+          <view class="text-content" style="width: 100%;">
+            {{item.content}}
+          </view>
+          <view class="margin-top-sm">
+            <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
+            <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
           </view>
         </view>
       </view>
     </view>
   </view>
-</view>
-</view>
-<!-- 个人中心页面 -->
-<view wx:if="{{pageCurr === 'user'}}">
-<cu-custom bgColor="bg-gradual-blue">
-  <view slot="content">个人中心</view>
-</cu-custom>
-
-<view class="flex justify-center bg-white padding">
-  <view class="user-avatar">
-    <open-data  type="userAvatarUrl"></open-data>
+  <view class="footer">
+    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
   </view>
 </view>
+<!-- 点餐页面 -->
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'shop'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">我知盘中餐</view>
+  </cu-custom>
+  <view class="cu-card case" wx:for="{{canteen}}">
+    <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
+      <view class="image">
+        <image src="{{item.image}}" mode="aspectFit"></image>
+        <view class="cu-tag bg-blue" wx:if="{{item.favor >= 50 && item.favor > item.bad}}">好评</view>
+        <view class="cu-tag bg-red" wx:if="{{item.bad >= 50 && item.favor<item.bad}}">差评</view>
+        <view class="cu-bar bg-shadeBottom">
+          <text class="text-cut">{{item.name}}</text>
+        </view>
+      </view>
+      <view class="cu-list menu-avatar">
+        <view class="cu-item">
+          <view class="cu-avatar round lg"
+            style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big10006.jpg);"></view>
+          <view class="content flex-sub">
+            <view class="text-grey">{{item.name}}</view>
+            <view class="text-gray text-sm flex justify-between">
+              <view class="text-gray text-sm">
+                <text class="cuIcon-appreciatefill margin-lr-xs"></text>{{item.favor}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="footer">
+        <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+      </view>
+    </view>
+  </view>
+</view>
+<!-- 个人中心页面 -->
+<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">个人中心</view>
+  </cu-custom>
 
-<view class="cu-form-group">
-		<view class="title">姓名</view>
-		<view>{{name}}</view>
-</view>
-<view class="cu-form-group">
-		<view class="title">电话</view>
-		<view>{{phone}}</view>
-</view>
-<view class="cu-form-group">
-		<view class="title">地址</view>
-		<view>{{address}}</view>
-</view>
-<view class="cu-form-group text-blue" bindtap="toAdmin" wx:if="{{identity == 'admin'}}">
-		<view class="title">传送门</view>
-		<view>点击进入管理中心</view>
-</view>
-<!-- 底部版权声明 -->
-<view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-</view>
+  <view class="flex justify-center bg-white padding">
+    <view class="user-avatar">
+      <open-data type="userAvatarUrl"></open-data>
+    </view>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">姓名</view>
+    <view>{{name}}</view>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">电话</view>
+    <view>{{phone}}</view>
+  </view>
+  <view class="cu-form-group">
+    <view class="title">地址</view>
+    <view>{{address}}</view>
+  </view>
+  <view class="cu-form-group text-blue" bindtap="toAdmin" wx:if="{{identity == 'admin'}}">
+    <view class="title">传送门</view>
+    <view>点击进入管理中心</view>
+  </view>
+  <!-- 底部版权声明 -->
+  <view class="footer">
+    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  </view>
 
 </view>
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
-  <view
-    style="color: {{pageCurr === 'info' ? 'rgb(13, 155, 222);' : ';'}}"
-    class="action text" 
-    bindtap="onNavChange" 
+  <view style="color: {{pageCurr === 'info' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange"
     data-cur="info">
     <view class='cuIcon-activityfill'>
     </view>
     <view>信息</view>
   </view>
-	<view
-    style="color: {{pageCurr === 'shop' ? 'rgb(13, 155, 222);' : ';'}}"
-    class="action" 
-    bindtap="onNavChange" 
+  <view style="color: {{pageCurr === 'shop' ? 'rgb(13, 155, 222);' : ';'}}" class="action" bindtap="onNavChange"
     data-cur="shop">
     <view class='cuIcon-shopfill'>
     </view>
     <view>点餐</view>
   </view>
-  <view 
-    style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}"
-    class="action text" 
-    bindtap="onNavChange" 
+  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange"
     data-cur="user">
     <view class='cuIcon-myfill'>
     </view>
-    <view >个人中心</view>
+    <view>个人中心</view>
   </view>
 </view>

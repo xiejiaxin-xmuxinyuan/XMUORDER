@@ -15,30 +15,28 @@ const db = cloud.database()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-try {
-  const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
-  const userRes = await db.collection('users')
-    .where({
-      _openid: openid
-    })
-    .limit(1)
-    .get()
+  try {
+    const wxContext = cloud.getWXContext()
+    const openid = wxContext.OPENID
+    const userRes = await db.collection('users')
+      .where({
+        _openid: openid
+      })
+      .limit(1)
+      .get()
 
-  if (userRes.data) {
-    let ret = userRes.data[0]
-    ret.isActive = true
-    return ret
+    if (userRes.data.length) {
+      let ret = userRes.data[0]
+      ret.isActive = true
+      return ret
+    } else return {
+      isActive: false
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      isActive: false,
+      err: e
+    }
   }
-  
-  else return {
-    isActive: false
-  }
-} catch(e) {
-  console.error(e)
-  return {
-    isActive: false,
-    err: e
-  }
-}
 }

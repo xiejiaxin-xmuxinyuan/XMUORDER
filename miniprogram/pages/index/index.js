@@ -9,9 +9,10 @@ Page({
   data: {
     pageCurr: "info",
     name: null,
-    phone:null,
+    phone: null,
     address: null,
     canteen: [],
+    notices: [],
     identity:null
   },
   /**
@@ -19,6 +20,8 @@ Page({
    */
   onLoad: function (options) {
     that = this
+
+    //canteen
     wx.showLoading({
       title: '获取信息中',
     })
@@ -30,12 +33,47 @@ Page({
         })
         wx.hideLoading()
       })
+
+    //notices
+    wx.showLoading({
+      title: '获取公告中',
+    })
+    wx.cloud.callFunction({ //调用云函数获取notices
+      name: "getNotices"
+    }).then(res => {
+      wx.hideLoading()
+      let result = res.result
+      if (result.success) {
+        that.setData({
+          notices: result.data
+        })
+      } else { //notice获取失败
+        wx.showModal({
+          title: '提示',
+          content: '公告获取失败'
+        }).then(res => {
+          that.setData({
+            pageCurr: "shop"
+          })
+        })
+      }
+    })
+
   },
+
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
 
+  },
+  showNoticeDetail: function (event) {
+    //保存当前notice详情到全局
+    app.globalData.notice = event.currentTarget.dataset.notice
+    console.log(app.globalData)
+    wx.navigateTo({
+      url: './noticeDetail'
+    })
   },
   onNavChange:function(e){
     if (app.globalData.isActive){
@@ -83,4 +121,5 @@ Page({
       url: '../admin/admin',
     })
   }
+
 })
