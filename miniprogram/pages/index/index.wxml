@@ -67,7 +67,7 @@
   </view>
 </view>
 <!-- 个人中心页面 -->
-<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
+<view style="margin-bottom: 30%;" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">个人中心</view>
   </cu-custom>
