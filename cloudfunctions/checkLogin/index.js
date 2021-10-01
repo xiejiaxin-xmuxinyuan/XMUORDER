@@ -25,7 +25,7 @@ exports.main = async (event, context) => {
       .limit(1)
       .get()
 
-    if (userRes.data) {
+    if (userRes.data.length) {
       let ret = userRes.data[0]
       ret.isActive = true
       return ret
