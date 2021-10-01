@@ -1,3 +1,14 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="true">
 	<view slot="content">管理中心</view>
 </cu-custom>
+
+<view class="cu-list grid col-3 no-border">
+	<view class="cu-item" wx:for="{{iconList}}" wx:key>
+		<view class="cuIcon-{{item.icon}} text-{{item.color}}"></view>
+		<text>{{item.name}}</text>
+	</view>
+</view>
+
+<view class="footer">
+    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  </view>
