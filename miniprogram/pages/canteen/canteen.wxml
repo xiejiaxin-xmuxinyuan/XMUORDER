@@ -8,6 +8,23 @@
     <image src="{{item}}" mode='aspectFill'></image>
   </swiper-item>
 </swiper>
+
+<view class="cu-card article no-card bg-gray light">
+  <view class="cu-item solid-bottom" style="padding-bottom: 0;">
+    <view class="title" catchtap="toggleInfo">
+      <view>{{ canteen.name }} - {{ canteen.fulAddress }}<text
+          class="cuIcon-{{showInfo? 'fold':'unfold'}} fr text-gray"></text></view>
+    </view>
+    <view class="content showInfo {{ showInfo? '':'hidden' }}">
+      <view class="desc">
+        <view class="text-content padding-left-sm">
+          <text>早餐：{{canteen.breakfast}}\n午餐：{{canteen.lunch}}\n晚餐：{{canteen.dinner}}\n</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
 <view class="VerticalBox">
   <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}"
     style="height:calc(100vh - 375rpx)">

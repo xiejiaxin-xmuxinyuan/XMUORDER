@@ -61,12 +61,6 @@ Page({
 
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
   showNoticeDetail: function (event) {
     //保存当前notice详情到全局
     app.globalData.notice = event.currentTarget.dataset.notice

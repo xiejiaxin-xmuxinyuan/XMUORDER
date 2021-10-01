@@ -60,8 +60,8 @@
     </view>
   </view>
   <view class="footer">
-        <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-      </view>
+    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  </view>
 </view>
 <!-- 个人中心页面 -->
 <view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
