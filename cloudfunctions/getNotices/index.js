@@ -53,7 +53,6 @@ exports.main = async (event, context) => {
       }
     })
     res.data.sort(mysort)
-    console.log(res)
 
     return {
       data: res.data,
