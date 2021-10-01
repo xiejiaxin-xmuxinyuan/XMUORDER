@@ -4,8 +4,8 @@
 
 <swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000"
   duration="500">
-  <swiper-item>
-    <image src="{{canteen.image}}" mode='aspectFill'></image>
+  <swiper-item wx:for="{{canteen.image}}" wx:key>
+    <image src="{{item}}" mode='aspectFill'></image>
   </swiper-item>
 </swiper>
 <view class="VerticalBox">
