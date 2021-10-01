@@ -15,7 +15,8 @@ Page({
     MainCur: 0,
     VerticalNavTop: 0,
     list: [],
-    load: true
+    load: true,
+    showInfo: false
   },
 
   /**
@@ -77,5 +78,11 @@ Page({
         return false
       }
     }
-  }
+  },
+  //餐厅信息折叠
+  toggleInfo: function(event){
+    this.setData({
+      showInfo : !that.data.showInfo 
+    })
+  },
 })
