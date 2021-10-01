@@ -29,9 +29,6 @@
           <view class="cu-tag bg-olive light round">{{notice.org}}</view>
         </view>
       </view>
-
-
     </view>
-
   </view>
 </view>
