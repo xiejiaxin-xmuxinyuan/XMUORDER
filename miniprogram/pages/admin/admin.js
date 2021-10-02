@@ -19,7 +19,7 @@ Page({
       color: 'pink',
       name: '商品管理'
     }, {
-      icon: 'formfill',
+      icon: 'rankfill',
       color: 'red',
       name: '统计'
     }, {

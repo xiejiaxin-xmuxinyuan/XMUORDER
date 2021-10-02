@@ -62,34 +62,46 @@
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">个人中心</view>
   </cu-custom>
-
-  <view class="flex justify-center bg-white padding">
-    <view class="user-avatar">
-      <open-data type="userAvatarUrl"></open-data>
+  <view class="cu-list menu card-menu margin-top shadow-warp">
+    <view class="flex justify-center bg-white padding">
+      <view class="user-avatar">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
     </view>
-  </view>
-  <view class="cu-form-group">
-    <view class="title">姓名</view>
-    <view>{{name}}</view>
-  </view>
-  <view class="cu-form-group">
-    <view class="title">电话</view>
-    <view>{{phone}}</view>
-  </view>
-  <view class="cu-form-group">
-    <view class="title">地址</view>
-    <view>{{address}}</view>
-  </view>
-  <view class="cu-form-group text-blue" bindtap="toAdmin" wx:if="{{identity == 'admin'}}">
-    <view class="title">传送门</view>
-    <view>点击进入管理中心</view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-peoplefill text-gray"></text>
+        <text>姓名</text>
+        <text class="fr">{{name}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-phone text-gray"></text>
+        <text>电话</text>
+        <text class="fr">{{phone}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-locationfill text-gray"></text>
+        <text>地址</text>
+        <text class="fr">{{address}}</text>
+      </view>
+    </view>
+    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity == 'admin'}}">
+      <view class="content">
+        <text class="cuIcon-commandfill text-blue"></text>
+        <text class="text-blue">管理中心</text>
+      </view>
+    </view>
   </view>
 </view>
 
-  <!-- 底部版权声明 -->
-  <view class="footer">
-    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-  </view>
+<!-- 底部版权声明 -->
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+</view>
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
@@ -112,4 +124,3 @@
     <view>个人中心</view>
   </view>
 </view>
-
