@@ -5,7 +5,32 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    //可以考虑在里面加上页面路径键值对
+    iconList: [{
+      icon: 'noticefill',
+      color: 'yellow',
+      name: '公告'
+    }, {
+      icon: 'shopfill',
+      color: 'blue',
+      name: '商店信息'
+    }, {
+      icon: 'goodsfill',
+      color: 'pink',
+      name: '商品管理'
+    }, {
+      icon: 'rankfill',
+      color: 'red',
+      name: '统计'
+    }, {
+      icon: 'settingsfill',
+      color: 'olive',
+      name: '设置'
+    }, {
+      icon: 'questionfill',
+      color: 'black',
+      name: '帮助'
+    }]
   },
 
   /**

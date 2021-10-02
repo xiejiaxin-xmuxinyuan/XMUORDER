@@ -13,7 +13,9 @@ Page({
     address: null,
     canteen: [],
     notices: [],
-    identity:null
+    noticeType: ['公共', '翔安', '思明', '海韵'],
+    noticeCurrType: "公共",
+    identity: null
   },
   /**
    * 生命周期函数--监听页面加载
@@ -69,33 +71,49 @@ Page({
       url: './noticeDetail'
     })
   },
-  onNavChange:function(e){
-    if (app.globalData.isActive){
+  onNavChange: function (e) {
+    if (app.globalData.isActive) {
       const pageCurr = e.currentTarget.dataset.cur
       if (e.currentTarget.dataset.cur === 'user') {
-        const {name, address,phone,identity} = app.globalData
-        that.setData({name,address, pageCurr,phone,identity})
+        const {
+          name,
+          address,
+          phone,
+          identity
+        } = app.globalData
+        that.setData({
+          name,
+          address,
+          pageCurr,
+          phone,
+          identity
+        })
       } else {
-        that.setData({pageCurr})
+        that.setData({
+          pageCurr
+        })
       }
-    }
-    else {
+    } else {
       that.goToInform()
     }
-
   },
-  toOrder:function(e){
+  noticeTypeSelect: function (e) {
+    that.setData({
+      noticeCurrType: e.currentTarget.dataset.name
+    })
+  },
+  toOrder: function (e) {
     console.log(e)
-    if(!app.globalData.isActive){
+    if (!app.globalData.isActive) {
       that.goToInform()
-    }else{
-      app.globalData.canteen=e.currentTarget.dataset.canteen
+    } else {
+      app.globalData.canteen = e.currentTarget.dataset.canteen
       wx.navigateTo({
         url: '../canteen/canteen',
       })
     }
   },
-  goToInform:function(){
+  goToInform: function () {
     wx.showModal({
       title: '请完善信息',
       showCancel: true,
@@ -110,7 +128,7 @@ Page({
       fail: err => console.error(err)
     })
   },
-  toAdmin:function(){
+  toAdmin: function () {
     wx.navigateTo({
       url: '../admin/admin',
     })
