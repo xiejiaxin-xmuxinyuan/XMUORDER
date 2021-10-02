@@ -2,7 +2,7 @@
 const db = wx.cloud.database()
 const app = getApp()
 var that
-import WxValidate from '../../utils/WxValidate.js'
+import WxValidate from '../../../../utils/WxValidate.js'
 Page({
   /**
    * 页面的初始数据
