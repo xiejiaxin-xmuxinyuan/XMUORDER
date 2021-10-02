@@ -1,5 +1,5 @@
 <!-- 信息页面 -->
-<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'info'}}">
+<view class="tab-page" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">信息</view>
   </cu-custom>
@@ -25,12 +25,9 @@
       </view>
     </view>
   </view>
-  <view class="footer">
-    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-  </view>
 </view>
 <!-- 点餐页面 -->
-<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'shop'}}">
+<view class="tab-page" wx:if="{{pageCurr === 'shop'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">我知盘中餐</view>
   </cu-custom>
@@ -59,12 +56,9 @@
       </view>
     </view>
   </view>
-  <view class="footer">
-    <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
-  </view>
 </view>
 <!-- 个人中心页面 -->
-<view style="margin-bottom: 15%;" wx:if="{{pageCurr === 'user'}}">
+<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">个人中心</view>
   </cu-custom>
@@ -90,12 +84,12 @@
     <view class="title">传送门</view>
     <view>点击进入管理中心</view>
   </view>
+</view>
+
   <!-- 底部版权声明 -->
   <view class="footer">
     <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
   </view>
-
-</view>
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
@@ -118,3 +112,4 @@
     <view>个人中心</view>
   </view>
 </view>
+

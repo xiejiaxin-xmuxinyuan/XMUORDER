@@ -13,9 +13,13 @@ Page({
     }, {
       icon: 'shopfill',
       color: 'blue',
-      name: '商店'
+      name: '商店信息'
     }, {
-      icon: 'form',
+      icon: 'goodsfill',
+      color: 'pink',
+      name: '商品管理'
+    }, {
+      icon: 'formfill',
       color: 'red',
       name: '统计'
     }, {
