@@ -1,4 +1,5 @@
-/* pages/canteen/canteen.wxss */.VerticalNav.nav {
+/* pages/canteen/canteen.wxss */
+.VerticalNav.nav {
   width: 200rpx;
   white-space: initial;
 }
