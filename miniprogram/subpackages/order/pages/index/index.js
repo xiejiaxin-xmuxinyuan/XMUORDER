@@ -130,7 +130,7 @@ Page({
   },
   toAdmin: function () {
     wx.navigateTo({
-      url: '../admin/admin',
+      url: '../../../../subpackages/admin/pages/index/index',
     })
   },
   infoTouchStart: function (e) {
