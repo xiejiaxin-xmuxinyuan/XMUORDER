@@ -37,7 +37,7 @@ exports.main = async (event, context) => {
 
     const total = countResult.total
     // 计算需分几次取
-    const MAX_LIMIT = 20
+    const MAX_LIMIT = 100
     const batchTimes = Math.ceil(total / MAX_LIMIT)
     const tasks = []
     for (let i = 0; i < batchTimes; i++) {
