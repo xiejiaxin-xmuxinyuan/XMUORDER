@@ -45,7 +45,7 @@
   <view class="cu-card case" wx:for="{{canteen}}">
     <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
       <view class="image">
-        <image src="{{item.image[0]}}" mode="aspectFit"></image>
+        <image src="{{item.image[0]}}" mode="aspectFill"></image>
         <view class="cu-tag bg-blue" wx:if="{{item.favor >= 50 && item.favor > item.bad}}">好评</view>
         <view class="cu-tag bg-red" wx:if="{{item.bad >= 50 && item.favor<item.bad}}">差评</view>
         <view class="cu-bar bg-shadeBottom">

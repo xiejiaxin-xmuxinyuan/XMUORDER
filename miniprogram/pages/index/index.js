@@ -150,7 +150,7 @@ Page({
       }
       let newIndex = index
       let maxPage = that.data.noticeTypes.length - 1;
-      if (moveX > 0) {
+      if (moveX < 0) {
         newIndex = index === maxPage ? 0 : index + 1
       } else {
         newIndex = index === 0 ? maxPage : index - 1
