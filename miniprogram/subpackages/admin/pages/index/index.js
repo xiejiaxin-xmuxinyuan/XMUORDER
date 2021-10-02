@@ -1,10 +1,11 @@
-// pages/index/index.js
+// subpackages/admin/pages/index/index.js
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+
   },
 
   /**

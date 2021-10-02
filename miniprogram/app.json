@@ -1,10 +1,24 @@
-{
+{"entryPagePath": "pages/index/index",
   "pages": [
-    "pages/index/index",
-    "pages/index/noticeDetail",
-    "pages/canteen/canteen",
-    "pages/infoForm/infoForm",
-    "pages/admin/admin"
+    "pages/index/index"
+  ],
+  "subpackages": [
+    {
+      "root": "subpackages/order",
+      "pages": [
+        "pages/index/index",
+        "pages/index/noticeDetail",
+        "pages/canteen/canteen",
+        "pages/infoForm/infoForm",
+        "pages/admin/admin"
+      ]
+    },
+    {
+      "root": "subpackages/admin",
+      "pages": [
+        "pages/index/index"
+      ]
+    }
   ],
   "window": {
     "navigationStyle": "custom"
