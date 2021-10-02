@@ -1,4 +1,4 @@
-// pages/index/index.js
+// subpackages/admin/pages/index/index.js
 Page({
 
   /**
