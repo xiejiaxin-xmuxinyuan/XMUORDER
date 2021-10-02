@@ -1,17 +1,17 @@
 <!-- 信息页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'info'}}">
+<view class="tab-page" bindtouchstart="infoTouchStart" bindtouchend="infoTouchEnd" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">信息</view>
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeType}}" wx:key
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key
         bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
     </view>
   </scroll-view>
-  <view wx:for="{{notices}}" wx:key="_id">
+  <view wx:for="{{notices}}" wx:key="_id" >
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
       <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
         <view class="title">
