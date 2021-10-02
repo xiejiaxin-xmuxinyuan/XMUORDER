@@ -1,2 +1,86 @@
-<!--subpackages/admin/pages/index/index.wxml-->
-<text>subpackages/admin/pages/index/index.wxml</text>
+<!-- 管理页面 -->
+<view class="tab-page" wx:if="{{pageCurr === 'admin'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">管理</view>
+  </cu-custom>
+
+  <view class="cu-list grid col-3 no-border">
+    <view class="cu-item" wx:for="{{iconList}}" wx:key="name">
+      <view class="cuIcon-{{item.icon}} text-{{item.color}}"></view>
+      <text>{{item.name}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 个人页面 -->
+<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">我的</view>
+  </cu-custom>
+
+  <view class="cu-list menu card-menu margin-top shadow-warp">
+    <view class="flex justify-center bg-white padding">
+      <view class="user-avatar">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-peoplefill text-gray"></text>
+        <text>姓名</text>
+        <text class="fr">{{name}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-phone text-gray"></text>
+        <text>电话</text>
+        <text class="fr">{{phone}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-profile text-gray"></text>
+        <text>身份</text>
+        <text wx:if="{{identity==='admin'}}" class="fr text-red">管理员</text>
+        <text wx:if="{{identity==='staff'}}" class="fr text-red">员工</text>
+      </view>
+    </view>
+    <view class="cu-item arrow">
+      <view class="content">
+        <text class="cuIcon-commentfill text-black"></text>
+        <text class="text-black">意见反馈</text>
+      </view>
+    </view>
+    
+    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity === 'admin'}}">
+      <view class="content">
+        <text class="cuIcon-commandfill text-blue"></text>
+        <text class="text-blue">管理中心</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+</view>
+
+
+
+<!-- tableBar -->
+<view class="cu-bar tabbar bg-white shadow foot">
+  <view style="color: {{pageCurr === 'admin' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange"
+    data-cur="admin">
+    <view class='cuIcon-activityfill'>
+    </view>
+    <view>管理</view>
+  </view>
+  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange"
+    data-cur="user">
+    <view class='cuIcon-myfill'>
+    </view>
+    <view>我的</view>
+  </view>
+</view>
