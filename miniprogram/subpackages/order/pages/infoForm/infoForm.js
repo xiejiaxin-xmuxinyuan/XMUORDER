@@ -38,6 +38,9 @@ Page({
     let userInfo = {}
     userInfo.name = e.detail.value.name
     userInfo.address = e.detail.value.address
+
+    userInfo.phone = e.detail.value.phone
+
     // 提示
     wx.showModal({
       title: '提醒',
@@ -52,11 +55,14 @@ Page({
           that.setData({subBtnDisabled: true})            
           app.globalData.name = userInfo.name,
           app.globalData.userID = userInfo.userID,
+
+          app.globalData.phone = userInfo.phone
+          
           // 添加用户信息到集合 users 
           db.collection('users')
             .add({
               data: {
-                phone: that.data.phoneNumber,
+                phone: userInfo.phone,//that.data.phoneNumber,
                 isActive: true,
                 name: userInfo.name,
                 address : userInfo.address
