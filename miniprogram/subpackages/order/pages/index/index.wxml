@@ -1,11 +1,11 @@
 <!-- 信息页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'info'}}">
+<view class="tab-page" bindtouchstart="infoTouchStart" bindtouchend="infoTouchEnd" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">信息</view>
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeType}}" wx:key
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key
         bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
@@ -45,7 +45,7 @@
   <view class="cu-card case" wx:for="{{canteen}}">
     <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
       <view class="image">
-        <image src="{{item.image[0]}}" mode="aspectFit"></image>
+        <image src="{{item.image[0]}}" mode="aspectFill"></image>
         <view class="cu-tag bg-blue" wx:if="{{item.favor >= 50 && item.favor > item.bad}}">好评</view>
         <view class="cu-tag bg-red" wx:if="{{item.bad >= 50 && item.favor<item.bad}}">差评</view>
         <view class="cu-bar bg-shadeBottom">
@@ -118,7 +118,7 @@
         <text class="text-brown">意见反馈</text>
       </view>
     </view>
-    
+
     <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity === 'admin'}}">
       <view class="content">
         <text class="cuIcon-commandfill text-blue"></text>

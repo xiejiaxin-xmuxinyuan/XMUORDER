@@ -1,2 +1,47 @@
-<!--pages/index/index.wxml-->
-<text>pages/index/index.wxml</text>
+<!--pages/welcome/welcome.wxml-->
+<view wx:if="{{identity === 'admin'||identity === 'staff'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">欢迎</view>
+  </cu-custom>
+  <view class="flex justify-center bg-white padding">
+    <view class="user-avatar">
+      <open-data type="userAvatarUrl"></open-data>
+    </view>
+  </view>
+  <view class="flex" style="margin-top: 10vh;width: 100%;">
+    <view class="flex-sub padding margin">
+      <button class="cu-btn block bg-blue lg text-white" catchtap="redictoAdmin">
+        <text class="cuIcon-activityfill"> 管理系统</text>
+      </button>
+    </view>
+    <view class="flex-sub padding margin">
+      <button class="cu-btn block bg-blue lg text-white" catchtap="redictoUser">
+        <text class="cuIcon-myfill"> 用户系统</text>
+      </button>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{identity !== 'admin'&&identity !== 'staff'}}">
+  <cu-custom bgColor="bg-gradual-blue">
+    <view slot="content">欢迎</view>
+  </cu-custom>
+  <view class="flex justify-center bg-white padding">
+    <view class="user-avatar">
+      <open-data type="userAvatarUrl"></open-data>
+    </view>
+  </view>
+  <view class="text-center" style="margin-top: 10vh;width: 100%;">
+    <text class="text-xl text-bold text-blue light">欢迎来到XMU智能点餐小程序!</text>
+  </view>
+  <view style="width: 100%;padding-top: 1rem;">
+    <button style="width: 10rem;margin: auto;" class="cu-btn block bg-blue lg text-white" catchtap="redictoUser">
+      <text class="cuIcon-roundcheck"> 进入</text>
+    </button>
+  </view>
+</view>
+
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+</view>
