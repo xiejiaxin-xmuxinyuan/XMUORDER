@@ -4,11 +4,14 @@
     <view slot="content">欢迎</view>
   </cu-custom>
   <view class="flex justify-center bg-white padding">
-    <view class="user-avatar">
+    <view class="user-avatar animation-slide-top" style="animation-delay: 0.6s;">
       <open-data type="userAvatarUrl"></open-data>
     </view>
   </view>
-  <view class="flex" style="margin-top: 10vh;width: 100%;">
+  <view class="text-center animation-scale-up" style="margin-top: 5vh;width: 100%;animation-delay: 0.2s;">
+    <text class="text-xl text-bold text-black">XMU智能点餐小程序</text>
+  </view>
+  <view class="flex animation-fade" style="margin-top: 5vh;width: 100%; animation-delay: 0.8s;">
     <view class="flex-sub padding margin">
       <button class="cu-btn block bg-blue lg text-white" catchtap="redictoAdmin">
         <text class="cuIcon-activityfill"> 管理系统</text>
@@ -20,24 +23,30 @@
       </button>
     </view>
   </view>
+  <view class="text-center animation-slide-bottom" style="height: auto;margin-top: 5vh;animation-delay: 0.4s;">
+    <image class="ico" src="ico.jpg" mode="aspectFit"></image>
+  </view>
 </view>
 
-<view wx:if="{{identity !== 'admin'&&identity !== 'staff'}}">
+<view wx:if="{{identity === 'user'||identity === 'unregistered'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
   <view class="flex justify-center bg-white padding">
-    <view class="user-avatar">
+    <view class="user-avatar animation-slide-top" style="animation-delay: 0.6s;">
       <open-data type="userAvatarUrl"></open-data>
     </view>
   </view>
-  <view class="text-center" style="margin-top: 10vh;width: 100%;">
-    <text class="text-xl text-bold text-blue light">欢迎来到XMU智能点餐小程序!</text>
+  <view class="text-center animation-scale-up" style="margin-top: 10vh;width: 100%;animation-delay: 0.2s;">
+    <text class="text-xl text-bold text-black">欢迎来到XMU智能点餐小程序 ！</text>
   </view>
-  <view style="width: 100%;padding-top: 1rem;">
-    <button style="width: 10rem;margin: auto;" class="cu-btn block bg-blue lg text-white" catchtap="redictoUser">
+  <view style="width: 100%;margin-top: 5vh;">
+    <button style="width: 10rem;margin: auto; animation-delay: 0.8s;" class="animation-fade cu-btn block bg-blue lg text-white" catchtap="redictoUser">
       <text class="cuIcon-roundcheck"> 进入</text>
     </button>
+  </view>
+  <view class="text-center animation-slide-bottom" style="height: auto;margin-top: 10vh;animation-delay: 0.4s;">
+    <image class="ico" src="ico.jpg" mode="aspectFit"></image>
   </view>
 </view>
 

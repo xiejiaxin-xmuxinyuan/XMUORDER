@@ -1,4 +1,7 @@
 /* pages/welcome/welcome.wxss */
+@import "../../colorui/animation.wxss";
+
+
 page{
   background-color: white;
 }
@@ -14,3 +17,12 @@ page{
   border: 5rpx solid #fff;
   box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
 }
+
+.ico {
+  height: 15vh;
+  width: 15vh;
+  border-radius: 5%;
+  border: 5rpx solid #fff;
+  box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
+}
+

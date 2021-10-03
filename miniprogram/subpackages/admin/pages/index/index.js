@@ -6,9 +6,10 @@ var that
 Page({
   data: {
     pageCurr: "admin",
-    name: "测试姓名",
-    phone: "123123123",
-    identity: "admin",
+    name: app.globalData.name,
+    phone: app.globalData.phone,
+    address: app.globalData.address,
+    identity: app.globalData.identity,
     //管理员、员工（staff）
 
 

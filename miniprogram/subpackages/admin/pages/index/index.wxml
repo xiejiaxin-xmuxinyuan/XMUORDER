@@ -1,5 +1,5 @@
 <!-- 管理页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'admin'}}" >
+<view class="tab-page" wx:if="{{pageCurr === 'admin'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">管理</view>
   </cu-custom>
@@ -13,7 +13,7 @@
 </view>
 
 <!-- 个人页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'user'}}" >
+<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">我的</view>
   </cu-custom>
@@ -40,6 +40,13 @@
     </view>
     <view class="cu-item">
       <view class="content">
+        <text class="cuIcon-locationfill text-gray"></text>
+        <text>地址</text>
+        <text class="fr">{{address}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
         <text class="cuIcon-profile text-gray"></text>
         <text>身份</text>
         <text wx:if="{{identity==='admin'}}" class="fr text-red">管理员</text>
@@ -52,22 +59,12 @@
         <text class="text-black">意见反馈</text>
       </view>
     </view>
-    
-    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity === 'admin'}}">
-      <view class="content">
-        <text class="cuIcon-commandfill text-blue"></text>
-        <text class="text-blue">管理中心</text>
-      </view>
-    </view>
   </view>
 </view>
-
 
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
 </view>
-
-
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
