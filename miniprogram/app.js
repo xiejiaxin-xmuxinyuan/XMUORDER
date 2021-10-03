@@ -2,6 +2,7 @@
 App({
   init: function () {
     var that = this
+    that.globalData.isActive = false
     return new Promise((resolve, reject) => {
       wx.cloud.callFunction({
           name: "checkLogin"
@@ -23,6 +24,15 @@ App({
     })
   },
   onLaunch: function () {
+    this.globalData = {}
+    wx.getSystemInfo({
+      success: e => {
+        this.globalData.StatusBar = e.statusBarHeight;
+        let custom = wx.getMenuButtonBoundingClientRect();
+        this.globalData.Custom = custom;  
+        this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
+      }
+    })
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -31,15 +41,5 @@ App({
         traceUser: true,
       })
     }
-
-    this.globalData = {}
-    this.globalData.isActive = false
-    wx.getSystemInfo()
-      .then(e => {
-        this.globalData.StatusBar = e.statusBarHeight;
-        let custom = wx.getMenuButtonBoundingClientRect();
-        this.globalData.Custom = custom;
-        this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
-      })
   }
 })
