@@ -1,12 +1,14 @@
 // pages/welcome/welcome.js
 var that
-var app = getApp()
+const app = getApp()
 
 Page({
 
   data: {
     identity: null
-    // 管理员admin 员工staff？
+    //null说明是新用户
+    //user说明是已注册用户
+    // 管理员admin 员工staff
   },
 
   /**
@@ -14,13 +16,18 @@ Page({
    */
   onLoad: function (options) {
     that = this
+    wx.showLoading({
+      title: '获取信息中',
+    })
     app.init()
       .then(globalData => {
         that.setData({
           identity: globalData.identity
         })
+        wx.hideLoading()
       })
       .catch(err => {
+        wx.hideLoading()
         console.error(err)
       })
   },

@@ -2,65 +2,55 @@
 const app = getApp()
 const db = wx.cloud.database()
 var that
+
+function userNoticesSort(a, b) { //辅助函数 用于sort排序
+  if (a.top !== b.top) {
+    return a.top > b.top ? -1 : 1;
+  } else if (a.date !== b.date) {
+    return a.date > b.date ? -1 : 1;
+  } else {
+    return 1;
+  }
+}
+
 Page({
   /**
    * 页面的初始数据
    */
   data: {
     pageCurr: "info",
-    name: null,
-    phone: null,
-    address: null,
+    name: app.globalData.name,
+    phone: app.globalData.phone,
+    address: app.globalData.address,
+    identity: app.globalData.identity,
     canteen: [],
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
-    identity: null
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     that = this
+    if (!app.globalData.isActive) {
+      that.goToInform()
+      return //中断线程
+    }
 
-    //canteen
     wx.showLoading({
       title: '获取信息中',
     })
-    db.collection("canteen")
-      .get()
-      .then(val => {
-        that.setData({
-          canteen: val.data,
-        })
-        wx.hideLoading()
-      })
+    var p1 = db.collection("canteen").get()
+    var p2 = that.getUserNotices()
 
-    //notices
-    wx.showLoading({
-      title: '获取公告中',
-    })
-    wx.cloud.callFunction({ //调用云函数获取notices
-      name: "getNotices"
-    }).then(res => {
+    Promise.all([p1, p2]).then(res => {
       wx.hideLoading()
-      let result = res.result
-      if (result.success) {
-        that.setData({
-          notices: result.data
-        })
-      } else { //notice获取失败
-        wx.showModal({
-          title: '提示',
-          content: '公告获取失败'
-        }).then(res => {
-          that.setData({
-            pageCurr: "shop"
-          })
-        })
-      }
+      that.setData({
+        canteen: res[0].data, //餐厅数据
+        notices: res[1] //公告数据
+      })
     })
-
   },
 
   showNoticeDetail: function (event) {
@@ -72,29 +62,11 @@ Page({
     })
   },
   onNavChange: function (e) {
-    if (app.globalData.isActive) {
-      const pageCurr = e.currentTarget.dataset.cur
-      if (e.currentTarget.dataset.cur === 'user') {
-        const {
-          name,
-          address,
-          phone,
-          identity
-        } = app.globalData
-        that.setData({
-          name,
-          address,
-          pageCurr,
-          phone,
-          identity
-        })
-      } else {
-        that.setData({
-          pageCurr
-        })
-      }
-    } else {
-      that.goToInform()
+    const pageCurr = e.currentTarget.dataset.cur
+    if (pageCurr!==that.data.pageCurr){
+      that.setData({
+        pageCurr
+      })
     }
   },
   noticeTypeSelect: function (e) {
@@ -159,6 +131,31 @@ Page({
         noticeCurrType: that.data.noticeTypes[newIndex]
       })
     }
+  },
+  getUserNotices: async function () {
+    const countResult = await db.collection('notices').where({
+      hidden: false
+    }).count()
+
+    const total = countResult.total
+    // 计算需分几次取
+    const MAX_LIMIT = 20
+    const batchTimes = Math.ceil(total / MAX_LIMIT)
+    const tasks = []
+    for (let i = 0; i < batchTimes; i++) {
+      let promise = db.collection('notices').where({
+        hidden: false
+      }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
+      tasks.push(promise)
+    }
+
+    const res = (await Promise.all(tasks)).reduce((acc, cur) => {
+      return {
+        notices: acc.data.concat(cur.data)
+      }
+    })
+    res.data.sort(userNoticesSort)
+    return res.data //返回排序后数据
   }
 
 })
