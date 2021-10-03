@@ -24,7 +24,7 @@
     </view>
   </view>
   <view class="text-center animation-slide-bottom" style="height: auto;margin-top: 5vh;animation-delay: 0.4s;">
-    <image class="ico" src="ico.png" mode="aspectFit"></image>
+    <image class="ico" src="ico.jpg" mode="aspectFit"></image>
   </view>
 </view>
 
@@ -46,7 +46,7 @@
     </button>
   </view>
   <view class="text-center animation-slide-bottom" style="height: auto;margin-top: 10vh;animation-delay: 0.4s;">
-    <image class="ico" src="ico.png" mode="aspectFit"></image>
+    <image class="ico" src="ico.jpg" mode="aspectFit"></image>
   </view>
 </view>
 
