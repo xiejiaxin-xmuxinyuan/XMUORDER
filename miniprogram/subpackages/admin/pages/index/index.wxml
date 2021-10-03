@@ -40,6 +40,13 @@
     </view>
     <view class="cu-item">
       <view class="content">
+        <text class="cuIcon-locationfill text-gray"></text>
+        <text>地址</text>
+        <text class="fr">{{address}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
         <text class="cuIcon-profile text-gray"></text>
         <text>身份</text>
         <text wx:if="{{identity==='admin'}}" class="fr text-red">管理员</text>
