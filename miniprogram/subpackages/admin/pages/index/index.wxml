@@ -1,6 +1,6 @@
 <!-- 管理页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'admin'}}">
-  <cu-custom bgColor="bg-gradual-blue">
+<view class="tab-page" wx:if="{{pageCurr === 'admin'}}" >
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">管理</view>
   </cu-custom>
 
@@ -13,8 +13,8 @@
 </view>
 
 <!-- 个人页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
-  <cu-custom bgColor="bg-gradual-blue">
+<view class="tab-page" wx:if="{{pageCurr === 'user'}}" >
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">我的</view>
   </cu-custom>
 

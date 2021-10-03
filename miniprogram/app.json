@@ -9,8 +9,7 @@
         "pages/index/index",
         "pages/index/noticeDetail",
         "pages/canteen/canteen",
-        "pages/infoForm/infoForm",
-        "pages/admin/admin"
+        "pages/infoForm/infoForm"
       ]
     },
     {

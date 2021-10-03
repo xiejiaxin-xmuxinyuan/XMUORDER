@@ -15,6 +15,10 @@
 	</view>
 
 	<view class="cu-form-group margin-top">
+		<view class="title">电话</view>
+		<input placeholder="请输入电话" name="phone"></input>
+	</view>
+	<view class="cu-form-group margin-top">
 		<!-- 若已经获取手机号码，此按钮无效 phoneNumber !== ''-->
 			<button 
 				disabled="{{ phoneNumber === '' ? false : true }}"
