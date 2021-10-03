@@ -32,6 +32,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    console.log(app.globalData)
     that = this
     if (!app.globalData.isActive) {
       that.goToInform()
@@ -48,7 +49,11 @@ Page({
       wx.hideLoading()
       that.setData({
         canteen: res[0].data, //餐厅数据
-        notices: res[1] //公告数据
+        notices: res[1], //公告数据
+        name: app.globalData.name,
+        phone: app.globalData.phone,
+        address: app.globalData.address,
+        identity: app.globalData.identity
       })
     })
   },
@@ -63,7 +68,7 @@ Page({
   },
   onNavChange: function (e) {
     const pageCurr = e.currentTarget.dataset.cur
-    if (pageCurr!==that.data.pageCurr){
+    if (pageCurr !== that.data.pageCurr) {
       that.setData({
         pageCurr
       })

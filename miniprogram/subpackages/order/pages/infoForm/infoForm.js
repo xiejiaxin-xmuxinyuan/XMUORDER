@@ -24,7 +24,7 @@ Page({
   },
 
   onSubmit: async function(e) {
-    e.detail.value.phone = that.data.phoneNumber
+    // e.detail.value.phone = that.data.phoneNumber
     // 如果信息不完整或填写错误
     if (!that.WxValidate.checkForm(e.detail.value)) {
       const errMsg = that.WxValidate.errorList[0].msg
@@ -65,7 +65,8 @@ Page({
                 phone: userInfo.phone,//that.data.phoneNumber,
                 isActive: true,
                 name: userInfo.name,
-                address : userInfo.address
+                address : userInfo.address,
+                identity : 'user'
               }
             })
             .then(() => {

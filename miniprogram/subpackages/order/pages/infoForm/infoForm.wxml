@@ -18,9 +18,9 @@
 		<view class="title">电话</view>
 		<input placeholder="请输入电话" name="phone"></input>
 	</view>
-	<view class="cu-form-group margin-top">
+	<!-- <view class="cu-form-group margin-top"> -->
 		<!-- 若已经获取手机号码，此按钮无效 phoneNumber !== ''-->
-			<button 
+			<!-- <button 
 				disabled="{{ phoneNumber === '' ? false : true }}"
 				type=""
 				class="cu-btn round bg-green shadow "
@@ -32,7 +32,7 @@
 				class="{{showLoading ? 'cuIcon-loading2 iconfont-spin' : ''}}"></text>
 		</button>
 		<text>{{phoneNumber}}</text>
-	</view>
+	</view> -->
 
 	<view class="padding margin-top">
 		<button disabled="{{subBtnDisabled}}" class="lg text-white" style="background-color: rgb(215, 66, 42);"
