@@ -11,9 +11,6 @@ Page({
     // 管理员admin 员工staff
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
     that = this
     wx.showLoading({

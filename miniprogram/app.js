@@ -13,8 +13,11 @@ App({
           if (that.globalData.isActive) {
             that.globalData.phone = res.result.phone
             that.globalData.name = res.result.name,
-              that.globalData.address = res.result.address,
-              that.globalData.identity = res.result.identity
+            that.globalData.address = res.result.address,
+            that.globalData.identity = res.result.identity
+          }
+          else{
+            that.globalData.identity = 'unregistered' //标注未注册身份
           }
           resolve(that.globalData)
         })
@@ -29,7 +32,7 @@ App({
       success: e => {
         this.globalData.StatusBar = e.statusBarHeight;
         let custom = wx.getMenuButtonBoundingClientRect();
-        this.globalData.Custom = custom;  
+        this.globalData.Custom = custom;
         this.globalData.CustomBar = custom.bottom + custom.top - e.statusBarHeight;
       }
     })
