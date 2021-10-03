@@ -4,12 +4,8 @@ var app = getApp()
 
 Page({
 
-  /**
-   * 页面的初始数据
-   */
   data: {
-    identity: 'staff'
-    // identity: null
+    identity: null
     // 管理员admin 员工staff？
   },
 
@@ -18,18 +14,22 @@ Page({
    */
   onLoad: function (options) {
     that = this
-    //globalData问题待解决
-    // console.log(that.data.identity)
-    // that.setData({
-    //   identity: app.globalData.identity
-    // })
+    app.init()
+      .then(globalData => {
+        that.setData({
+          identity: globalData.identity
+        })
+      })
+      .catch(err => {
+        console.error(err)
+      })
   },
-  redictoUser: function(e){
+  redictoUser: function (e) {
     wx.redirectTo({
       url: '../../subpackages/order/pages/index/index',
     })
   },
-  redictoAdmin: function(e){
+  redictoAdmin: function (e) {
     wx.navigateTo({
       url: '../../subpackages/admin/pages/index/index',
     })
