@@ -17,6 +17,7 @@
 .VerticalNav.nav .cu-item.cur {
   background-color: #f1f1f1;
 }
+
 .VerticalNav.nav .cu-item.cur::after {
   content: "";
   width: 8rpx;
@@ -29,10 +30,12 @@
   bottom: 0;
   margin: auto;
 }
-.VerticalBox{
+
+.VerticalBox {
   display: flex;
 }
-.VerticalMain{
+
+.VerticalMain {
   background-color: #f1f1f1;
 }
 
@@ -41,6 +44,36 @@
   transition: all .3s;
   height: 5rem;
 }
-.hidden{
+
+.hidden {
   height: 0;
+}
+
+.food-img {
+  border-radius: 10%;
+}
+
+.food-btn {
+  text-align: center;
+  width: 20vw !important;
+  padding: 0;
+}
+
+.food-btn>input {
+  text-align: center;
+  margin-left: 5%;
+  padding: 0;
+  font-size: small !important;
+  margin-bottom: 5%;
+}
+
+.food-btn>text {
+  border-radius: 20%;
+  padding: 11% !important;
+  border: 5rpx solid#fbbd08;
+}
+
+.food-btn>text.cuIcon-move {
+  /* background-color: white !important; */
+  border-color: #f6f6f6;
 }

@@ -32,7 +32,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    console.log(app.globalData)
     that = this
     if (!app.globalData.isActive) {
       that.goToInform()
@@ -80,7 +79,6 @@ Page({
     })
   },
   toOrder: function (e) {
-    console.log(e)
     if (!app.globalData.isActive) {
       that.goToInform()
     } else {
