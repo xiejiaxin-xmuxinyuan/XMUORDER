@@ -7,40 +7,33 @@ Page({
    * 页面的初始数据
    */
   data: {
-    canteen:{},
-    StatusBar: app.globalData.StatusBar,
-    CustomBar: app.globalData.CustomBar,
-    Custom: app.globalData.Custom,
+    canteen: {},
+    // StatusBar: app.globalData.StatusBar,
+    // CustomBar: app.globalData.CustomBar,
+    // Custom: app.globalData.Custom,
     TabCur: 0,
     MainCur: 0,
     VerticalNavTop: 0,
-    list: [],
     load: true,
-    showInfo: false
+    showInfo: false,
+    list: [] //foodList
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  // onPullDownRefresh 之后考虑下拉刷新数据
+
   onLoad: function (options) {
     that = this
-    var list = app.globalData.canteen.orderTypeList
+    var list = app.globalData.canteen.foodList
     for (let i = 0; i < list.length; i++) {
       list[i].id = i;
     }
     that.setData({
       list: list,
       listCur: list[0],
-      canteen : app.globalData.canteen
+      canteen: app.globalData.canteen
     })
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
   tabSelect(e) {
     this.setData({
       TabCur: e.currentTarget.dataset.id,
@@ -60,7 +53,7 @@ Page({
         }, data => {
           list[i].top = tabHeight;
           tabHeight = tabHeight + data.height;
-          list[i].bottom = tabHeight;     
+          list[i].bottom = tabHeight;
         }).exec();
       }
       that.setData({
@@ -80,9 +73,47 @@ Page({
     }
   },
   //餐厅信息折叠
-  toggleInfo: function(event){
+  toggleInfo: function (event) {
     this.setData({
-      showInfo : !that.data.showInfo 
+      showInfo: !that.data.showInfo
     })
   },
+  foodOrderNumAdd: function (e) {
+    let pos1 = e.currentTarget.dataset.pos1
+    let pos2 = e.currentTarget.dataset.pos2
+    const food = that.data.list[pos1].food[pos2]
+    let orderNum = 1
+    if (food.orderNum) { //如果有这个键或者值非0
+      orderNum = food.orderNum + 1
+    }
+
+    //判断库存是否足够
+    if (food.curNum >= orderNum) {
+      // list[pos1].food[pos2].orderNum
+      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      that.setData({
+        [s]: orderNum
+      })
+    } else {
+      wx.showToast({
+        title: '库存不足',
+        icon: 'none',
+        duration: 500
+      })
+    }
+  },
+  foodOrderNumDec: function (e) {
+    let pos1 = e.currentTarget.dataset.pos1
+    let pos2 = e.currentTarget.dataset.pos2
+    const food = that.data.list[pos1].food[pos2]
+    if (food.orderNum >= 1) {
+      let orderNum = food.orderNum - 1
+
+      // list[pos1].food[pos2].orderNum
+      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      that.setData({
+        [s]: orderNum
+      })
+    }
+  }
 })
