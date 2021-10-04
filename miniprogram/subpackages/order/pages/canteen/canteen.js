@@ -8,9 +8,6 @@ Page({
    */
   data: {
     canteen: {},
-    // StatusBar: app.globalData.StatusBar,
-    // CustomBar: app.globalData.CustomBar,
-    // Custom: app.globalData.Custom,
     TabCur: 0,
     MainCur: 0,
     VerticalNavTop: 0,
