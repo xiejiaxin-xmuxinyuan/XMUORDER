@@ -38,13 +38,13 @@
   <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375rpx)"
     scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
     <!-- 每一类的菜单 -->
-    <view class="padding-top padding-lr" wx:for="{{list}}" wx:key id="main-{{index}}" wx:for-index="pos1">
+    <view class="padding-top padding-lr" wx:for="{{list}}" wx:key id="main-{{index}}" wx:for-index="index1">
       <view class='cu-bar solid-bottom bg-white'>
         <view class='action'>
           <text class='cuIcon-title text-blue'></text> {{item.name}}
         </view>
       </view>
-      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="pos2">
+      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2">
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
           <view class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}"
@@ -64,9 +64,9 @@
           <view class="action" style="width: 20vw;">
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
             <view class="cu-form-group food-btn">
-              <text class="cuIcon-move cu-tag" data-pos1="{{pos1}}" data-pos2="{{pos2}}" catchtap="foodOrderNumDec"></text>
+              <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="foodOrderNumDec"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
-              <text class="cuIcon-add cu-tag bg-yellow" data-pos1="{{pos1}}" data-pos2="{{pos2}}" catchtap="foodOrderNumAdd"></text>
+              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="foodOrderNumAdd"></text>
             </view>
           </view>
         </view>

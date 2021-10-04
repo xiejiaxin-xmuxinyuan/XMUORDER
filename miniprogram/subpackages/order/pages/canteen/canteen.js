@@ -76,9 +76,9 @@ Page({
     })
   },
   foodOrderNumAdd: function (e) {
-    let pos1 = e.currentTarget.dataset.pos1
-    let pos2 = e.currentTarget.dataset.pos2
-    const food = that.data.list[pos1].food[pos2]
+    let index1 = e.currentTarget.dataset.index1
+    let index2 = e.currentTarget.dataset.index2
+    const food = that.data.list[index1].food[index2]
     let orderNum = 1
     if (food.orderNum) { //如果有这个键或者值非0
       orderNum = food.orderNum + 1
@@ -86,8 +86,8 @@ Page({
 
     //判断库存是否足够
     if (food.curNum >= orderNum) {
-      // list[pos1].food[pos2].orderNum
-      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      // list[index1].food[index2].orderNum
+      let s = 'list[' + index1 + '].food[' + index2 + '].orderNum'
       that.setData({
         [s]: orderNum
       })
@@ -100,14 +100,14 @@ Page({
     }
   },
   foodOrderNumDec: function (e) {
-    let pos1 = e.currentTarget.dataset.pos1
-    let pos2 = e.currentTarget.dataset.pos2
-    const food = that.data.list[pos1].food[pos2]
+    let index1 = e.currentTarget.dataset.index1
+    let index2 = e.currentTarget.dataset.index2
+    const food = that.data.list[index1].food[index2]
     if (food.orderNum >= 1) {
       let orderNum = food.orderNum - 1
 
-      // list[pos1].food[pos2].orderNum
-      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      // list[index1].food[index2].orderNum
+      let s = 'list[' + index1 + '].food[' + index2 + '].orderNum'
       that.setData({
         [s]: orderNum
       })
