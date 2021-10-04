@@ -13,7 +13,8 @@ Page({
     VerticalNavTop: 0,
     load: true,
     showInfo: false,
-    list: [] //foodList
+    list: [], //foodList
+    money: 0
   },
 
   // onPullDownRefresh 之后考虑下拉刷新数据
@@ -79,6 +80,8 @@ Page({
     let index1 = e.currentTarget.dataset.index1
     let index2 = e.currentTarget.dataset.index2
     const food = that.data.list[index1].food[index2]
+    var money = that.data.money
+
     let orderNum = 1
     if (food.orderNum) { //如果有这个键或者值非0
       orderNum = food.orderNum + 1
@@ -86,10 +89,14 @@ Page({
 
     //判断库存是否足够
     if (food.curNum >= orderNum) {
+      let price = food.price
+      money += price
+
       // list[index1].food[index2].orderNum
       let s = 'list[' + index1 + '].food[' + index2 + '].orderNum'
       that.setData({
-        [s]: orderNum
+        [s]: orderNum,
+        money: money
       })
     } else {
       wx.showToast({
@@ -103,13 +110,18 @@ Page({
     let index1 = e.currentTarget.dataset.index1
     let index2 = e.currentTarget.dataset.index2
     const food = that.data.list[index1].food[index2]
+    var money = that.data.money
+
     if (food.orderNum >= 1) {
       let orderNum = food.orderNum - 1
+      let price = food.price
+      money -= price
 
       // list[index1].food[index2].orderNum
       let s = 'list[' + index1 + '].food[' + index2 + '].orderNum'
       that.setData({
-        [s]: orderNum
+        [s]: orderNum,
+        money: money
       })
     }
   }

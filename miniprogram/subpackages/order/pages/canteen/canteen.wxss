@@ -77,3 +77,10 @@
   /* background-color: white !important; */
   border-color: #f6f6f6;
 }
+
+.shopping-bar {
+  position: fixed;
+  z-index: 999;
+  bottom: 0;
+  width: 100%;
+}

@@ -25,7 +25,7 @@
   </view>
 </view>
 
-<view class="VerticalBox">
+<view class="VerticalBox" style="margin-bottom: 18%;">
   <!-- 侧边Tab -->
   <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}"
     style="height:calc(100vh - 375rpx)">
@@ -64,9 +64,11 @@
           <view class="action" style="width: 20vw;">
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
             <view class="cu-form-group food-btn">
-              <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="foodOrderNumDec"></text>
+              <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}"
+                catchtap="foodOrderNumDec"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
-              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="foodOrderNumAdd"></text>
+              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}"
+                catchtap="foodOrderNumAdd"></text>
             </view>
           </view>
         </view>
@@ -75,4 +77,17 @@
 
     </view>
   </scroll-view>
+</view>
+
+<view class="shopping-bar">
+  <view class="cu-bar bg-white tabbar border shop">
+    <view class="action text-orange">
+      <view class="cuIcon-favorfill"></view> 已收藏
+    </view>
+    <view class="action" style="width: 30%;text-align: left;">
+      <text class="text-black" style="font-size:small;margin-left: 5%;">合计:</text>
+      <text style="font-size:large;color: red;margin-left: 7%;">￥{{money}}</text>
+    </view>
+    <view class="bg-red submit">结算</view>
+  </view>
 </view>
