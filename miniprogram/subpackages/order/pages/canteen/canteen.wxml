@@ -38,7 +38,7 @@
   <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375rpx)"
     scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
     <!-- 每一类的菜单 -->
-    <view class="padding-top padding-lr" wx:for="{{list}}" wx:key id="main-{{index}}" wx:for-index="index1">
+    <view class="padding-top padding-lr" wx:for="{{list}}" wx:key id="main-{{index1}}" wx:for-index="index1">
       <view class='cu-bar solid-bottom bg-white'>
         <view class='action'>
           <text class='cuIcon-title text-blue'></text> {{item.name}}
