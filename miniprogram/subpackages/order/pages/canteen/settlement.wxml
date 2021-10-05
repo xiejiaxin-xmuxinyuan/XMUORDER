@@ -19,7 +19,7 @@
         <view class="content" style="width: 75%;">
           <text class="time">取餐时间：</text>
           <picker bindchange="timePickerChange" value="{{pickedIndex}}" range="{{timeToPick}}" class="time">
-            <text class="picker">{{pickedIndex?timeToPick[pickedIndex]:'点击选择时间'}}</text>
+            <text class="picker text-orange">{{pickedIndex?timeToPick[pickedIndex]:'点击选择时间'}}</text>
           </picker>
           <view class="text-gray">{{user.name}}</view>
           <view class="text-gray text-sm flex">{{user.phone}}</view>
