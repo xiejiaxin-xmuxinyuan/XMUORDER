@@ -1,0 +1,39 @@
+/* subpackages/order/pages/canteen/settlement.wxss */
+
+text.time {
+  color: gray;
+  position: absolute;
+  right: 0;
+  font-size: smaller !important;
+  width: 30%;
+  text-align: center;
+}
+
+picker.time {
+  color: #8799a3;
+  font-weight: bold;
+  position: absolute;
+  right: 0;
+  font-size: smaller;
+  top: 50%;
+  width: 30%;
+  text-align: center;
+}
+
+.order {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.order .content {
+  flex-direction: column;
+  width: auto;
+  margin-left: 50rpx;
+  margin-right: 50rpx;
+}
+
+.order .price {
+  margin: auto;
+  width: 15%;
+}

@@ -1,0 +1,61 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="content">提交订单</view>
+</cu-custom>
+
+<view class="cu-card case">
+  <view class="cu-item shadow-warp">
+    <view class="image">
+      <image src="{{canteen.image[0]}}" mode="aspectFill"></image>
+      <view class="cu-tag bg-blue">{{canteen.name}}</view>
+      <view class="cu-bar bg-shadeBottom">
+        <text class="text-cut">地址：{{canteen.fulAddress}}</text>
+      </view>
+    </view>
+    <view class="cu-list menu-avatar">
+      <view class="cu-item">
+        <view class="cu-avatar lg bg-white">
+          <open-data type="userAvatarUrl"></open-data>
+        </view>
+        <view class="content" style="width: 75%;">
+          <text class="time">取餐时间：</text>
+          <picker bindchange="timePickerChange" value="{{pickedIndex}}" range="{{timeToPick}}" class="time">
+            <text class="picker">{{pickedIndex?timeToPick[pickedIndex]:'点击选择时间'}}</text>
+          </picker>
+          <view class="text-gray">{{user.name}}</view>
+          <view class="text-gray text-sm flex">{{user.phone}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="card shadow-warp" style="width: auto;margin: 30rpx;margin-bottom: 20%;">
+  <view class="padding bg-white">
+    <view class="padding-bottom-sm text-center solid-bottom">订单详情</view>
+    <!-- ui模板 -->
+    <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length'}}">
+      <view class="cu-avatar lg radius" style="background-image:url({{list[item[1]].food[item[2]].img}});margin: auto;">
+      </view>
+      <view class="content text-cut">
+        <view class="text-black text-bold">{{list[item[1]].food[item[2]].name}}</view>
+        <view class="text-grey text-xs">{{list[item[1]].food[item[2]].content}}</view>
+        <view class="text-grey text-sm">×{{list[item[1]].food[item[2]].orderNum}}</view>
+      </view>
+      <view class="text-black text-bold price">￥{{list[item[1]].food[item[2]].price *
+        list[item[1]].food[item[2]].orderNum}}</view>
+    </view>
+    <!-- ui模板结束 -->
+    <view class="padding-top margin-top solid-top text-bold text-black text-right">
+      总计：<text class="text-red"> ￥{{money}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="bg-white shadow round margin" style="position: fixed;bottom: 0;width: 90%;">
+  <view class="flex" style="justify-content: space-between;">
+    <view class="text-black text-bold" style="width: 40%;margin: auto;">
+      总计：<text class="text-red text-bold text-xxl"> ￥{{money}}</text>
+    </view>
+    <view style="padding:30rpx 80rpx;border-radius: 0 5000rpx 5000rpx 0;" class="bg-gradual-orange">提交订单</view>
+  </view>
+</view>

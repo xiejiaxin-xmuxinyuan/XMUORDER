@@ -172,5 +172,26 @@ Page({
       showShoppingCart: false
     })
   },
+  toSettlement: function(e){
+    var orderList = that.data.orderList
+    if (orderList.length>0){
+      let settlement = {
+        orderList: that.data.orderList,
+        list: that.data.list,
+        canteen: that.data.canteen,
+        money: that.data.money
+      }
+      app.globalData.settlement = settlement
+      wx.navigateTo({
+        url: './settlement',
+      })
+    }else{
+      wx.showToast({
+        title: '请选择要购买的商品',
+        icon: 'none',
+        duration: 500
+      })
+    }
+  },
   blocking: e => {} //什么也不做
 })
