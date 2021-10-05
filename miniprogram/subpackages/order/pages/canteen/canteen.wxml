@@ -49,7 +49,7 @@
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
           <view class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}"
-            style="background-image:url(http://p0.meituan.net/deal/719b7498345e1f9bcffe45b95ab8068c328672.jpg);">
+            style="background-image:url({{food.img}});">
             <view class="cu-tag badge bg-grey" wx:if="{{food.curNum===0}}">售罄</view>
             <view class="cu-tag badge" wx:elif="{{food.tag}}">{{food.tag}}</view>
           </view>
@@ -97,15 +97,15 @@
 </view>
 
 <view catchtap="hideShoppingCart" class="cu-modal bottom-modal {{showShoppingCart?'show':''}}">
-  <view catchtap="blocking" class="cu-dialog bg-white">
-    <view class="padding">
-      <view>购物车</view>
+  <view catchtap="blocking" class="cu-dialog" style="background-color: transparent;">
+    <view class="shadow-warp padding-top bg-white shopping-card">
+      <view class="text-balck text-bold">购物车</view>
       <view class="cu-list menu-avatar">
+        <view wx:if="{{!orderList.length}}" class="padding">空空如也</view>
         <!-- 购物车商品列表 -->
-        <view wx:if="{{!orderList.length}}" class="padding text-sm">空空如也~</view>
         <view class="cu-item" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
           <view class="cu-avatar round lg"
-            style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big21001.jpg);">
+            style="background-image:url({{list[item[1]].food[item[2]].img}});">
           </view>
           <view class="content" style="justify-content: left;width: 50%;">
             <view class="text-black">{{list[item[1]].food[item[2]].name}}</view>
@@ -123,6 +123,7 @@
             </view>
           </view>
         </view>
+        <button wx:if="{{orderList.length>0}}" class="cu-btn bg-red round shadow-blur margin">去结算</button>
       </view>
     </view>
   </view>
