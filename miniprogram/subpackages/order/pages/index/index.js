@@ -60,7 +60,6 @@ Page({
   showNoticeDetail: function (event) {
     //保存当前notice详情到全局
     app.globalData.notice = event.currentTarget.dataset.notice
-    console.log(app.globalData)
     wx.navigateTo({
       url: './noticeDetail'
     })
