@@ -31,6 +31,7 @@
     style="height:calc(100vh - 375rpx)">
     <view class="cu-item {{index===TabCur?'text-blue cur':''}}" wx:for="{{list}}" wx:key="id" bindtap='tabSelect'
       style=" white-space: nowrap;" data-id="{{index}}">
+      <view class="cu-tag badge" wx:if="{{item.tpyeOrderNum}}" style="position: absolute;right: 10%;top: 10%;"></view>
       {{item.name}}
     </view>
   </scroll-view>
@@ -63,7 +64,7 @@
           </view>
           <view class="action" style="width: 20vw;">
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
-            <view class="cu-form-group food-btn">
+            <view class="cu-form-group food-btn" wx:if="{{food.curNum>0}}">
               <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}"
                 catchtap="foodOrderNumDec"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
@@ -81,8 +82,11 @@
 
 <view class="shopping-bar">
   <view class="cu-bar bg-white tabbar border shop">
-    <view class="action text-orange">
-      <view class="cuIcon-favorfill"></view> 已收藏
+    <view class="action">
+      <view class="cuIcon-cart">
+        <view wx:if="{{orderList.length > 0}}" class="cu-tag badge">{{orderList.length}}</view>
+      </view>
+      购物车
     </view>
     <view class="action" style="width: 30%;text-align: left;">
       <text class="text-black" style="font-size:small;margin-left: 5%;">合计:</text>
