@@ -9,13 +9,15 @@
         "pages/index/index",
         "pages/index/noticeDetail",
         "pages/canteen/canteen",
+        "pages/canteen/settlement",
         "pages/infoForm/infoForm"
       ]
     },
     {
       "root": "subpackages/admin",
       "pages": [
-        "pages/index/index"
+        "pages/index/index",
+        "pages/notice/notice"
       ]
     }
   ],

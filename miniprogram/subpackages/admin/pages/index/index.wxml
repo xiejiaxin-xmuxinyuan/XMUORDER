@@ -5,7 +5,7 @@
   </cu-custom>
 
   <view class="cu-list grid col-3 no-border">
-    <view class="cu-item" wx:for="{{iconList}}" wx:key="name">
+    <view class="cu-item" catchtap="toPage" data-path="{{item.path}}" wx:for="{{iconList}}" wx:key="name">
       <view class="cuIcon-{{item.icon}} text-{{item.color}}"></view>
       <text>{{item.name}}</text>
     </view>
