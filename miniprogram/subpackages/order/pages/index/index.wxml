@@ -5,7 +5,7 @@
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key="*this"
         bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
@@ -42,7 +42,7 @@
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">我知盘中餐</view>
   </cu-custom>
-  <view class="cu-card case" wx:for="{{canteen}}">
+  <view class="cu-card case" wx:for="{{canteen}}" wx:key="_id">
     <view class="cu-item shadow" bindtap="toOrder" data-canteen="{{item}}">
       <view class="image">
         <image src="{{item.image[0]}}" mode="aspectFill"></image>

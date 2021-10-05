@@ -13,7 +13,12 @@ Page({
     VerticalNavTop: 0,
     load: true,
     showInfo: false,
-    list: [] //foodList
+    list: [], //foodList
+    money: 0,
+    orderList: {
+      length: 0
+    }, //已点食物的访问坐标数组 {index1|index2: [数量,index1,index2]}
+    showShoppingCart: false
   },
 
   // onPullDownRefresh 之后考虑下拉刷新数据
@@ -76,20 +81,40 @@ Page({
     })
   },
   foodOrderNumAdd: function (e) {
-    let pos1 = e.currentTarget.dataset.pos1
-    let pos2 = e.currentTarget.dataset.pos2
-    const food = that.data.list[pos1].food[pos2]
+    let index1 = e.currentTarget.dataset.index1
+    let index2 = e.currentTarget.dataset.index2
+    const food = that.data.list[index1].food[index2]
+    var money = that.data.money
+    var orderList = that.data.orderList
+
     let orderNum = 1
     if (food.orderNum) { //如果有这个键或者值非0
       orderNum = food.orderNum + 1
     }
 
-    //判断库存是否足够
+    //判断库存是否足够，是否允许增加数量
     if (food.curNum >= orderNum) {
-      // list[pos1].food[pos2].orderNum
-      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      //计算合计价格
+      let price = food.price
+      money += price
+      //添加到购物车列表
+      let orderItem = [orderNum, index1, index2]
+      let temp = index1.toString() + '|' + index2.toString()
+      orderList[temp] = orderItem
+      orderList.length = Object.keys(orderList).length - 1 //减掉length本身
+      //计算该类别已点数量
+      let tpyeOrderNum = that.data.list[index1].tpyeOrderNum
+      tpyeOrderNum = tpyeOrderNum > 0 ? tpyeOrderNum + 1 : orderNum
+
+      // list[index1].food[index2].orderNum
+      let s1 = 'list[' + index1 + '].food[' + index2 + '].orderNum'
+      // list[index1].tpyeOrderNum
+      let s2 = 'list[' + index1 + '].tpyeOrderNum'
       that.setData({
-        [s]: orderNum
+        [s1]: orderNum,
+        [s2]: tpyeOrderNum,
+        orderList: orderList,
+        money: money
       })
     } else {
       wx.showToast({
@@ -100,17 +125,52 @@ Page({
     }
   },
   foodOrderNumDec: function (e) {
-    let pos1 = e.currentTarget.dataset.pos1
-    let pos2 = e.currentTarget.dataset.pos2
-    const food = that.data.list[pos1].food[pos2]
+    let index1 = e.currentTarget.dataset.index1
+    let index2 = e.currentTarget.dataset.index2
+    const food = that.data.list[index1].food[index2]
+    var money = that.data.money
+    var orderList = that.data.orderList
+
     if (food.orderNum >= 1) {
       let orderNum = food.orderNum - 1
+      //计算合计价格
+      let price = food.price
+      money -= price
+      //添加到购物车列表
+      let temp = index1.toString() + '|' + index2.toString() //合并为字符串key
+      if (orderNum == 0) {
+        delete orderList[temp]
+      } else { //删除键值对
+        let orderItem = [orderNum, index1, index2]
+        orderList[temp] = orderItem
+      }
+      //更新length
+      orderList.length = Object.keys(orderList).length - 1 //减掉length属性本身
+      //计算该类别已点数量
+      let tpyeOrderNum = that.data.list[index1].tpyeOrderNum
+      tpyeOrderNum = tpyeOrderNum > 0 ? tpyeOrderNum - 1 : orderNum
 
-      // list[pos1].food[pos2].orderNum
-      let s = 'list[' + pos1 + '].food[' + pos2 + '].orderNum'
+      // list[index1].food[index2].orderNum
+      let s1 = 'list[' + index1 + '].food[' + index2 + '].orderNum'
+      // list[index1].tpyeOrderNum
+      let s2 = 'list[' + index1 + '].tpyeOrderNum'
       that.setData({
-        [s]: orderNum
+        [s1]: orderNum,
+        [s2]: tpyeOrderNum,
+        orderList: orderList,
+        money: money
       })
     }
-  }
+  },
+  showShoppingCart: e => {
+    that.setData({
+      showShoppingCart: true
+    })
+  },
+  hideShoppingCart: e => {
+    that.setData({
+      showShoppingCart: false
+    })
+  },
+  blocking: e => {} //什么也不做
 })
