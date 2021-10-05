@@ -55,7 +55,7 @@ Page({
           that.setData({subBtnDisabled: true})            
           app.globalData.name = userInfo.name,
           app.globalData.userID = userInfo.userID,
-
+          app.globalData.address = userInfo.address
           app.globalData.phone = userInfo.phone
           
           // 添加用户信息到集合 users 
