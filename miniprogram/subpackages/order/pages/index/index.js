@@ -91,7 +91,7 @@ Page({
   goToInform: function () {
     wx.showModal({
       title: '请完善信息',
-      showCancel: true,
+      showCancel: false,
       success: val => {
         // 用户点击确认
         if (val.confirm) {
