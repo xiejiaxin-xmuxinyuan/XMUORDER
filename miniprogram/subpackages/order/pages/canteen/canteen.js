@@ -17,7 +17,8 @@ Page({
     money: 0,
     orderList: {
       length: 0
-    } //已点食物的访问坐标数组 {index1|index2: [数量,index1,index2]}
+    }, //已点食物的访问坐标数组 {index1|index2: [数量,index1,index2]}
+    showShoppingCart: false
   },
 
   // onPullDownRefresh 之后考虑下拉刷新数据
@@ -160,5 +161,16 @@ Page({
         money: money
       })
     }
-  }
+  },
+  showShoppingCart: e => {
+    that.setData({
+      showShoppingCart: true
+    })
+  },
+  hideShoppingCart: e => {
+    that.setData({
+      showShoppingCart: false
+    })
+  },
+  blocking: e => {} //什么也不做
 })

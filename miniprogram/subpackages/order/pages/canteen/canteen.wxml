@@ -82,7 +82,7 @@
 
 <view class="shopping-bar">
   <view class="cu-bar bg-white tabbar border shop">
-    <view class="action">
+    <view class="action" catchtap="showShoppingCart">
       <view class="cuIcon-cart">
         <view wx:if="{{orderList.length > 0}}" class="cu-tag badge">{{orderList.length}}</view>
       </view>
@@ -93,5 +93,37 @@
       <text style="font-size:large;color: red;margin-left: 7%;">￥{{money}}</text>
     </view>
     <view class="bg-red submit">结算</view>
+  </view>
+</view>
+
+<view catchtap="hideShoppingCart" class="cu-modal bottom-modal {{showShoppingCart?'show':''}}">
+  <view catchtap="blocking" class="cu-dialog bg-white">
+    <view class="padding">
+      <view>购物车</view>
+      <view class="cu-list menu-avatar">
+        <!-- 购物车商品列表 -->
+        <view wx:if="{{!orderList.length}}" class="padding text-sm">空空如也~</view>
+        <view class="cu-item" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
+          <view class="cu-avatar round lg"
+            style="background-image:url(https://ossweb-img.qq.com/images/lol/web201310/skin/big21001.jpg);">
+          </view>
+          <view class="content" style="justify-content: left;width: 50%;">
+            <view class="text-black">{{list[item[1]].food[item[2]].name}}</view>
+            <view class="text-gray text-sm text-cut" style="text-align: left;">
+              {{list[item[1]].food[item[2]].content}}
+            </view>
+          </view>
+          <view class="action" style="width: 25%;">
+            <view class="cu-form-group food-btn">
+              <text class="cuIcon-move cu-tag" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
+                catchtap="foodOrderNumDec"></text>
+              <input disabled="true" value="{{list[item[1]].food[item[2]].orderNum}}"></input>
+              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
+                catchtap="foodOrderNumAdd"></text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </view>
