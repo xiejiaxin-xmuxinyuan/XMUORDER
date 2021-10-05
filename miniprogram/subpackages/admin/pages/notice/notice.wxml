@@ -38,7 +38,7 @@
   </view>
 </view>
 
-<view class="footer" style="margin-bottom: 0vh;">
+<view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
 </view>
 

@@ -26,3 +26,12 @@ page{
   box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
 }
 
+.tab-page {
+  min-height: 75vh; 
+  margin-bottom: 5vh;
+}
+
+.footer  {
+  margin-bottom: 10vh;
+}
+
