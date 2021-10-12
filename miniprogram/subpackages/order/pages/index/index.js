@@ -158,6 +158,11 @@ Page({
     })
     res.data.sort(userNoticesSort)
     return res.data //返回排序后数据
+  },
+  toRecord:function(e){
+    wx.navigateTo({
+      url: '../record/record',
+    })
   }
 
 })
