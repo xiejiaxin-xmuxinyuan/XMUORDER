@@ -10,7 +10,8 @@
         "pages/index/noticeDetail",
         "pages/canteen/canteen",
         "pages/canteen/settlement",
-        "pages/infoForm/infoForm"
+        "pages/infoForm/infoForm",
+        "pages/feedback/feedback"
       ]
     },
     {

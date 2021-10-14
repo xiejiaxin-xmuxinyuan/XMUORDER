@@ -175,6 +175,11 @@ Page({
       url: '../record/record',
     })
   },
+  toFeedback:function(e){
+    wx.navigateTo({
+      url: '../feedback/feedback',
+    })
+  },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
     var date = new Date(inputTime);
     var y = date.getFullYear();
