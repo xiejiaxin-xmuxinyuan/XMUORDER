@@ -100,7 +100,7 @@
         <text class="fr">{{address}}</text>
       </view>
     </view>
-    <view class="cu-item arrow">
+    <view class="cu-item arrow" bindtap="toRecord">
       <view class="content">
         <text class="cuIcon-formfill text-orange"></text>
         <text class="text-orange">我的订单</text>
@@ -130,7 +130,7 @@
 
 <!-- 底部版权声明 -->
 <view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
 
 <!-- tableBar -->
