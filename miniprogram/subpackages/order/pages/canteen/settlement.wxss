@@ -10,7 +10,7 @@ text.time {
 }
 
 picker.time {
-  color: #8799a3;
+  color: #e54d42;
   font-weight: bold;
   position: absolute;
   right: 0;
