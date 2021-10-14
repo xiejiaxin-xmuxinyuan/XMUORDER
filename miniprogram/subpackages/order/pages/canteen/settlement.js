@@ -110,17 +110,18 @@ Page({
               duration: 1000
             })
           } else {
-            wx.showToast({
-              title: '提交成功',
-              icon: 'success',
-              duration: 1000
+            wx.showModal({
+              showCancel:false,
+              content:'下单成功',
+              success(res){
+                if(res.confirm){
+                  wx.navigateBack({
+                    delta: 2,
+                  })
+                }
+              }
             })
           }
-        })
-        .then(val => {
-          wx.navigateBack({
-            delta: 2,
-          })
         })
     }
   }
