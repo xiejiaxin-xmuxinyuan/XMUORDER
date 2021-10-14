@@ -17,7 +17,6 @@ Page({
 
   onLoad: function (options) {
     that = this
-    console.log(app.globalData)
     var user = {
       name: app.globalData.name,
       phone: app.globalData.phone,
