@@ -17,7 +17,6 @@ Page({
 
   onLoad: function (options) {
     that = this
-    console.log(app.globalData)
     var user = {
       name: app.globalData.name,
       phone: app.globalData.phone,
@@ -50,6 +49,10 @@ Page({
       if (intTime > intCurTime) {
         timeToPick.push(time)
       }
+    }
+
+    if (!timeToPick.length > 0){
+      timeToPick.push('无')
     }
 
     that.setData({
