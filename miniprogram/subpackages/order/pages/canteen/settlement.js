@@ -9,7 +9,7 @@ Page({
     list: [],
     user: {},
     curTime: '',
-    timeToPick: ['11:00', '12:00', '12:30'], //读取数据库，和curTime比较后得到可选择的取餐时间
+    timeToPick: ['7:00', '7:30', '8:30', '11:00', '12:00', '12:30', '17:30', '18:00', '18:30'],
     pickedIndex: null,
     totalPrice: 0
   },
@@ -17,7 +17,6 @@ Page({
 
   onLoad: function (options) {
     that = this
-    var curTime = getCurTime() //当前时间
     var user = {
       name: app.globalData.name,
       phone: app.globalData.phone,
@@ -28,20 +27,40 @@ Page({
       list: app.globalData.settlement.list,
       canteen: app.globalData.settlement.canteen,
       money: app.globalData.settlement.money,
-      user: user,
-      curTime: curTime
+      user: user
     })
+    that.timeAbleToPick() // 根据当前时间修改可选的点餐时间
+
   },
-  timePickerChange: function(e){
+  timePickerChange: function (e) {
     that.setData({
       pickedIndex: e.detail.value
+    })
+  },
+  timeAbleToPick: function (e) { //修改可选的点餐时间
+    var timeList = that.data.timeToPick
+    var timeToPick = []
+    const curTime = getCurTime() //当前时间
+    const intCurTime = parseInt(curTime.replace(':', ''))
+
+    for (let i = 0; i < timeList.length; i++) {
+      let time = timeList[i];
+      let intTime = parseInt(time.replace(':', ''))
+      if (intTime > intCurTime) {
+        timeToPick.push(time)
+      }
+    }
+
+    that.setData({
+      curTime: curTime,
+      timeToPick: timeToPick
     })
   }
 })
 
 function dateToStrTime(date) {
-  let h = date.getHours().toString()
-  let m = date.getMinutes().toString()
+  let h = date.getHours().toString().padStart(2, '0')
+  let m = date.getMinutes().toString().padStart(2, '0')
   return h + ':' + m
 }
 
