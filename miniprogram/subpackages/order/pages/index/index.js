@@ -33,6 +33,7 @@ Page({
    */
   onLoad: function (options) {
     that = this
+    console.log(new Date())
     if (!app.globalData.isActive) {
       that.goToInform()
       return //中断线程
@@ -85,16 +86,16 @@ Page({
       var myTime = this.formatDate(myDate)
       app.globalData.canteen = e.currentTarget.dataset.canteen
       var endTime = e.currentTarget.dataset.canteen.endTime
-      if(endTime < myTime){
-        wx.showToast({
-          title: '不在营业时间',
-          icon:'error'
-        })
-      }else{
+      // if(endTime < myTime){
+      //   wx.showToast({
+      //     title: '不在营业时间',
+      //     icon:'error'
+      //   })
+      // }else{
         wx.navigateTo({
           url: '../canteen/canteen',
         })
-      }
+      // }
     }
   },
   goToInform: function () {
