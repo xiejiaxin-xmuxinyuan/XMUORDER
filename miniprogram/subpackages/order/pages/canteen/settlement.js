@@ -53,10 +53,6 @@ Page({
       }
     }
 
-    if (!timeToPick.length > 0){
-      timeToPick.push('无')
-    }
-
     that.setData({
       curTime: curTime,
       timeToPick: timeToPick

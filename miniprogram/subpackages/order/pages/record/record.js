@@ -43,7 +43,7 @@ Page({
       }
     })
   },
-  feedback:function(e){
+  feedback: function (e) {
     var record = e.currentTarget.dataset.record
     console.log(record)
   }

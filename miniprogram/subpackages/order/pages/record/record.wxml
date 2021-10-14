@@ -1,34 +1,35 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="true">
-    <view slot="content">我的订单</view>
-  </cu-custom>
+  <view slot="content">我的订单</view>
+</cu-custom>
 
-  <view wx:for="{{record}}" wx:key="_id">
-    <view class="cu-card article">
-      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" >
-        <view class="title">
-          <view class="text-cut">
-            订单：#{{index+1}}
-            <button class="cu-btn bg-green round std-font" data-record="{{item}}"bindtap="feedback" >反馈</button>
-          </view>
-
+<view wx:for="{{record}}" wx:key="_id">
+  <view class="cu-card article ">
+    <view class="cu-item shadow-warp myorder">
+      <view class="title">
+        <view>
+          <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
+          {{item.cName}}
         </view>
-        <view class="content">
-          <view class="desc">
-            <view class="text-cut" style="width: 100%;">
-              总金额：<text class="text-price text-green">{{item.allPrice}}</text>
-            </view>
-            <view class="text-cut">
-              餐品:
-              <view wx:for="{{item.record}}" wx:for-item="i" style="margin-left: 65rpx;">
-                {{i.food}}   ---   x{{i.num}}   ---   <text class="text-price text-green">{{i.price}}</text>
-              </view>
-            </view>
-            <view class="margin-top-sm">
-              <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
-              <view class="cu-tag bg-blue light lg round">{{item.cName}}</view>
-            </view>
+        <view class="cuIcon-message text-orange"> 反馈</view>
+      </view>
+      <view class="mycontent">
+        <view wx:for="{{item.record}}" wx:for-item="i">
+          <view>
+            <view class="text-cut text-bold">{{i.food}}</view>
+            <view class="text-bold">￥{{i.price}}</view>
           </view>
+          <view class="text-gray">
+            <view>{{i.num}}件</view>
+            <view>×{{i.num}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="flex my-bottom" style="justify-content: space-between;">
+        <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
+        <view class="text-bold text-black text-right price">
+          总计：<text class="text-red"> ￥{{item.allPrice}}</text>
         </view>
       </view>
     </view>
   </view>
+</view>
