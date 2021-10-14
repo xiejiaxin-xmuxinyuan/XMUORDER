@@ -8,12 +8,20 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
-  const record = await db.collection('userRecord').where({
-    openid: openid
-  })
-  .orderBy('date','desc')
-  .get()
-  return {
-    record : record
+  try{
+    const record = await db.collection('userRecord').where({
+      openid: openid
+    })
+    .orderBy('date','desc')
+    .get()
+    return {
+      success : true,
+      record : record
+    }
+  }catch(e){
+    return {
+      success : false
+    }
   }
+  
 }
