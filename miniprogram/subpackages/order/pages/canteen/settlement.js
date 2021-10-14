@@ -17,6 +17,7 @@ Page({
 
   onLoad: function (options) {
     that = this
+    console.log(app.globalData)
     var user = {
       name: app.globalData.name,
       phone: app.globalData.phone,
@@ -54,6 +55,62 @@ Page({
     that.setData({
       curTime: curTime,
       timeToPick: timeToPick
+    })
+  },
+  settlementSubmit: function (e) {
+    const orderList = that.data.orderList
+    const list = that.data.list
+    const canteen = that.data.canteen
+
+    var userRecord = {
+      cID: canteen.cID,
+      cName: canteen.name,
+      record: [],
+      allPrice: that.data.money
+    }
+    for (const key in orderList) {
+      if (key === 'length') {
+        continue
+      }
+      let index1 = orderList[key][1]
+      let index2 = orderList[key][2]
+
+      let food = list[index1].food[index2]
+      let foodRecord = {
+        food: food.name,
+        num: food.orderNum,
+        price: food.price * food.orderNum
+      }
+      userRecord.record.push(foodRecord)
+    }
+
+    wx.showLoading({
+      title: '提交订单中',
+      mask: true
+    })
+    // TODO: 添加到商家订单
+
+    // 添加到用户记录
+    wx.cloud.callFunction({
+      name: 'settlementSubmit',
+      data: {
+        userRecord: userRecord
+      }
+    }).then(res => {
+      wx.hideLoading()
+      if (!res.result.success) {
+        wx.showToast({
+          title: '提交失败',
+          icon: 'error',
+          duration: 1000
+        })
+      } else {
+        wx.showToast({
+          title: '提交成功',
+          icon: 'success',
+          duration: 1000
+        })
+      }
     })
   }
 })
