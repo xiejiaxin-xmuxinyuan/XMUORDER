@@ -8,7 +8,9 @@
         <view class="title">
           <view class="text-cut">
             订单：#{{index+1}}
+            <button class="cu-btn bg-green round std-font" data-record="{{item}}"bindtap="feedback" >反馈</button>
           </view>
+
         </view>
         <view class="content">
           <view class="desc">

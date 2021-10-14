@@ -11,7 +11,8 @@ Page({
     curTime: '',
     timeToPick: ['7:00', '7:30', '8:30', '11:00', '12:00', '12:30', '17:30', '18:00', '18:30'],
     pickedIndex: null,
-    totalPrice: 0
+    totalPrice: 0,
+    isTimePick: false
   },
 
 
@@ -34,6 +35,7 @@ Page({
   },
   timePickerChange: function (e) {
     that.setData({
+      isTimePick: true,
       pickedIndex: e.detail.value
     })
   },
@@ -64,57 +66,69 @@ Page({
     const orderList = that.data.orderList
     const list = that.data.list
     const canteen = that.data.canteen
-
-    var userRecord = {
-      cID: canteen.cID,
-      cName: canteen.name,
-      record: [],
-      allPrice: that.data.money
-    }
-    for (const key in orderList) {
-      if (key === 'length') {
-        continue
+    if (!that.data.isTimePick) {
+      wx.showToast({
+        title: '时间未选择',
+        icon: 'error'
+      })
+    } else {
+      var userRecord = {
+        cID: canteen.cID,
+        cName: canteen.name,
+        record: [],
+        allPrice: that.data.money
       }
-      let index1 = orderList[key][1]
-      let index2 = orderList[key][2]
+      for (const key in orderList) {
+        if (key === 'length') {
+          continue
+        }
+        let index1 = orderList[key][1]
+        let index2 = orderList[key][2]
 
-      let food = list[index1].food[index2]
-      let foodRecord = {
-        food: food.name,
-        num: food.orderNum,
-        price: food.price * food.orderNum
+        let food = list[index1].food[index2]
+        let foodRecord = {
+          food: food.name,
+          num: food.orderNum,
+          price: food.price * food.orderNum
+        }
+        userRecord.record.push(foodRecord)
       }
-      userRecord.record.push(foodRecord)
-    }
 
-    wx.showLoading({
-      title: '提交订单中',
-      mask: true
-    })
-    // TODO: 添加到商家订单
+      wx.showLoading({
+        title: '提交订单中',
+        mask: true
+      })
+      // TODO: 添加到商家订单
 
-    // 添加到用户记录
-    wx.cloud.callFunction({
-      name: 'settlementSubmit',
-      data: {
-        userRecord: userRecord
-      }
-    }).then(res => {
-      wx.hideLoading()
-      if (!res.result.success) {
-        wx.showToast({
-          title: '提交失败',
-          icon: 'error',
-          duration: 1000
+      // 添加到用户记录
+      wx.cloud.callFunction({
+          name: 'settlementSubmit',
+          data: {
+            userRecord: userRecord
+          }
+        }).then(res => {
+          wx.hideLoading()
+          if (!res.result.success) {
+            wx.showToast({
+              title: '提交失败',
+              icon: 'error',
+              duration: 1000
+            })
+          } else {
+            wx.showModal({
+              showCancel:false,
+              content:'下单成功',
+              success(res){
+                if(res.confirm){
+                  wx.navigateBack({
+                    delta: 2,
+                  })
+                }
+              }
+            })
+          }
         })
-      } else {
-        wx.showToast({
-          title: '提交成功',
-          icon: 'success',
-          duration: 1000
-        })
-      }
-    })
+    }
   }
 })
 

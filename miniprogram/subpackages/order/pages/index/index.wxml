@@ -112,7 +112,7 @@
         <text class="text-olive">设置</text>
       </view>
     </view>
-    <view class="cu-item arrow">
+    <view class="cu-item arrow" catchtap="toFeedback">
       <view class="content">
         <text class="cuIcon-commentfill text-brown"></text>
         <text class="text-brown">意见反馈</text>

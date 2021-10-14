@@ -33,6 +33,7 @@ Page({
    */
   onLoad: function (options) {
     that = this
+    console.log(new Date())
     if (!app.globalData.isActive) {
       that.goToInform()
       return //中断线程
@@ -81,10 +82,20 @@ Page({
     if (!app.globalData.isActive) {
       that.goToInform()
     } else {
+      var myDate = new Date()
+      var myTime = this.formatDate(myDate)
       app.globalData.canteen = e.currentTarget.dataset.canteen
-      wx.navigateTo({
-        url: '../canteen/canteen',
-      })
+      var endTime = e.currentTarget.dataset.canteen.endTime
+      // if(endTime < myTime){
+      //   wx.showToast({
+      //     title: '不在营业时间',
+      //     icon:'error'
+      //   })
+      // }else{
+        wx.navigateTo({
+          url: '../canteen/canteen',
+        })
+      // }
     }
   },
   goToInform: function () {
@@ -159,10 +170,29 @@ Page({
     res.data.sort(userNoticesSort)
     return res.data //返回排序后数据
   },
-  toRecord:function(e){
+  toRecord: function (e) {
     wx.navigateTo({
       url: '../record/record',
     })
+  },
+  toFeedback:function(e){
+    wx.navigateTo({
+      url: '../feedback/feedback',
+    })
+  },
+  formatDate: function (inputTime) { //该函数用于格式化时间戳
+    var date = new Date(inputTime);
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    return h + ':' + minute;
   }
-
 })
