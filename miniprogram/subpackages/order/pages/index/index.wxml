@@ -59,7 +59,7 @@
         </view>
         <view>
           <text class="cuIcon-locationfill text-red text-cut">
-            <text class="text-black">{{item.fulAddress}}</text>
+            <text class="text-black"> {{item.fulAddress}}</text>
           </text>
         </view>
         <view>
