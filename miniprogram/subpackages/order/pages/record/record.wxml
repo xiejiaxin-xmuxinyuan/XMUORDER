@@ -16,7 +16,7 @@
         <view wx:for="{{item.record}}" wx:for-item="i">
           <view>
             <view class="text-cut text-bold">{{i.food}}</view>
-            <view class="text-bold">￥{{i.price}}</view>
+            <view class="text-bold">￥{{i.price / i.num}}</view>
           </view>
           <view class="text-gray">
             <view>{{i.num}}件</view>
