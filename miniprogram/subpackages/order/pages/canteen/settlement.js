@@ -52,6 +52,7 @@ Page({
         timeToPick.push(time)
       }
     }
+
     that.setData({
       curTime: curTime,
       timeToPick: timeToPick
