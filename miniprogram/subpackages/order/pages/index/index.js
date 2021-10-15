@@ -205,9 +205,8 @@ Page({
     })
   },
   toFeedback:function(e){
-    var haveRecord = false
     wx.navigateTo({
-      url: '../feedback/feedback?haveRecord=' + haveRecord,
+      url: '../feedback/feedback',
     })
   },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
