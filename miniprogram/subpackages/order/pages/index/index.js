@@ -34,7 +34,6 @@ Page({
    */
   onLoad: function (options) {
     that = this
-    console.log(new Date())
     if (!app.globalData.isActive) {
       that.goToInform()
       return //中断线程
@@ -206,8 +205,9 @@ Page({
     })
   },
   toFeedback:function(e){
+    var haveRecord = false
     wx.navigateTo({
-      url: '../feedback/feedback',
+      url: '../feedback/feedback?haveRecord=' + haveRecord,
     })
   },
   formatDate: function (inputTime) { //该函数用于格式化时间戳

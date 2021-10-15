@@ -1,3 +1,35 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="true">
     <view slot="content">意见反馈</view>
   </cu-custom>
+
+  <view wx:if="{{ haveRecord }}">
+  <view class="cu-card article ">
+    <view class="cu-item shadow-warp myorder">
+      <view class="title">
+        <view>
+          当前订单
+          <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
+          {{record.cName}}
+        </view>
+      </view>
+      <view class="mycontent">
+        <view wx:for="{{record.record}}" wx:for-item="i">
+          <view>
+            <view class="text-cut text-bold">{{i.food}}</view>
+            <view class="text-bold">￥{{i.price / i.num}}</view>
+          </view>
+          <view class="text-gray">
+            <view>{{i.num}}件</view>
+            <view>×{{i.num}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="flex my-bottom" style="justify-content: space-between;">
+        <view class="cu-tag bg-brown light lg round">{{record.date}}</view>
+        <view class="text-bold text-black text-right price">
+          总计：<text class="text-red"> ￥{{record.allPrice}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
