@@ -27,6 +27,7 @@ Page({
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
+    intCurTime: 600 // 6:00
   },
   /**
    * 生命周期函数--监听页面加载
@@ -47,14 +48,43 @@ Page({
 
     Promise.all([p1, p2]).then(res => {
       wx.hideLoading()
+      var canteen = res[0].data
       that.setData({
-        canteen: res[0].data, //餐厅数据
         notices: res[1], //公告数据
         name: app.globalData.name,
         phone: app.globalData.phone,
         address: app.globalData.address,
         identity: app.globalData.identity
       })
+
+      //当前时间
+      let date = new Date()
+      let h = date.getHours().toString().padStart(2, '0')
+      let m = date.getMinutes().toString().padStart(2, '0')
+      let intCurTime = parseInt(h+m)
+    
+      //canteen 营业时间计算
+      canteen.forEach((info, index) => {
+        let breakfast = info.breakfast
+        let beginTime = breakfast.substring(0, breakfast.indexOf('-'))
+        let intBeginTime = parseInt(beginTime.replace(':', ''))
+
+        let dinner = info.dinner
+        let endTime = dinner.substring(dinner.indexOf('-')+1)
+        let intEndTime = parseInt(endTime.replace(':', ''))
+        
+        canteen[index].beginTime = beginTime
+        canteen[index].intBeginTime = intBeginTime
+        canteen[index].endTime = endTime
+        canteen[index].intEndTime = intEndTime
+      });
+
+      that.setData({
+        canteen: canteen, //餐厅数据
+        intCurTime: intCurTime //当前int格式时间
+      })
+
+
     })
   },
 
