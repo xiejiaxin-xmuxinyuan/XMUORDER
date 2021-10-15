@@ -1,0 +1,5 @@
+/* subpackages/admin/pages/goods/addGood.wxss */
+
+input {
+  color: black !important;
+}
