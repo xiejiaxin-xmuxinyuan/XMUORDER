@@ -45,7 +45,7 @@
 
   <view class="canteen shadow-warp radius" wx:for="{{canteen}}" wx:key="_id">
     <view class="mycontent" bindtap="toOrder" data-canteen="{{item}}">
-      <image src="{{item.thumb}}" mode="aspectFill"
+      <image src="{{item.image[0]}}" mode="aspectFill"
         class="image {{intCurTime > item.intEndTime || intCurTime < item.intBeginTime ? 'img-disable':''}}"></image>
       <view class="info">
         <view wx:if="{{intCurTime > item.intEndTime || intCurTime < item.intBeginTime}}" class="cu-tag bg-grey mytag">打烊
