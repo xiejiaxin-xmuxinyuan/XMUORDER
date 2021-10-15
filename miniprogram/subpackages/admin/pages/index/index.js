@@ -36,7 +36,7 @@ Page({
       icon: 'goodsnewfill',
       color: 'orange',
       name: '商品管理',
-      path: ''
+      path: '../goods/goods'
     }, {
       icon: 'rankfill',
       color: 'red',
