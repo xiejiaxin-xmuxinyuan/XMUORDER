@@ -45,6 +45,10 @@ Page({
   },
   feedback: function (e) {
     var record = that.data.record[e.currentTarget.dataset.index]
-    console.log(record)
+    record = JSON.stringify(record)
+    var haveRecord = true
+    wx.navigateTo({
+      url: '../feedback/feedback?record='+record+'haveRecord='+haveRecord,
+    })
   }
 })
