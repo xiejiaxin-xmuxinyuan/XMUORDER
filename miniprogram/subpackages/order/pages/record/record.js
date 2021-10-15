@@ -44,7 +44,7 @@ Page({
     })
   },
   feedback: function (e) {
-    var record = e.currentTarget.dataset.record
+    var record = that.data.record[e.currentTarget.dataset.index]
     console.log(record)
   }
 })
