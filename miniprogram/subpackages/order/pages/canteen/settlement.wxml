@@ -34,8 +34,8 @@
     <view class="padding-bottom-sm text-center solid-bottom">订单详情</view>
     <!-- ui模板 -->
     <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
-      <view class="cu-avatar lg radius" style="background-image:url({{list[item[1]].food[item[2]].img}});margin: auto;">
-      </view>
+      <image class="cu-avatar lg food-img " src="{{list[item[1]].food[item[2]].img}}" mode="aspectFill"
+        lazy-load="{{true}}"></image>
       <view class="content text-cut">
         <view class="text-black text-bold">{{list[item[1]].food[item[2]].name}}</view>
         <view class="text-grey text-xs">{{list[item[1]].food[item[2]].content}}</view>
@@ -56,6 +56,7 @@
     <view class="text-black text-bold" style="width: 40%;margin: auto;">
       总计：<text class="text-red text-bold text-xxl"> ￥{{money}}</text>
     </view>
-    <view catchtap="settlementSubmit" style="padding:30rpx 80rpx;border-radius: 0 5000rpx 5000rpx 0;" class="bg-gradual-orange">提交订单</view>
+    <view catchtap="settlementSubmit" style="padding:30rpx 80rpx;border-radius: 0 5000rpx 5000rpx 0;"
+      class="bg-gradual-orange">提交订单</view>
   </view>
 </view>
