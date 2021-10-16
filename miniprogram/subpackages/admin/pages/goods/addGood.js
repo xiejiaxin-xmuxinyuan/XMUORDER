@@ -70,14 +70,15 @@ Page({
   },
   ChooseImage: function (e) {
     wx.chooseImage({
-      count: 1, //默认9
-      sizeType: 'compressed', //压缩图
-      success: (res) => {
+        count: 1, //默认9
+        sizeType: 'compressed'
+      })
+      .then(res => {
+        // TODO: 使用canvas进行压缩
         that.setData({
           ['form.foodImg']: res.tempFilePaths[0]
         })
-      }
-    });
+      })
   },
   ViewImage: function (e) {
     wx.previewImage({
@@ -111,14 +112,109 @@ Page({
         duration: 1000
       })
     } else {
-      console.log(params)
+      wx.showLoading({
+        title: '上传中'
+      })
       //上传图片
+      let canteens = that.data.canteens
+      let shopPickerList = that.data.shopPickerList
+      let foodTypePickerList = that.data.foodTypePickerList
 
-      //上传数据库 food 和 canteen
+      let cloudPath = '餐厅图片/'
+      let address = canteens[params.shopPickerIndex].address
+      let shopName = shopPickerList[params.shopPickerIndex]
+      let foodType = foodTypePickerList[params.foodTypePickerIndex]
+
+      //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
+      cloudPath = cloudPath + ({
+          XA: '翔安',
+          SM: '思明',
+          HY: '海韵'
+        })[address] + '/' + shopName + '/food/' + foodType + '_' + params.name + '_' +
+        new Date().getTime() + params.foodImg.match('.[^.]+?$')[0]
+
+      wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: params.foodImg, // 文件路径
+        }).then(res => {
+          //上传数据库 food 和 canteen
+          var newForm = {
+            allNum: 0,
+            cID: canteens[params.shopPickerIndex].cID,
+            content: params.content,
+            curNum: 0,
+            img: res.fileID,
+            name: params.name,
+            price: params.price,
+            type: canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type
+          }
+          //food数据库
+          db.collection('food').add({
+              data: newForm
+            }).then(res => {
+              //canteen数据库
+              newForm._id = res._id
+              let path = 'foodList.' + params.foodTypePickerIndex + '.food'
+              let _id = canteens[params.shopPickerIndex]._id
+              wx.cloud.callFunction({
+                  name: 'dbUpdate',
+                  data: {
+                    table: 'canteen',
+                    _id: _id,
+                    formData: newForm,
+                    path: path,
+                    push: true
+                  }
+                })
+                .then(res => {
+                  wx.hideLoading()
+                  if (res.result.success && res.result.res.stats.updated === 1) {
+                    wx.showToast({
+                      title: '提交成功',
+                      icon: 'success',
+                      duration: 2000
+                    })
+                    //返回上一页
+                    setTimeout(() => {
+                      wx.navigateBack()
+                    }, 2100);
+                  } else {
+                    wx.showToast({
+                      title: '数据提交失败',
+                      icon: 'error',
+                      duration: 2000
+                    })
+                  }
+                })
+                .catch(error => {
+                  wx.hideLoading()
+                  wx.showToast({
+                    title: '数据提交失败',
+                    icon: 'error',
+                    duration: 2000
+                  })
+                })
+            })
+            .catch(error => {
+              wx.hideLoading()
+              wx.showToast({
+                title: '数据提交失败',
+                icon: 'error',
+                duration: 2000
+              })
+            })
+        })
+        .catch(error => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '图片上传失败',
+            icon: 'error',
+            duration: 2000
+          })
+        })
     }
-
   },
-  initValidate() {
+  initValidate() { //表单验证规则和提示语
     const rules = {
       shopPickerIndex: {
         required: true,
