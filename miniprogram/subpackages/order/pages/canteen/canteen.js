@@ -124,7 +124,7 @@ Page({
         [s1]: orderNum,
         [s2]: tpyeOrderNum,
         orderList: orderList,
-        money: money
+        money: parseFloat(money.toFixed(2))
       })
     } else {
       wx.showToast({
@@ -168,7 +168,7 @@ Page({
         [s1]: orderNum,
         [s2]: tpyeOrderNum,
         orderList: orderList,
-        money: money
+        money: parseFloat(money.toFixed(2))
       })
     }
   },
