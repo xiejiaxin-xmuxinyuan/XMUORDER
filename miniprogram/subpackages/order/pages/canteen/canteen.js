@@ -37,6 +37,16 @@ Page({
   },
 
   tabSelect(e) {
+    //滚动到底部保证可见
+    wx.createSelectorQuery().select('.VerticalBox').boundingClientRect(function (rect) {
+      rect.bottom // 节点的下边界坐标
+    }).exec(res => {
+      wx.pageScrollTo({
+        scrollTop: res[0].bottom,
+        duration: 300,
+      })
+    })
+
     this.setData({
       TabCur: e.currentTarget.dataset.id,
       MainCur: e.currentTarget.dataset.id,
@@ -172,9 +182,9 @@ Page({
       showShoppingCart: false
     })
   },
-  toSettlement: function(e){
+  toSettlement: function (e) {
     var orderList = that.data.orderList
-    if (orderList.length>0){
+    if (orderList.length > 0) {
       let settlement = {
         orderList: that.data.orderList,
         list: that.data.list,
@@ -185,7 +195,7 @@ Page({
       wx.navigateTo({
         url: './settlement',
       })
-    }else{
+    } else {
       wx.showToast({
         title: '请选择要购买的商品',
         icon: 'none',
