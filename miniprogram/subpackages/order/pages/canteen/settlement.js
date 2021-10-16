@@ -53,6 +53,11 @@ Page({
       }
     }
 
+    // 体验版过渡
+    if (timeToPick.length <= 0){
+      timeToPick.push('无')
+    }
+
     that.setData({
       curTime: curTime,
       timeToPick: timeToPick
