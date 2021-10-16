@@ -44,9 +44,10 @@
   </cu-custom>
 
   <view class="canteen shadow-warp radius" wx:for="{{canteen}}" wx:key="_id">
-    <view class="mycontent" bindtap="toOrder" data-canteen="{{item}}">
+    <view class="mycontent animation-fade" bindtap="toOrder" data-canteen="{{item}}" style="animation-delay: 0.5s;">
       <image src="{{item.thumb}}" mode="aspectFill"
-        class="image {{intCurTime > item.intEndTime || intCurTime < item.intBeginTime ? 'img-disable':''}}"></image>
+        class="image {{intCurTime > item.intEndTime || intCurTime < item.intBeginTime ? 'img-disable':''}}">
+      </image>
       <view class="info">
         <view wx:if="{{intCurTime > item.intEndTime || intCurTime < item.intBeginTime}}" class="cu-tag bg-grey mytag">打烊
         </view>
@@ -58,7 +59,7 @@
         </view>
         <view>
           <text class="cuIcon-locationfill text-red text-cut">
-            <text class="text-black">{{item.fulAddress}}</text>
+            <text class="text-black"> {{item.fulAddress}}</text>
           </text>
         </view>
         <view>
@@ -117,7 +118,7 @@
         <text class="text-orange">我的订单</text>
       </view>
     </view>
-    <view class="cu-item arrow">
+    <view class="cu-item arrow" catchtap="toSetting">
       <view class="content">
         <text class="cuIcon-settingsfill text-olive"></text>
         <text class="text-olive">设置</text>

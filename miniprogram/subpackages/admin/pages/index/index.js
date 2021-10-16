@@ -36,7 +36,7 @@ Page({
       icon: 'goodsnewfill',
       color: 'orange',
       name: '商品管理',
-      path: ''
+      path: '../goods/goods'
     }, {
       icon: 'rankfill',
       color: 'red',
@@ -85,9 +85,16 @@ Page({
     })
   },
   toPage: function (e) {
-    wx.navigateTo({
-      url: e.currentTarget.dataset.path,
-    })
+    if (e.currentTarget.dataset.path) {
+      wx.navigateTo({
+        url: e.currentTarget.dataset.path,
+      })
+    } else {
+      wx.showToast({
+        title: '功能未开放',
+        icon: 'none'
+      })
+    }
   },
   getUserNotices: async function () {
     const countResult = await db.collection('notices').where({

@@ -7,8 +7,8 @@ Page({
    * 页面的初始数据
    */
   data: {
-    record:{},
-    haveRecord:false
+    record: {},
+    haveRecord: false
   },
 
   /**
@@ -16,12 +16,19 @@ Page({
    */
   onLoad: function (options) {
     that = this
-    var record = JSON.parse(options.record)
-    var haveRecord = options.haveRecord
-    that.setData({
-      record : record,
-      haveRecord : haveRecord
-    })
+    
+    if ('record' in options) {
+      var record = JSON.parse(options.record)
+      that.setData({
+        record: record,
+        haveRecord: true
+      })
+    } else {
+      that.setData({
+        haveRecord: false
+      })
+    }
+
   },
 
   /**

@@ -1,3 +1,6 @@
+@import "../../../../colorui/animation.wxss";
+
+
 .user-avatar {
   overflow: hidden;
   display: block;

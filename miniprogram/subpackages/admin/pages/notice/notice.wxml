@@ -39,7 +39,7 @@
 </view>
 
 <view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
 
 <view style="font-size: 10vw;position: fixed;bottom: 10%;right: 5%;">

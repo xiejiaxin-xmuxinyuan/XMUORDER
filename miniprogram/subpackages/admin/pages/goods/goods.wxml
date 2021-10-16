@@ -1,0 +1,17 @@
+<!-- 信息页面 -->
+<view class="tab-page">
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">商品管理</view>
+  </cu-custom>
+
+
+  <view style="font-size: 5vw;position: fixed;bottom: 10%;right: 5%;">
+    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow" style="padding: 20rpx 40rpx;">
+      添加
+    </view>
+  </view>
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>

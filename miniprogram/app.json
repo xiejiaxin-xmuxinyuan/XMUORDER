@@ -18,7 +18,9 @@
       "root": "subpackages/admin",
       "pages": [
         "pages/index/index",
-        "pages/notice/notice"
+        "pages/notice/notice",
+        "pages/goods/goods",
+        "pages/goods/addGood"
       ]
     }
   ],
