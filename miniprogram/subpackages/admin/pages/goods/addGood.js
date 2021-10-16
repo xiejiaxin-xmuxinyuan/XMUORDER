@@ -17,7 +17,8 @@ Page({
       foodImg: '',
       name: '',
       content: '',
-      price: ''
+      price: '',
+      allNum: ''
     }
   },
 
@@ -79,6 +80,13 @@ Page({
           ['form.foodImg']: res.tempFilePaths[0]
         })
       })
+      .catch(res=>{
+        wx.showToast({
+          title: '图片选择取消',
+          icon: 'none',
+          duration: 1000
+        })
+      })
   },
   ViewImage: function (e) {
     wx.previewImage({
@@ -113,7 +121,8 @@ Page({
       })
     } else {
       wx.showLoading({
-        title: '上传中'
+        title: '上传中',
+        mask: true
       })
       //上传图片
       let canteens = that.data.canteens
@@ -139,10 +148,10 @@ Page({
         }).then(res => {
           //上传数据库 food 和 canteen
           var newForm = {
-            allNum: 0,
+            allNum: params.allNum,
+            curNum: params.allNum,
             cID: canteens[params.shopPickerIndex].cID,
             content: params.content,
-            curNum: 0,
             img: res.fileID,
             name: params.name,
             price: params.price,
@@ -234,6 +243,10 @@ Page({
         required: true,
         number: true
       },
+      allNum: {
+        required: true,
+        digits: true
+      },
       foodImg: {
         required: true
       },
@@ -257,6 +270,10 @@ Page({
       price: {
         required: '请输入价格',
         number: '请输入正确价格'
+      },
+      allNum: {
+        required: '请输入库存',
+        digits: '请输入非负整数'
       },
       foodImg: {
         required: '请添加商品图片'

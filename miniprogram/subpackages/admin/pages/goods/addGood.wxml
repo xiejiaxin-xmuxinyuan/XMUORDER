@@ -34,6 +34,10 @@
         <input value="{{form.price}}" type="digit" bindblur="onPriceInputBlur" class="text-right"
           placeholder="输入价格"></input>
       </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">库存</view>
+        <input name="allNum" value="{{form.allNum}}" type="number" class="text-right" placeholder="输入库存"></input>
+      </view>
       <view class="cu-bar bg-white margin-top">
         <view class="action text-bold">
           商品图片

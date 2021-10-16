@@ -6,11 +6,10 @@
 
 
   <view style="font-size: 5vw;position: fixed;bottom: 10%;right: 5%;">
-    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round padding-sm shadow">
+    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow" style="padding: 20rpx 40rpx;">
       添加
     </view>
   </view>
-
 </view>
 
 <view class="footer">
