@@ -118,7 +118,7 @@
         <text class="text-orange">我的订单</text>
       </view>
     </view>
-    <view class="cu-item arrow">
+    <view class="cu-item arrow" catchtap="toSetting">
       <view class="content">
         <text class="cuIcon-settingsfill text-olive"></text>
         <text class="text-olive">设置</text>
