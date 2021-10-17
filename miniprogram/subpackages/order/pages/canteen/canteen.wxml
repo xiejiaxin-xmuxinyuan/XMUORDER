@@ -45,7 +45,7 @@
           <text class='cuIcon-title text-blue'></text> {{item.name}}
         </view>
       </view>
-      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" >
+      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" wx:key="_id">
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
           <image class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
