@@ -1,4 +1,19 @@
-// 云函数入口文件
+/**
+ * 云函数update数据库
+ * 参数： table:  数据库表名称
+ *        _id:  记录的_id
+ *        path: 更新字段的路径字符串 如 'foodList.1' 'foodList.1.food'
+ *        formData: 更新的数据 如 {name: '新名称', type: '新类型'}
+ *        (可选)push: any 
+ *                    带有该参数时将执行数据库push命令，
+ *                    对path参数连接的数组字段进行push(formData)操作
+ *                    相当于 foodList.1.food.push(formData)
+ *                    
+ * 返回： object 
+ *        成功：{success: ture, res: 数据库操作的返回值}
+ *        失败：{success: false}
+ */
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
