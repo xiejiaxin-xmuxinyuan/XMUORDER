@@ -45,7 +45,7 @@
           <text class='cuIcon-title text-blue'></text> {{item.name}}
         </view>
       </view>
-      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" wx:key="_id">
+      <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" >
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
           <image class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
@@ -66,10 +66,10 @@
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
             <view class="cu-form-group food-btn" wx:if="{{food.curNum>0}}">
               <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="foodOrderNumDec"></text>
+                catchtap="numDecBtn"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
               <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="foodOrderNumAdd"></text>
+                catchtap="numAddBtn"></text>
             </view>
           </view>
         </view>

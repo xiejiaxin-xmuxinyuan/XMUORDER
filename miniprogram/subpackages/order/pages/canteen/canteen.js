@@ -21,7 +21,7 @@ Page({
     showShoppingCart: false
   },
 
-  // onPullDownRefresh 之后考虑下拉刷新数据
+
 
   onLoad: function (options) {
     that = this
@@ -34,8 +34,12 @@ Page({
       listCur: list[0],
       canteen: app.globalData.canteen
     })
+    that.canteenRefresh()
   },
-
+  onPullDownRefresh() { //下拉刷新数据
+    that.canteenRefresh()
+    wx.stopPullDownRefresh()
+  },
   tabSelect(e) {
     //滚动到底部保证可见
     wx.createSelectorQuery().select('.VerticalBox').boundingClientRect(function (rect) {
@@ -47,7 +51,7 @@ Page({
       })
     })
 
-    this.setData({
+    that.setData({
       TabCur: e.currentTarget.dataset.id,
       MainCur: e.currentTarget.dataset.id,
       VerticalNavTop: (e.currentTarget.dataset.id - 1) * 50
@@ -55,9 +59,9 @@ Page({
   },
   VerticalMain(e) {
     let that = this;
-    let list = this.data.list;
+    let list = that.data.list;
     let tabHeight = 0;
-    if (this.data.load) {
+    if (that.data.load) {
       for (let i = 0; i < list.length; i++) {
         let view = wx.createSelectorQuery().select("#main-" + list[i].id);
         view.fields({
@@ -86,13 +90,16 @@ Page({
   },
   //餐厅信息折叠
   toggleInfo: function (event) {
-    this.setData({
+    that.setData({
       showInfo: !that.data.showInfo
     })
   },
-  foodOrderNumAdd: function (e) {
+  numAddBtn: function (e) {
     let index1 = e.currentTarget.dataset.index1
     let index2 = e.currentTarget.dataset.index2
+    that.foodOrderNumAdd(index1, index2)
+  },
+  foodOrderNumAdd: (index1, index2)=> {
     const food = that.data.list[index1].food[index2]
     var money = that.data.money
     var orderList = that.data.orderList
@@ -134,9 +141,12 @@ Page({
       })
     }
   },
-  foodOrderNumDec: function (e) {
+  numDecBtn: function (e) {
     let index1 = e.currentTarget.dataset.index1
     let index2 = e.currentTarget.dataset.index2
+    that.foodOrderNumDec(index1, index2)
+  },
+  foodOrderNumDec: (index1, index2) => {
     const food = that.data.list[index1].food[index2]
     var money = that.data.money
     var orderList = that.data.orderList
@@ -202,6 +212,72 @@ Page({
         duration: 500
       })
     }
+  },
+  canteenRefresh: function () { //刷新canteen数据
+    const _id = that.data.canteen._id
+    db.collection("canteen").doc(_id).get()
+      .then(res => {
+        var newList = res.data.foodList
+        var oldList = that.data.list
+        var massages = []
+        oldList.forEach((obj, index1) => {
+          // 补全本地数据
+          if ('tpyeOrderNum' in obj) {
+            newList[index1].tpyeOrderNum = obj.tpyeOrderNum
+          }
+          if ('id' in obj) {
+            newList[index1].id = obj.id
+          }
+          if ('top' in obj) {
+            newList[index1].top = obj.top
+          }
+          if ('bottom' in obj) {
+            newList[index1].bottom = obj.bottom
+          }
+          obj.food.forEach((foodObj, index2) => {
+            if ('orderNum' in foodObj) {
+              newList[index1].food[index2].orderNum = foodObj.orderNum
+              if (foodObj.orderNum > newList[index1].food[index2].curNum) { //已点数量大于现在的库存
+                // 计算要减少几份
+                let loopTimes = foodObj.orderNum - newList[index1].food[index2].curNum
+                for (let i = 0; i < loopTimes; i++) {
+                  // 异步才能成功调用
+                  setTimeout(() => {
+                    that.foodOrderNumDec(index1, index2)
+                  }, 100);
+                }
+                massages.push(foodObj.name)
+              }
+            }
+          })
+        })
+        that.setData({
+          canteen: res.data,
+          list: newList
+        })
+        if (massages.length > 0){
+          wx.showModal({
+            title: '购物车提示',
+            content: massages.join("、") + '  库存不足，已自动调整购买数量',
+            showCancel: false,
+            confirmText: '好的'
+          })
+        }else{
+          wx.showToast({
+            title: '数据刷新成功',
+            icon: 'none',
+            duration: 1000
+          })
+        }
+      })
+      .catch(res => {
+        console.error(res)
+        wx.showToast({
+          title: '数据刷新失败',
+          icon: 'none',
+          duration: 1000
+        })
+      })
   },
   blocking: e => {} //什么也不做
 })
