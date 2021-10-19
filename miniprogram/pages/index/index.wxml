@@ -1,5 +1,5 @@
 <!--pages/welcome/welcome.wxml-->
-<view wx:if="{{identity === 'admin'||identity === 'staff'}}">
+<view wx:if="{{identity.type === 'superAdmin'||identity.type === 'admin'||identity.type === 'staff'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
@@ -28,7 +28,7 @@
   </view>
 </view>
 
-<view wx:if="{{identity === 'user'||identity === 'unregistered'}}">
+<view wx:else>
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
@@ -41,7 +41,8 @@
     <text class="text-xl text-bold text-black">欢迎来到XMU智能点餐小程序 ！</text>
   </view>
   <view style="width: 100%;margin-top: 5vh;">
-    <button style="width: 10rem;margin: auto; animation-delay: 0.8s;" class="animation-fade cu-btn block bg-blue lg text-white" catchtap="redictoUser">
+    <button style="width: 10rem;margin: auto; animation-delay: 0.8s;"
+      class="animation-fade cu-btn block bg-blue lg text-white" catchtap="redictoUser">
       <text class="cuIcon-roundcheck"> 进入</text>
     </button>
   </view>

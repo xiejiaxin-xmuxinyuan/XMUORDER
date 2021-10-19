@@ -6,9 +6,9 @@ Page({
 
   data: {
     identity: null
-    //null说明是新用户
-    //user说明是已注册用户
-    // 管理员admin 员工staff
+    //"unregistered"说明未注册身份
+    //对象说明已注册
+    // 管理员admin 员工member 超级管理员superAdmin
   },
 
   onLoad: function (options) {
