@@ -48,12 +48,12 @@
       <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" wx:key="_id">
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
-          <image class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
+          <image catchtap="toGoodsDetail" class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
             lazy-load="{{true}}">
             <view class="cu-tag badge bg-grey" wx:if="{{food.curNum===0}}">售罄</view>
             <view class="cu-tag badge" wx:elif="{{food.tag}}">{{food.tag}}</view>
           </image>
-          <view class="content">
+          <view catchtap="toGoodsDetail" class="content">
             <view class="text-black">{{food.name}}</view>
             <view class="text-gray text-sm flex">
               <text class="text-cut">

@@ -15,13 +15,12 @@ Page({
     showInfo: false,
     list: [], //foodList
     money: 0,
+    allOrderList: {},
     orderList: {
       length: 0
     }, //已点食物的访问坐标数组 {index1|index2: [数量,index1,index2]}
     showShoppingCart: false
   },
-
-
 
   onLoad: function (options) {
     that = this
@@ -29,16 +28,66 @@ Page({
     for (let i = 0; i < list.length; i++) {
       list[i].id = i;
     }
+
+    if (!("allOrderList" in app.globalData)) {
+      app.globalData.allOrderList = {}
+    }
+
     that.setData({
       list: list,
       listCur: list[0],
-      canteen: app.globalData.canteen
+      canteen: app.globalData.canteen,
+      allOrderList: app.globalData.allOrderList
     })
     that.canteenRefresh()
+
+    //如果全局变量中有该餐厅购物车信息，则更新到页面中
+    var cID = that.data.canteen.cID
+    if (that.data.canteen.cID in that.data.allOrderList) {
+      var orderList = that.data.allOrderList[cID]
+      var massages = []
+      for (const key in orderList) {
+        if (key === 'length') {
+          continue
+        }
+        let loopTimes = orderList[key][0]
+        let index1 = orderList[key][1]
+        let index2 = orderList[key][2]
+        let curNum = list[index1].food[index2].curNum
+        if (loopTimes > curNum) {
+          loopTimes = curNum
+          massages.push(list[index1].food[index2].name)
+        }
+        for (let i = 0; i < loopTimes; i++) {
+          // 异步才能成功调用
+          setTimeout(() => {
+            that.foodOrderNumAdd(index1, index2)
+          }, 100);
+        }
+      }
+      if (massages.length > 0) {
+        wx.showModal({
+          title: '购物车提示',
+          content: massages.join("、") + '  库存不足，已自动调整购买数量',
+          showCancel: false,
+          confirmText: '好的'
+        })
+      }
+    }
   },
   onPullDownRefresh() { //下拉刷新数据
     that.canteenRefresh()
     wx.stopPullDownRefresh()
+  },
+  //跳转到其他页面时保存已点购物车
+  onHide() {
+    let cID = that.data.canteen.cID
+    app.globalData.allOrderList[cID] = that.data.orderList
+  },
+  //页面退出时保存已点购物车
+  onUnload() {
+    let cID = that.data.canteen.cID
+    app.globalData.allOrderList[cID] = that.data.orderList
   },
   tabSelect(e) {
     //滚动到底部保证可见
@@ -99,7 +148,7 @@ Page({
     let index2 = e.currentTarget.dataset.index2
     that.foodOrderNumAdd(index1, index2)
   },
-  foodOrderNumAdd: (index1, index2)=> {
+  foodOrderNumAdd: (index1, index2) => {
     const food = that.data.list[index1].food[index2]
     var money = that.data.money
     var orderList = that.data.orderList
@@ -234,35 +283,38 @@ Page({
           if ('bottom' in obj) {
             newList[index1].bottom = obj.bottom
           }
-          obj.food.forEach((foodObj, index2) => {
-            if ('orderNum' in foodObj) {
-              newList[index1].food[index2].orderNum = foodObj.orderNum
-              if (foodObj.orderNum > newList[index1].food[index2].curNum) { //已点数量大于现在的库存
-                // 计算要减少几份
-                let loopTimes = foodObj.orderNum - newList[index1].food[index2].curNum
-                for (let i = 0; i < loopTimes; i++) {
-                  // 异步才能成功调用
-                  setTimeout(() => {
-                    that.foodOrderNumDec(index1, index2)
-                  }, 100);
+          if ("food" in obj) {
+            obj.food.forEach((foodObj, index2) => {
+              if ('orderNum' in foodObj) {
+                newList[index1].food[index2].orderNum = foodObj.orderNum
+                if (foodObj.orderNum > newList[index1].food[index2].curNum) { //已点数量大于现在的库存
+                  // 计算要减少几份
+                  let loopTimes = foodObj.orderNum - newList[index1].food[index2].curNum
+                  for (let i = 0; i < loopTimes; i++) {
+                    // 异步才能成功调用
+                    setTimeout(() => {
+                      that.foodOrderNumDec(index1, index2)
+                    }, 100);
+                  }
+                  massages.push(foodObj.name)
                 }
-                massages.push(foodObj.name)
               }
-            }
-          })
+            })
+          }
         })
         that.setData({
           canteen: res.data,
           list: newList
         })
-        if (massages.length > 0){
+        app.globalData.canteen = res.data //同步更新全局canteen
+        if (massages.length > 0) {
           wx.showModal({
             title: '购物车提示',
             content: massages.join("、") + '  库存不足，已自动调整购买数量',
             showCancel: false,
             confirmText: '好的'
           })
-        }else{
+        } else {
           wx.showToast({
             title: '数据刷新成功',
             icon: 'none',
@@ -278,6 +330,11 @@ Page({
           duration: 1000
         })
       })
+  },
+  toGoodsDetail: function (e) {
+    wx.navigateTo({
+      url: './goodsDetail',
+    })
   },
   blocking: e => {} //什么也不做
 })

@@ -28,7 +28,7 @@
   </view>
 </view>
 
-<view wx:else>
+<view wx:if="{{identity === 'unregistered'|| identity.type === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
