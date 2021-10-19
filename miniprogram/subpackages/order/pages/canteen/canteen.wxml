@@ -66,10 +66,10 @@
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
             <view class="cu-form-group food-btn" wx:if="{{food.curNum>0}}">
               <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="foodOrderNumDec"></text>
+                catchtap="numDecBtn"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
               <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="foodOrderNumAdd"></text>
+                catchtap="numAddBtn"></text>
             </view>
           </view>
         </view>

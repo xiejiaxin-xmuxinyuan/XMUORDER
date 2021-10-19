@@ -1,4 +1,14 @@
-// 云函数入口文件
+/**
+ * 云函数提交订单
+ * 目前仅添加userRecord用户记录
+ * 参数： userRecord: object 添加到userRecord表的新记录
+ *                    
+ * 返回： object 
+ *        成功：{success: ture}
+ *        失败：{success: false}
+ */
+
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
