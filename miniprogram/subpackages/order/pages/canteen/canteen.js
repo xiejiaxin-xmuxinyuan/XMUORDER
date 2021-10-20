@@ -368,8 +368,11 @@ Page({
       })
   },
   toGoodsDetail: function (e) {
+    let index1 = e.currentTarget.dataset.index1
+    let index2 = e.currentTarget.dataset.index2
+    let cIndex = that.data.cIndex
     wx.navigateTo({
-      url: './goodsDetail',
+      url: './goodsDetail?index1=' + index1 + '&index2=' +index2 + '&cIndex=' +cIndex,
     })
   },
   blocking: e => {} //什么也不做

@@ -1,0 +1,101 @@
+/* subpackages/order/pages/canteen/goodsDetail.wxss */
+
+Page {
+  background-color: #ddd;
+}
+
+.my-card {
+  width: 100%;
+  background-color: transparent;
+}
+
+.my-card>view {
+  margin-bottom: 30rpx;
+  background-color: white;
+  border-radius: 10rpx;
+}
+
+.my-card .image {
+  background-color: transparent;
+}
+
+.my-card .image>.cu-tag {
+  position: absolute;
+  right: 0;
+  border-radius: 10rpx;
+}
+
+.my-card .image>image {
+  width: 100%;
+  border-radius: 10rpx;
+  background-color: white;
+}
+
+.my-card .info {
+  padding: 30rpx 60rpx;
+}
+
+.my-card .info .title {
+  font-size: large;
+  font-weight: bold;
+  color: black;
+}
+
+.my-card .info .content {
+  margin-top: 10rpx;
+  font-size: small;
+  color: gray;
+}
+
+.my-card .info .price {
+  margin-top: 20rpx;
+  font-weight: bold;
+  font-size: large;
+  text-align: right;
+  margin-right: -20rpx;
+}
+
+.my-card .comment {
+  padding: 30rpx 60rpx;
+}
+
+.my-card .comment .title {
+  font-weight: bold;
+  color: black;
+}
+
+.my-card .comment .content {
+  margin-top: 30rpx;
+}
+
+.my-card .comment .content .count{
+  margin-bottom: 30rpx;
+}
+
+.my-card .comment .content .item{
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx 0;
+}
+
+.my-card .comment .content .item .head{
+  display: flex;
+  flex-direction: row;
+}
+
+.my-card .comment .content .item .head > image{
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6rpx;
+}
+
+.my-card .comment .content .item .head .date {
+  width: auto;
+  margin-left: auto;
+  font-size: small;
+}
+
+.my-card .comment .content .item .detail {
+  padding: 30rpx 30rpx;
+  text-indent: 20rpx;
+}
