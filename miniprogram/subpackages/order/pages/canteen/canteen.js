@@ -19,7 +19,8 @@ Page({
     orderList: {
       length: 0
     }, //已点食物的访问坐标数组 {index1|index2: [数量,index1,index2]}
-    showShoppingCart: false
+    showShoppingCart: false,
+    cIndex: null //在canteens数组中的序号
   },
 
   onLoad: function (options) {
@@ -36,6 +37,7 @@ Page({
     }
 
     that.setData({
+      cIndex: cIndex,
       foodList: foodList,
       foodListCur: foodList[0],
       canteen: canteen,
@@ -80,13 +82,11 @@ Page({
   onHide() {
     let cID = that.data.canteen.cID
     app.globalData.allOrderList[cID] = that.data.orderList
-    console.log(app.globalData.allOrderList)
   },
   //页面退出时保存已点购物车
   onUnload() {
     let cID = that.data.canteen.cID
     app.globalData.allOrderList[cID] = that.data.orderList
-    console.log(app.globalData.allOrderList)
   },
   tabSelect(e) {
     //滚动到底部保证可见
@@ -148,7 +148,6 @@ Page({
     that.foodOrderNumAdd(index1, index2)
   },
   foodOrderNumAdd: (index1, index2, num = 1, mode = 'change') => {
-    // mark
     var foodList = that.data.foodList
     var food = foodList[index1].food[index2]
     var orderList = that.data.orderList
@@ -213,14 +212,13 @@ Page({
     that.foodOrderNumDec(index1, index2)
   },
   foodOrderNumDec: (index1, index2, num = 1) => {
-    // mark new
     var foodList = that.data.foodList
     var food = foodList[index1].food[index2]
     var orderList = that.data.orderList
 
     if ('orderNum' in food) { //如果有这个键
       var orderNum = food.orderNum - num
-    }else{
+    } else {
       var orderNum = -1 //表明无需更改
     }
 
@@ -309,39 +307,40 @@ Page({
         var massages = []
         oldFoodList.forEach((obj, index1) => {
           // 补全本地数据
-          if ('tpyeOrderNum' in obj) {
-            newFoodList[index1].tpyeOrderNum = obj.tpyeOrderNum
-          }
-          if ('id' in obj) {
-            newFoodList[index1].id = obj.id
-          }
-          if ('top' in obj) {
-            newFoodList[index1].top = obj.top
-          }
-          if ('bottom' in obj) {
-            newFoodList[index1].bottom = obj.bottom
-          }
+          let keyList = ['tpyeOrderNum', 'id', 'top', 'bottom']
+          keyList.forEach(keyName => {
+            if (keyName in obj) {
+              newFoodList[index1][keyName] = obj[keyName]
+            }
+          })
+
           if ("food" in obj) {
             obj.food.forEach((foodObj, index2) => {
               if ('orderNum' in foodObj) {
                 newFoodList[index1].food[index2].orderNum = foodObj.orderNum
                 if (foodObj.orderNum > newFoodList[index1].food[index2].curNum) { //已点数量大于现在的库存
                   // 计算要减少几份
-                  let loopTimes = foodObj.orderNum - newFoodList[index1].food[index2].curNum
-                  for (let i = 0; i < loopTimes; i++) {
-                    // 异步才能成功调用
-                    setTimeout(() => {
-                      that.foodOrderNumDec(index1, index2)
-                    }, 100);
-                  }
+                  let numDec = foodObj.orderNum - newFoodList[index1].food[index2].curNum
+                  that.foodOrderNumDec(index1, index2, numDec)
                   massages.push(foodObj.name)
                 }
               }
             })
           }
         })
+        // 更新canteen 并同步到全局
+        var newCanteen = res.data
+        var oldCanteen = that.data.canteen
+        let keyList = ['beginTime', 'intBeginTime', 'endTime', 'intEndTime']
+        keyList.forEach(keyName => {
+          if (keyName in oldCanteen) {
+            newCanteen[keyName] = oldCanteen[keyName]
+          }
+        })
+        app.globalData.canteens[that.data.cIndex] = newCanteen
+
         that.setData({
-          canteen: res.data,
+          canteen: newCanteen,
           foodList: newFoodList
         })
         if (massages.length > 0) {

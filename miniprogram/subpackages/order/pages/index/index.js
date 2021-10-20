@@ -27,7 +27,8 @@ Page({
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
-    intCurTime: 600 // 6:00
+    intCurTime: null,
+    isLoaded: false
   },
   /**
    * 生命周期函数--监听页面加载
@@ -76,16 +77,24 @@ Page({
         canteens[index].intBeginTime = intBeginTime
         canteens[index].endTime = endTime
         canteens[index].intEndTime = intEndTime
-      });
+      })
 
+      app.globalData.canteens = canteens //同步到全局变量
       that.setData({
         canteens: canteens, //餐厅数据
-        intCurTime: intCurTime //当前int格式时间
+        intCurTime: intCurTime, //当前int格式时间
+        isLoaded: true // 表示加载完毕
       })
-      app.globalData.canteens = canteens //同步到全局变量
     })
   },
 
+  onShow: ()=>{ 
+    if (that.data.isLoaded){ //再次显示主页时触发
+      that.setData({
+        canteens: app.globalData.canteens, //餐厅数据
+      })
+    }
+  },
   showNoticeDetail: function (event) {
     //保存当前notice详情到全局
     app.globalData.notice = event.currentTarget.dataset.notice

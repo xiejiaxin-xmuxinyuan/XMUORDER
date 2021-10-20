@@ -26,7 +26,7 @@
             <view class="text-content" style="width: 100%;">
               {{item.content}}
             </view>
-            <view class="margin-top-sm">
+            <view class="margin-top-sm flex justify-between">
               <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
               <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
             </view>
@@ -131,7 +131,8 @@
       </view>
     </view>
 
-    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity === 'admin'}}">
+    <view class="cu-item arrow" bindtap="toAdmin"
+      wx:if="{{identity.type === 'admin' || identity.type === 'superAdmin'|| identity.type === 'member'}}">
       <view class="content">
         <text class="cuIcon-commandfill text-blue"></text>
         <text class="text-blue">管理中心</text>
