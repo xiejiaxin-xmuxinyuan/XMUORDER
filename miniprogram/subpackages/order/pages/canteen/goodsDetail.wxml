@@ -1,0 +1,42 @@
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="content">{{canteen.name}}</view>
+</cu-custom>
+
+<view class="margin">
+  <view class="my-card">
+    <view class="image shadow-warp">
+      <image src="{{food.img}}" mode="aspectFill" data-img="{{food.img}}" catchtap="preview"></image>
+      <view wx:if="{{food.tag}}" class="cu-tag bg-red">{{food.tag}}</view>
+    </view>
+    <view class="info shadow-warp">
+      <view class="title">{{food.name}}</view>
+      <view class="content">{{food.content}}</view>
+      <view class="price text-red">￥{{food.price}}</view>
+    </view>
+    <view class="comment shadow-warp">
+      <view class="title">评论</view>
+      <view class="content">
+        <view class="count" wx:if="{{food.comment.length}}">
+          <text class="cu-tag bg-yellow light radius">😄 {{favourCount}}</text>
+          <text class="cu-tag bg-yellow light radius">☹️ {{badCount}}</text>
+        </view>
+        <view wx:else class="text-center text-gray">暂无评论...</view>
+
+        <view class="item solid-top" wx:for="{{food.comment}}">
+          <view class="head">
+            <image class="shadow-warp" src="../../../../images/avatar/{{index%10}}.jpg"></image>
+            <view class="margin-left text-sm">
+              <view class="text-bold">{{item.name}}</view>
+              <view wx:if="{{item.score=== 1}}" class="text-sm">😄</view>
+              <view wx:elif="{{item.score=== 0}}" class="text-sm">😐</view>
+              <view wx:elif="{{item.score=== -1}}" class="text-sm">☹️</view>
+            </view>
+            <view class="date text-grey">{{item.date}}</view>
+          </view>
+          <view class="detail">{{item.content}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

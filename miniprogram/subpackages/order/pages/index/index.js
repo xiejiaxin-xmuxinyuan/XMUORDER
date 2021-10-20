@@ -23,11 +23,12 @@ Page({
     phone: app.globalData.phone,
     address: app.globalData.address,
     identity: app.globalData.identity,
-    canteen: [],
+    canteens: [],
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
-    intCurTime: 600 // 6:00
+    intCurTime: null,
+    isLoaded: false
   },
   /**
    * 生命周期函数--监听页面加载
@@ -47,7 +48,7 @@ Page({
 
     Promise.all([p1, p2]).then(res => {
       wx.hideLoading()
-      var canteen = res[0].data
+      var canteens = res[0].data
       that.setData({
         notices: res[1], //公告数据
         name: app.globalData.name,
@@ -60,33 +61,40 @@ Page({
       let date = new Date()
       let h = date.getHours().toString().padStart(2, '0')
       let m = date.getMinutes().toString().padStart(2, '0')
-      let intCurTime = parseInt(h+m)
-    
-      //canteen 营业时间计算
-      canteen.forEach((info, index) => {
+      let intCurTime = parseInt(h + m)
+
+      //canteens 营业时间计算
+      canteens.forEach((info, index) => {
         let breakfast = info.breakfast
         let beginTime = breakfast.substring(0, breakfast.indexOf('-'))
         let intBeginTime = parseInt(beginTime.replace(':', ''))
 
         let dinner = info.dinner
-        let endTime = dinner.substring(dinner.indexOf('-')+1)
+        let endTime = dinner.substring(dinner.indexOf('-') + 1)
         let intEndTime = parseInt(endTime.replace(':', ''))
-        
-        canteen[index].beginTime = beginTime
-        canteen[index].intBeginTime = intBeginTime
-        canteen[index].endTime = endTime
-        canteen[index].intEndTime = intEndTime
-      });
 
-      that.setData({
-        canteen: canteen, //餐厅数据
-        intCurTime: intCurTime //当前int格式时间
+        canteens[index].beginTime = beginTime
+        canteens[index].intBeginTime = intBeginTime
+        canteens[index].endTime = endTime
+        canteens[index].intEndTime = intEndTime
       })
 
-
+      app.globalData.canteens = canteens //同步到全局变量
+      that.setData({
+        canteens: canteens, //餐厅数据
+        intCurTime: intCurTime, //当前int格式时间
+        isLoaded: true // 表示加载完毕
+      })
     })
   },
 
+  onShow: ()=>{ 
+    if (that.data.isLoaded){ //再次显示主页时触发
+      that.setData({
+        canteens: app.globalData.canteens, //餐厅数据
+      })
+    }
+  },
   showNoticeDetail: function (event) {
     //保存当前notice详情到全局
     app.globalData.notice = event.currentTarget.dataset.notice
@@ -112,18 +120,19 @@ Page({
       that.goToInform()
     } else {
       var myDate = new Date()
-      var myTime = this.formatDate(myDate)
-      app.globalData.canteen = e.currentTarget.dataset.canteen
-      var endTime = e.currentTarget.dataset.canteen.endTime
+      var myTime = that.formatDate(myDate)
+      var index = e.currentTarget.dataset.index
+      var canteen = that.data.canteens[index]
+      var endTime = canteen.endTime
       // if(endTime < myTime){
       //   wx.showToast({
       //     title: '不在营业时间',
       //     icon:'error'
       //   })
       // }else{
-        wx.navigateTo({
-          url: '../canteen/canteen',
-        })
+      wx.navigateTo({
+        url: '../canteen/canteen?index=' + index,
+      })
       // }
     }
   },
@@ -204,12 +213,12 @@ Page({
       url: '../record/record',
     })
   },
-  toFeedback:function(e){
+  toFeedback: function (e) {
     wx.navigateTo({
       url: '../feedback/feedback',
     })
   },
-  toSetting:function(e){
+  toSetting: function (e) {
     wx.showToast({
       title: '功能未开放',
       icon: 'none'
