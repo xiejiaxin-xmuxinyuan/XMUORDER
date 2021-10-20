@@ -29,7 +29,7 @@
   <!-- 侧边Tab -->
   <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}"
     style="height:calc(100vh - 375rpx)">
-    <view class="cu-item {{index===TabCur?'text-blue cur':''}}" wx:for="{{list}}" wx:key="id" bindtap='tabSelect'
+    <view class="cu-item {{index===TabCur?'text-blue cur':''}}" wx:for="{{foodList}}" wx:key="id" bindtap='tabSelect'
       style=" white-space: nowrap;" data-id="{{index}}">
       <view class="cu-tag badge" wx:if="{{item.tpyeOrderNum}}" style="position: absolute;right: 10%;top: 10%;"></view>
       {{item.name}}
@@ -39,7 +39,7 @@
   <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375rpx)"
     scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
     <!-- 每一类的菜单 -->
-    <view class="padding-top padding-lr" wx:for="{{list}}" wx:key="id" id="main-{{index1}}" wx:for-index="index1">
+    <view class="padding-top padding-lr" wx:for="{{foodList}}" wx:key="id" id="main-{{index1}}" wx:for-index="index1">
       <view class='cu-bar solid-bottom bg-white'>
         <view class='action'>
           <text class='cuIcon-title text-blue'></text> {{item.name}}
@@ -48,8 +48,8 @@
       <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" wx:key="_id">
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
-          <image catchtap="toGoodsDetail" class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
-            lazy-load="{{true}}">
+          <image catchtap="toGoodsDetail" class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}"
+            src="{{food.img}}" mode="aspectFill" lazy-load="{{true}}">
             <view class="cu-tag badge bg-grey" wx:if="{{food.curNum===0}}">售罄</view>
             <view class="cu-tag badge" wx:elif="{{food.tag}}">{{food.tag}}</view>
           </image>
@@ -97,29 +97,29 @@
 </view>
 
 <view catchtap="hideShoppingCart" class="cu-modal bottom-modal {{showShoppingCart?'show':''}}">
-  <view catchtap="blocking" class="cu-dialog" style="background-color: transparent;">
+  <view catchtap="blocking" class="cu-dialog" style="background-color: transparent;" style="margin-top: 75%;">
     <view class="shadow-warp padding-top bg-white shopping-card">
       <view class="text-balck text-bold">购物车</view>
       <view class="cu-list menu-avatar">
         <view wx:if="{{!orderList.length}}" class="padding">空空如也</view>
         <!-- 购物车商品列表 -->
         <view class="cu-item" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
-          <image class="cu-avatar round lg" src="{{list[item[1]].food[item[2]].img}}" mode="aspectFill"
+          <image class="cu-avatar round lg" src="{{foodList[item[1]].food[item[2]].img}}" mode="aspectFill"
             lazy-load="{{true}}">
           </image>
           <view class="content" style="justify-content: left;width: 50%;">
-            <view class="text-black">{{list[item[1]].food[item[2]].name}}</view>
+            <view class="text-black">{{foodList[item[1]].food[item[2]].name}}</view>
             <view class="text-gray text-sm text-cut" style="text-align: left;">
-              {{list[item[1]].food[item[2]].content}}
+              {{foodList[item[1]].food[item[2]].content}}
             </view>
           </view>
           <view class="action" style="width: 25%;">
             <view class="cu-form-group food-btn">
               <text class="cuIcon-move cu-tag" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
-                catchtap="foodOrderNumDec"></text>
-              <input disabled="true" value="{{list[item[1]].food[item[2]].orderNum}}"></input>
+                catchtap="numDecBtn"></text>
+              <input disabled="true" value="{{foodList[item[1]].food[item[2]].orderNum}}"></input>
               <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
-                catchtap="foodOrderNumAdd"></text>
+                catchtap="numAddBtn"></text>
             </view>
           </view>
         </view>

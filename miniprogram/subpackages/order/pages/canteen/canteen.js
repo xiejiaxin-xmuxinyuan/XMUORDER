@@ -13,7 +13,7 @@ Page({
     VerticalNavTop: 0,
     load: true,
     showInfo: false,
-    list: [], //foodList
+    foodList: [], //foodList
     money: 0,
     allOrderList: {},
     orderList: {
@@ -24,9 +24,11 @@ Page({
 
   onLoad: function (options) {
     that = this
-    var list = app.globalData.canteen.foodList
-    for (let i = 0; i < list.length; i++) {
-      list[i].id = i;
+    var cIndex = options.index
+    var canteen = app.globalData.canteens[cIndex]
+    var foodList = canteen.foodList
+    for (let i = 0; i < foodList.length; i++) {
+      foodList[i].id = i;
     }
 
     if (!("allOrderList" in app.globalData)) {
@@ -34,9 +36,9 @@ Page({
     }
 
     that.setData({
-      list: list,
-      listCur: list[0],
-      canteen: app.globalData.canteen,
+      foodList: foodList,
+      foodListCur: foodList[0],
+      canteen: canteen,
       allOrderList: app.globalData.allOrderList
     })
     that.canteenRefresh()
@@ -50,20 +52,15 @@ Page({
         if (key === 'length') {
           continue
         }
-        let loopTimes = orderList[key][0]
+        let addNum = orderList[key][0]
         let index1 = orderList[key][1]
         let index2 = orderList[key][2]
-        let curNum = list[index1].food[index2].curNum
-        if (loopTimes > curNum) {
-          loopTimes = curNum
-          massages.push(list[index1].food[index2].name)
+        let curNum = foodList[index1].food[index2].curNum
+        if (addNum > curNum) {
+          addNum = curNum
+          massages.push(foodList[index1].food[index2].name)
         }
-        for (let i = 0; i < loopTimes; i++) {
-          // 异步才能成功调用
-          setTimeout(() => {
-            that.foodOrderNumAdd(index1, index2)
-          }, 100);
-        }
+        that.foodOrderNumAdd(index1, index2, addNum, 'set')
       }
       if (massages.length > 0) {
         wx.showModal({
@@ -83,11 +80,13 @@ Page({
   onHide() {
     let cID = that.data.canteen.cID
     app.globalData.allOrderList[cID] = that.data.orderList
+    console.log(app.globalData.allOrderList)
   },
   //页面退出时保存已点购物车
   onUnload() {
     let cID = that.data.canteen.cID
     app.globalData.allOrderList[cID] = that.data.orderList
+    console.log(app.globalData.allOrderList)
   },
   tabSelect(e) {
     //滚动到底部保证可见
@@ -108,30 +107,30 @@ Page({
   },
   VerticalMain(e) {
     let that = this;
-    let list = that.data.list;
+    let foodList = that.data.foodList;
     let tabHeight = 0;
     if (that.data.load) {
-      for (let i = 0; i < list.length; i++) {
-        let view = wx.createSelectorQuery().select("#main-" + list[i].id);
+      for (let i = 0; i < foodList.length; i++) {
+        let view = wx.createSelectorQuery().select("#main-" + foodList[i].id);
         view.fields({
           size: true
         }, data => {
-          list[i].top = tabHeight;
+          foodList[i].top = tabHeight;
           tabHeight = tabHeight + data.height;
-          list[i].bottom = tabHeight;
+          foodList[i].bottom = tabHeight;
         }).exec();
       }
       that.setData({
         load: false,
-        list: list
+        foodList: foodList
       })
     }
     let scrollTop = e.detail.scrollTop + 20;
-    for (let i = 0; i < list.length; i++) {
-      if (scrollTop > list[i].top && scrollTop < list[i].bottom) {
+    for (let i = 0; i < foodList.length; i++) {
+      if (scrollTop > foodList[i].top && scrollTop < foodList[i].bottom) {
         that.setData({
-          VerticalNavTop: (list[i].id - 1) * 50,
-          TabCur: list[i].id
+          VerticalNavTop: (foodList[i].id - 1) * 50,
+          TabCur: foodList[i].id
         })
         return false
       }
@@ -148,34 +147,52 @@ Page({
     let index2 = e.currentTarget.dataset.index2
     that.foodOrderNumAdd(index1, index2)
   },
-  foodOrderNumAdd: (index1, index2) => {
-    const food = that.data.list[index1].food[index2]
-    var money = that.data.money
+  foodOrderNumAdd: (index1, index2, num = 1, mode = 'change') => {
+    // mark
+    var foodList = that.data.foodList
+    var food = foodList[index1].food[index2]
     var orderList = that.data.orderList
 
-    let orderNum = 1
-    if (food.orderNum) { //如果有这个键或者值非0
-      orderNum = food.orderNum + 1
+    if ('orderNum' in food && mode === 'change') { //如果有这个键
+      var orderNum = food.orderNum + num
+    } else { //否则设置模式
+      var orderNum = num
     }
 
     //判断库存是否足够，是否允许增加数量
     if (food.curNum >= orderNum) {
-      //计算合计价格
-      let price = food.price
-      money += price
       //添加到购物车列表
       let orderItem = [orderNum, index1, index2]
-      let temp = index1.toString() + '|' + index2.toString()
-      orderList[temp] = orderItem
+      let key = index1.toString() + '|' + index2.toString()
+      orderList[key] = orderItem
       orderList.length = Object.keys(orderList).length - 1 //减掉length本身
-      //计算该类别已点数量
-      let tpyeOrderNum = that.data.list[index1].tpyeOrderNum
-      tpyeOrderNum = tpyeOrderNum > 0 ? tpyeOrderNum + 1 : orderNum
 
-      // list[index1].food[index2].orderNum
-      let s1 = 'list[' + index1 + '].food[' + index2 + '].orderNum'
-      // list[index1].tpyeOrderNum
-      let s2 = 'list[' + index1 + '].tpyeOrderNum'
+
+      //计算该类别已点数量
+      var tpyeOrderNum = num //初始为这次要新增的数量
+      foodList[index1].food.forEach(element => {
+        if ('orderNum' in element) {
+          tpyeOrderNum += element['orderNum']
+        }
+      })
+
+      //计算合计价格
+      var money = 0
+      for (const key in orderList) {
+        if (key === 'length') {
+          continue
+        }
+        let i = orderList[key][1]
+        let j = orderList[key][2]
+        let price = that.data.foodList[i].food[j].price
+        money += price * orderList[key][0]
+      }
+
+      // 保存结果
+      // foodList[index1].food[index2].orderNum
+      let s1 = 'foodList[' + index1 + '].food[' + index2 + '].orderNum'
+      // foodList[index1].tpyeOrderNum
+      let s2 = 'foodList[' + index1 + '].tpyeOrderNum'
       that.setData({
         [s1]: orderNum,
         [s2]: tpyeOrderNum,
@@ -195,34 +212,55 @@ Page({
     let index2 = e.currentTarget.dataset.index2
     that.foodOrderNumDec(index1, index2)
   },
-  foodOrderNumDec: (index1, index2) => {
-    const food = that.data.list[index1].food[index2]
-    var money = that.data.money
+  foodOrderNumDec: (index1, index2, num = 1) => {
+    // mark new
+    var foodList = that.data.foodList
+    var food = foodList[index1].food[index2]
     var orderList = that.data.orderList
 
-    if (food.orderNum >= 1) {
-      let orderNum = food.orderNum - 1
-      //计算合计价格
-      let price = food.price
-      money -= price
-      //添加到购物车列表
-      let temp = index1.toString() + '|' + index2.toString() //合并为字符串key
-      if (orderNum == 0) {
-        delete orderList[temp]
+    if ('orderNum' in food) { //如果有这个键
+      var orderNum = food.orderNum - num
+    }else{
+      var orderNum = -1 //表明无需更改
+    }
+
+    // 是否需要更改
+    if (orderNum >= 0) {
+      //修改购物车列表
+      let key = index1.toString() + '|' + index2.toString() //合并为字符串key
+      if (orderNum === 0) {
+        delete orderList[key]
       } else { //删除键值对
         let orderItem = [orderNum, index1, index2]
-        orderList[temp] = orderItem
+        orderList[key] = orderItem
       }
-      //更新length
       orderList.length = Object.keys(orderList).length - 1 //减掉length属性本身
-      //计算该类别已点数量
-      let tpyeOrderNum = that.data.list[index1].tpyeOrderNum
-      tpyeOrderNum = tpyeOrderNum > 0 ? tpyeOrderNum - 1 : orderNum
 
-      // list[index1].food[index2].orderNum
-      let s1 = 'list[' + index1 + '].food[' + index2 + '].orderNum'
-      // list[index1].tpyeOrderNum
-      let s2 = 'list[' + index1 + '].tpyeOrderNum'
+      //计算该类别已点数量
+      var tpyeOrderNum = -1 * num //初始为这次要减少的数量
+      foodList[index1].food.forEach(element => {
+        if ('orderNum' in element) {
+          tpyeOrderNum += element['orderNum']
+        }
+      })
+
+      //计算合计价格
+      var money = 0
+      for (const key in orderList) {
+        if (key === 'length') {
+          continue
+        }
+        let i = orderList[key][1]
+        let j = orderList[key][2]
+        let price = that.data.foodList[i].food[j].price
+        money += price * orderList[key][0]
+      }
+
+      // 保存结果
+      // foodList[index1].food[index2].orderNum
+      let s1 = 'foodList[' + index1 + '].food[' + index2 + '].orderNum'
+      // foodList[index1].tpyeOrderNum
+      let s2 = 'foodList[' + index1 + '].tpyeOrderNum'
       that.setData({
         [s1]: orderNum,
         [s2]: tpyeOrderNum,
@@ -246,7 +284,7 @@ Page({
     if (orderList.length > 0) {
       let settlement = {
         orderList: that.data.orderList,
-        list: that.data.list,
+        foodList: that.data.foodList,
         canteen: that.data.canteen,
         money: that.data.money
       }
@@ -266,30 +304,30 @@ Page({
     const _id = that.data.canteen._id
     db.collection("canteen").doc(_id).get()
       .then(res => {
-        var newList = res.data.foodList
-        var oldList = that.data.list
+        var newFoodList = res.data.foodList
+        var oldFoodList = that.data.foodList
         var massages = []
-        oldList.forEach((obj, index1) => {
+        oldFoodList.forEach((obj, index1) => {
           // 补全本地数据
           if ('tpyeOrderNum' in obj) {
-            newList[index1].tpyeOrderNum = obj.tpyeOrderNum
+            newFoodList[index1].tpyeOrderNum = obj.tpyeOrderNum
           }
           if ('id' in obj) {
-            newList[index1].id = obj.id
+            newFoodList[index1].id = obj.id
           }
           if ('top' in obj) {
-            newList[index1].top = obj.top
+            newFoodList[index1].top = obj.top
           }
           if ('bottom' in obj) {
-            newList[index1].bottom = obj.bottom
+            newFoodList[index1].bottom = obj.bottom
           }
           if ("food" in obj) {
             obj.food.forEach((foodObj, index2) => {
               if ('orderNum' in foodObj) {
-                newList[index1].food[index2].orderNum = foodObj.orderNum
-                if (foodObj.orderNum > newList[index1].food[index2].curNum) { //已点数量大于现在的库存
+                newFoodList[index1].food[index2].orderNum = foodObj.orderNum
+                if (foodObj.orderNum > newFoodList[index1].food[index2].curNum) { //已点数量大于现在的库存
                   // 计算要减少几份
-                  let loopTimes = foodObj.orderNum - newList[index1].food[index2].curNum
+                  let loopTimes = foodObj.orderNum - newFoodList[index1].food[index2].curNum
                   for (let i = 0; i < loopTimes; i++) {
                     // 异步才能成功调用
                     setTimeout(() => {
@@ -304,9 +342,8 @@ Page({
         })
         that.setData({
           canteen: res.data,
-          list: newList
+          foodList: newFoodList
         })
-        app.globalData.canteen = res.data //同步更新全局canteen
         if (massages.length > 0) {
           wx.showModal({
             title: '购物车提示',

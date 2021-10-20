@@ -43,8 +43,8 @@
     <view slot="content">我知盘中餐</view>
   </cu-custom>
 
-  <view class="canteen shadow-warp radius" wx:for="{{canteen}}" wx:key="_id">
-    <view class="mycontent animation-fade" bindtap="toOrder" data-canteen="{{item}}" style="animation-delay: 0.5s;">
+  <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
+    <view class="mycontent animation-fade" bindtap="toOrder" data-index="{{index}}" style="animation-delay: 0.5s;">
       <image src="{{item.thumb}}" mode="aspectFill"
         class="image {{intCurTime > item.intEndTime || intCurTime < item.intBeginTime ? 'img-disable':''}}">
       </image>
