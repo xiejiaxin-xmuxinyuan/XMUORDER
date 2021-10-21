@@ -18,8 +18,8 @@
 
     <view class="cu-form-group" style="border-bottom: 1rpx #eee solid;">
       <view class="title text-bold">商品类别</view>
-      <picker wx:if="{{shopPickerIndex !== null}}" bindchange="foodTypePickerChange"
-        value="{{foodTypePickerIndex}}" range="{{foodTypePickerList}}">
+      <picker wx:if="{{shopPickerIndex !== null}}" bindchange="foodTypePickerChange" value="{{foodTypePickerIndex}}"
+        range="{{foodTypePickerList}}">
         <view class="picker">
           {{foodTypePickerIndex!==null? foodTypePickerList[foodTypePickerIndex] : '请选择商品类型'}}
         </view>
@@ -44,8 +44,12 @@
           <view class="other">
             <view class="text-grey text-xs text-cut">库存: {{food.curNum}}</view>
             <view class="btn-group">
-              <button class="cu-btn cuIcon"><text class="cuIcon-edit text-black"></text></button>
-              <button class="cu-btn cuIcon"><text class="cuIcon-close text-red"></text></button>
+              <button catchtap="editGoods" data-index="{{index}}" class="cu-btn cuIcon">
+                <text class="cuIcon-edit text-black"></text>
+              </button>
+              <button catchtap="delGoods" data-index="{{index}}" class="cu-btn cuIcon">
+                <text class="cuIcon-close text-red"></text>
+              </button>
             </view>
           </view>
         </view>
