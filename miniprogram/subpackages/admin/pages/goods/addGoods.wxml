@@ -1,4 +1,3 @@
-<!-- 信息页面 -->
 <view class="tab-page">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">新增商品</view>

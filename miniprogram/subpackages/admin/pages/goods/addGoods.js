@@ -1,4 +1,3 @@
-// subpackages/admin/pages/goods/addGood.js
 import WxValidate from '../../../../utils/WxValidate.js'
 
 const app = getApp()

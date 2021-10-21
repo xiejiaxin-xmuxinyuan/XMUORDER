@@ -105,14 +105,18 @@ Page({
     })
   },
   editGoods: function (e) {
-    console.log(e)
-  },
-  delGoods: function (e) {
-    //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
     var index0 = that.data.shopPickerIndex
     var index1 = that.data.foodTypePickerIndex
     var index2 = e.currentTarget.dataset.index
+    
 
+  },
+  delGoods: function (e) {
+    var index0 = that.data.shopPickerIndex
+    var index1 = that.data.foodTypePickerIndex
+    var index2 = e.currentTarget.dataset.index
+    
+    //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
     let intCurTime = that.data.intCurTime
     let intBeginTime = that.data.canteens[index0].intBeginTime
     let intEndTime = that.data.canteens[index0].intEndTime
