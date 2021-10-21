@@ -107,7 +107,6 @@ Page({
   editGoods: function (e) {
     console.log(e)
   },
-  // TODO: 调用云函数删除保存的图片cloud.deleteFile
   delGoods: function (e) {
     //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
     var index0 = that.data.shopPickerIndex
@@ -147,15 +146,32 @@ Page({
               .then(res => {
                 wx.hideLoading()
                 if (res.result.success && res.result.res.stats.updated) {
-                  wx.showToast({
-                    title: '删除成功',
-                    icon: 'success',
-                    duration: 1000
-                  })
-                  //刷新商品页
-                  setTimeout(() => {
-                    that.canteenRefrush()
-                  }, 1100);
+                  //云函数删除云储存文件
+                  wx.cloud.callFunction({
+                      name: 'cloudFilesDelete',
+                      data: {
+                        fileIDs: [food.img]
+                      }
+                    })
+                    .then(res => {
+                      if (!(res.result[0].status)) {
+                        wx.showToast({
+                          title: '删除成功',
+                          icon: 'success',
+                          duration: 1000
+                        })
+                      } else {
+                        wx.showToast({
+                          title: '图片删除出错',
+                          icon: 'none',
+                          duration: 1000
+                        })
+                      }
+                      //刷新商品页
+                      setTimeout(() => {
+                        that.canteenRefrush()
+                      }, 1100)
+                    })
                 } else {
                   wx.showToast({
                     title: '数据提交失败',
