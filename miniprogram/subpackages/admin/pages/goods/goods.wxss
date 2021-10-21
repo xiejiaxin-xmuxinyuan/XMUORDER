@@ -9,6 +9,16 @@
   margin-bottom: 0;
 }
 
+.fixedBtn {
+  font-size: 5vw;
+  position: fixed;
+  right: 5%;
+}
+
+.fixedBtn>view {
+  padding: 20rpx 40rpx;
+}
+
 .main {
   margin: 40rpx;
   background-color: white;

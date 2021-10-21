@@ -55,13 +55,16 @@
         </view>
       </view>
     </view>
-
-
   </view>
 
-  <view style="font-size: 5vw;position: fixed;bottom: 10%;right: 5%;">
-    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow" style="padding: 20rpx 40rpx;">
-      添加
+  <view class="fixedBtn" style="bottom: 10%;">
+    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow">
+      商品
+    </view>
+  </view>
+  <view class="fixedBtn" style="bottom: 20%;">
+    <view catchtap="" class="cuIcon-add text-black bg-white round shadow">
+      类别
     </view>
   </view>
 </view>
