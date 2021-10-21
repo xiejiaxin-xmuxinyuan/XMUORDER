@@ -1,66 +1,72 @@
-// subpackages/admin/pages/goods/editGoods.js
+const app = getApp()
+const db = wx.cloud.database()
+var that
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    canteen: {},
+    identity: {},
+    food: {},
+    index1: null,
+    index2: null,
+    oldImg: ''
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
+    that = this
+    let index0 = options.index0
+    let index1 = options.index1
+    let index2 = options.index2
 
+    var canteen = app.globalData.canteens[index0]
+    const identity = app.globalData.identity
+    var food = canteen.foodList[index1].food[index2]
+    that.setData({
+      canteen,
+      identity,
+      food,
+      index1,
+      index2
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
+  ChooseImage: function (e) {
+    wx.chooseImage({
+        count: 1, //默认9
+        sizeType: 'compressed'
+      })
+      .then(res => {
+        // TODO: 使用canvas进行压缩
+        that.setData({
+          ['food.img']: res.tempFilePaths[0],
+        })
+      })
+      .catch(res => {
+        wx.showToast({
+          title: '图片选择取消',
+          icon: 'none',
+          duration: 1000
+        })
+      })
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
+  ViewImage: function (e) {
+    wx.previewImage({
+      urls: [that.data.food.img],
+    });
   },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
+  DelImg: function (e) {
+    wx.showModal({
+      title: '移除图片',
+      content: '确定要移除这张图片吗',
+      cancelText: '否',
+      confirmText: '是',
+      success: res => {
+        if (res.confirm) {
+          that.setData({
+            ['food.img']: '',
+          oldImg: that.data.food.img
+          })
+        }
+      }
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
 })

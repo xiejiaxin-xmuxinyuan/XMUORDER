@@ -1,9 +1,9 @@
-{"entryPagePath": "pages/index/index",
+{
+  "entryPagePath": "pages/index/index",
   "pages": [
     "pages/index/index"
   ],
-  "subpackages": [
-    {
+  "subpackages": [{
       "root": "subpackages/order",
       "pages": [
         "pages/index/index",
@@ -30,7 +30,7 @@
     "navigationStyle": "custom"
   },
   "usingComponents": {
-      "cu-custom":"/colorui/components/cu-custom"
+    "cu-custom": "/colorui/components/cu-custom"
   },
   "sitemapLocation": "sitemap.json"
 }
