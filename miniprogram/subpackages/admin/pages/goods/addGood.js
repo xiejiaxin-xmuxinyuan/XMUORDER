@@ -10,7 +10,7 @@ Page({
   data: {
     canteens: [],
     shopPickerList: [],
-    foodTypePickerList: ['请先选择所在商店'],
+    foodTypePickerList: [],
     identity: {},
     form: {
       shopPickerIndex: null,
