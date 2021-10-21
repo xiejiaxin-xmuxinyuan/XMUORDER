@@ -11,6 +11,7 @@ Page({
     canteens: [],
     shopPickerList: [],
     foodTypePickerList: ['请先选择所在商店'],
+    identity: {},
     form: {
       shopPickerIndex: null,
       foodTypePickerIndex: null,
@@ -27,18 +28,32 @@ Page({
     that.initValidate()
     var canteens = app.globalData.canteen
     var shopPickerList = []
-    for (const key in canteens) {
-      let canteen = canteens[key];
+    var shopPickerIndex = null
+    const identity = app.globalData.identity
+
+    canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
-    }
+      if (identity.type === 'admin' || identity.type === 'member') {
+        if (canteen.cID === identity.cID) {
+          that.shopPickerChange(null, index)
+        }
+      }
+    })
+
     that.setData({
       canteens: canteens,
-      shopPickerList: shopPickerList
+      shopPickerList: shopPickerList,
+      identity: identity
     })
   },
-  shopPickerChange: function (e) {
-    var index = e.detail.value
-    var foodList = that.data.canteens[index].foodList
+  shopPickerChange: function (e, setIndex = -1) {
+    if (setIndex >= 0) {
+      var index = setIndex
+    } else {
+      var index = e.detail.value
+    }
+
+    var foodList = app.globalData.canteen[index].foodList
     var foodTypePickerList = []
     foodList.forEach(element => {
       foodTypePickerList.push(element.name)
@@ -80,7 +95,7 @@ Page({
           ['form.foodImg']: res.tempFilePaths[0]
         })
       })
-      .catch(res=>{
+      .catch(res => {
         wx.showToast({
           title: '图片选择取消',
           icon: 'none',

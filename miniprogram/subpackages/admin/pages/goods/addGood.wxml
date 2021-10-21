@@ -7,17 +7,19 @@
     <form catchsubmit="addGoodsSubmit">
       <view class="cu-form-group">
         <view class="title text-bold">商店</view>
-        <picker bindchange="shopPickerChange" value="{{form.shopPickerIndex}}" range="{{shopPickerList}}">
+        <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange"
+          value="{{form.shopPickerIndex}}" range="{{shopPickerList}}">
           <view class="picker">
-            {{form.shopPickerIndex? shopPickerList[form.shopPickerIndex] : '请选择所在商店'}}
+            {{form.shopPickerIndex!==null? shopPickerList[form.shopPickerIndex] : '请选择所在商店'}}
           </view>
         </picker>
+        <view class="margin-right-sm text-black" wx:else>{{shopPickerList[form.shopPickerIndex]}}</view>
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">商品类别</view>
         <picker bindchange="foodTypePickerChange" value="{{form.foodTypePickerIndex}}" range="{{foodTypePickerList}}">
           <view class="picker">
-            {{form.foodTypePickerIndex? foodTypePickerList[form.foodTypePickerIndex] : '请选择商品类型'}}
+            {{form.foodTypePickerIndex!==null? foodTypePickerList[form.foodTypePickerIndex] : '请选择商品类型'}}
           </view>
         </picker>
       </view>
