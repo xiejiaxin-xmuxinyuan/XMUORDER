@@ -1,44 +1,56 @@
-<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-  <view slot="content">完善信息</view>
+<cu-custom bgColor="bg-gradual-blue">
+	<view slot="content">完善信息</view>
 </cu-custom>
 
-
 <form bindsubmit="onSubmit">
-	<view class="cu-form-group margin-top">
-		<view class="title">姓名</view>
-		<input placeholder="请输入姓名" name="name"></input>
+	<view class="cu-list menu card-menu margin-top shadow-warp" style="background-color: white;">
+		<view class="flex justify-center bg-white padding">
+			<view catchtap="{{avatarUrl? '':'getUserProfile'}}" class="user-avatar">
+				<view wx:if="{{!(avatarUrl)}}">点击获取头像</view>
+				<image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill"></image>
+			</view>
+		</view>
+		<view class="cu-item">
+			<view class="content">
+				<text class="cuIcon-people text-gray"></text>
+				<text>姓名</text>
+				<input placeholder="请输入姓名" name="name" class="text-right fr"></input>
+			</view>
+		</view>
+		<view catchtap="{{nickName? '':'getUserProfile'}}" class="cu-item">
+			<view class="content">
+				<text class="cuIcon-emoji text-gray"></text>
+				<text>昵称</text>
+				<button wx:if="{{!(nickName)}}" class="cu-btn bg-gradual-blue radius shadow fr">
+					获取昵称
+				</button>
+				<input wx:else class=" text-right fr" value="{{nickName}}" disabled="{{true}}" name="nickName"></input>
+			</view>
+		</view>
+		<view class="cu-item">
+			<view class="content">
+				<text class="cuIcon-phone text-gray"></text>
+				<text>电话</text>
+				<button wx:if="{{!(phoneNumber)}}" class="cu-btn bg-gradual-blue radius shadow fr" open-type="getPhoneNumber"
+					bindgetphonenumber="getPhoneNumber">获取电话</button>
+				<input wx:else class="text-right fr" value="{{phoneNumber}}" disabled="{{true}}" name="phone"></input>
+			</view>
+		</view>
+		<view class="cu-item">
+			<view class="content">
+				<text class="cuIcon-locationfill text-gray"></text>
+				<text>地址</text>
+				<input placeholder="请输入地址" name="address" class="text-right fr"></input>
+			</view>
+		</view>
+		<view class="save">
+			<button class="bg-gradual-blue round " form-type="submit">
+				<text class="cuIcon-upload"> 保存</text>
+			</button>
+		</view>
 	</view>
-
-  <view class="cu-form-group margin-top">
-		<view class="title">地址</view>
-		<input placeholder="请输入地址" name="address"></input>
-	</view>
-
-	<view class="cu-form-group margin-top">
-		<view class="title">电话</view>
-		<input placeholder="请输入电话" name="phone"></input>
-	</view>
-	<!-- <view class="cu-form-group margin-top"> -->
-		<!-- 若已经获取手机号码，此按钮无效 phoneNumber !== ''-->
-			<!-- <button 
-				disabled="{{ phoneNumber === '' ? false : true }}"
-				type=""
-				class="cu-btn round bg-green shadow "
-				open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber"
-				>
-				点击获取手机号码
-			<text 
-			  class="margin-right" 
-				class="{{showLoading ? 'cuIcon-loading2 iconfont-spin' : ''}}"></text>
-		</button>
-		<text>{{phoneNumber}}</text>
-	</view> -->
-
-	<view class="padding margin-top">
-		<button disabled="{{subBtnDisabled}}" class="lg text-white" style="background-color: rgb(215, 66, 42);"
-			form-type="submit">
-			提交
-		</button>
-	</view>
-
 </form>
+
+<view class="footer">
+	<view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>

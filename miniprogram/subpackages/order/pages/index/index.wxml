@@ -93,7 +93,7 @@
     </view>
     <view class="cu-item">
       <view class="content">
-        <text class="cuIcon-peoplefill text-gray"></text>
+        <text class="cuIcon-people text-gray"></text>
         <text>姓名</text>
         <text class="fr">{{name}}</text>
       </view>

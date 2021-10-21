@@ -8,11 +8,9 @@ Page({
    * 页面的初始数据
    */
   data: {
+    avatarUrl: "",
+    nickName: "",
     phoneNumber: "",
-     // 控制获取手机号码时出现的 loading 图案
-     showLoading: false,
-     // 上传过程中使 提交 按钮无效
-     subBtnDisabled: false
   },
 
   /**
@@ -23,8 +21,7 @@ Page({
     that.initWxValidate()
   },
 
-  onSubmit: async function(e) {
-    // e.detail.value.phone = that.data.phoneNumber
+  onSubmit: async function (e) {
     // 如果信息不完整或填写错误
     if (!that.WxValidate.checkForm(e.detail.value)) {
       const errMsg = that.WxValidate.errorList[0].msg
@@ -32,9 +29,9 @@ Page({
         title: errMsg,
         icon: "none"
       })
-      return 
+      return
     }
-    
+
     let userInfo = {}
     userInfo.name = e.detail.value.name
     userInfo.address = e.detail.value.address
@@ -51,22 +48,22 @@ Page({
         if (res.confirm) {
           wx.showLoading({
             title: '上传中',
+            mask: true
           })
-          that.setData({subBtnDisabled: true})            
           app.globalData.name = userInfo.name,
           app.globalData.userID = userInfo.userID,
           app.globalData.address = userInfo.address
           app.globalData.phone = userInfo.phone
-          
+
           // 添加用户信息到集合 users 
           db.collection('users')
             .add({
               data: {
-                phone: userInfo.phone,//that.data.phoneNumber,
+                phone: userInfo.phone, //that.data.phoneNumber,
                 isActive: true,
                 name: userInfo.name,
-                address : userInfo.address,
-                identity : 'user'
+                address: userInfo.address,
+                identity: {type: 'user'}
               }
             })
             .then(() => {
@@ -77,11 +74,13 @@ Page({
               wx.showToast({
                 title: '上传成功',
                 icon: "success",
-                complete: () => {
+                duration: 1000
+              }).then(res => {
+                setTimeout(() => {
                   wx.redirectTo({
                     url: '../index/index'
                   })
-                }
+                }, 1000);
               })
             })
             .catch(err => {
@@ -91,55 +90,95 @@ Page({
                 title: '上传失败',
                 icon: "error"
               })
-              that.setData({subBtnDisabled: false})
             })
         }
-      }, fail: err => console.error(err)
+      },
+      fail: err => console.error(err)
     })
-    
+
   },
 
-    /**
+  getUserProfile: function (e) {
+    wx.getUserProfile({
+        desc: '用于完善会员资料'
+      })
+      .then(res => {
+        let userInfo = res.userInfo
+        that.setData({
+          nickName: userInfo.nickName,
+          avatarUrl: userInfo.avatarUrl
+        })
+      })
+      .catch(erro => {
+        wx.showToast({
+          title: '获取信息失败',
+          icon: 'error',
+          duration: 2000
+        })
+      })
+  },
+
+  /**
    * 调用云函数 getPhoneNumber 获取用户手机号码
    */
-  getPhoneNumber: async function(e) {   
-    console.log(e)
+  getPhoneNumber: function (e) {
     // 用户拒绝
-   if (e.detail.errMsg === "getPhoneNumber:fail user deny") {
-     await wx.showToast({
-       title: '必须绑定手机号！',
-       icon: 'none',
-       duration: 2000
-     })
-     return
-   }
-   that.setData({showLoading: true})
-   wx.cloud.callFunction({
-     name: "decodePhoneNumber",
-     data: {
-       phoneNumInfo: wx.cloud.CloudID(e.detail.cloudID), 
-     }
-   }).then(val => {
-     if (val.result.success)
-       that.setData({phoneNumber: val.result.phoneNumber})
-     that.setData({showLoading: false})
-   }).catch(err => {
-     console.error(err)
-     that.setData({showLoading: false})
-   })
- },
-  initWxValidate: function() {
+    if (e.detail.errMsg === "getPhoneNumber:fail user deny") {
+      wx.showToast({
+        title: '请绑定手机号后使用',
+        icon: 'none',
+        duration: 2000
+      })
+    } else {
+      wx.showLoading({
+        title: '获取中',
+        mask: true
+      })
+      wx.cloud.callFunction({
+        name: "decodePhoneNumber",
+        data: {
+          phoneNumInfo: wx.cloud.CloudID(e.detail.cloudID),
+        }
+      }).then(val => {
+        wx.hideLoading()
+        let res = val.result
+        if (res.success) {
+          that.setData({
+            phoneNumber: res.phoneNumber
+          })
+        } else {
+          wx.showToast({
+            title: '获取手机号失败',
+            icon: 'none',
+            duration: 2000
+          })
+        }
+      }).catch(err => {
+        wx.hideLoading()
+        wx.showToast({
+          title: '获取手机号失败',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+    }
+  },
+  initWxValidate: function () {
     const rules = {
       name: {
         required: true,
-        minlength: 1
+        minlength: 2
       },
-      address : {
-        required : true,
-        minlenght : 1
+      nickName: {
+        required: true
+      },
+      address: {
+        required: true,
+        minlenght: 2
       },
       phone: {
-        required: true
+        required: true,
+        tel: true
       }
     }
 
@@ -148,11 +187,16 @@ Page({
         required: '请输入姓名！',
         minlength: '请输入正确的姓名！'
       },
+      nickName: {
+        required: '请点击获取昵称',
+      },
       address: {
-        required: '请输入地址！'
+        required: '请输入地址！',
+        minlength: '请输入正确的地址！'
       },
       phone: {
-        required: '请绑定手机号码！'
+        required: '请绑定手机号码！',
+        tel: '手机号码格式不正确'
       }
     }
 
