@@ -1,4 +1,3 @@
-<!-- 信息页面 -->
 <view class="tab-page">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">商品管理</view>
@@ -63,12 +62,12 @@
     </view>
   </view>
 
-  <view class="fixedBtn" style="bottom: 10%;">
-    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow">
+  <view class="fixedBtn" style="bottom: 5%;">
+    <view catchtap="toAddGoods" class="cuIcon-add text-black bg-white round shadow">
       商品
     </view>
   </view>
-  <view class="fixedBtn" style="bottom: 20%;">
+  <view class="fixedBtn" style="bottom: 15%;">
     <view catchtap="" class="cuIcon-add text-black bg-white round shadow">
       类别
     </view>

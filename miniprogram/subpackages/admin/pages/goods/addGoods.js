@@ -18,7 +18,8 @@ Page({
       name: '',
       content: '',
       price: '',
-      allNum: ''
+      allNum: '',
+      tag: ''
     }
   },
 
@@ -168,7 +169,8 @@ Page({
             img: res.fileID,
             name: params.name,
             price: params.price,
-            type: canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type
+            type: canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type,
+            tag: params.tag
           }
           //food数据库
           db.collection('food').add({
@@ -263,6 +265,9 @@ Page({
       foodImg: {
         required: true
       },
+      tag: {
+        maxlength: 4
+      }
     }
 
     const messages = {
@@ -291,6 +296,9 @@ Page({
       foodImg: {
         required: '请添加商品图片'
       },
+      tag:{
+        maxlength: '标签最长4个字符'
+      }
     }
     this.WxValidate = new WxValidate(rules, messages)
   }

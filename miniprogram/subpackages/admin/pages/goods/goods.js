@@ -99,23 +99,24 @@ Page({
       foodTypePickerIndex: e.detail.value
     })
   },
-  toAddGood: function (e) {
+  toAddGoods: function (e) {
     wx.navigateTo({
-      url: './addGood',
+      url: './addGoods',
     })
   },
   editGoods: function (e) {
     var index0 = that.data.shopPickerIndex
     var index1 = that.data.foodTypePickerIndex
     var index2 = e.currentTarget.dataset.index
-    
-
+    wx.navigateTo({
+      url: './editGoods?index0=' + index0 + '&index1=' + index1 + '&index2=' + index2
+    })
   },
   delGoods: function (e) {
     var index0 = that.data.shopPickerIndex
     var index1 = that.data.foodTypePickerIndex
     var index2 = e.currentTarget.dataset.index
-    
+
     //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
     let intCurTime = that.data.intCurTime
     let intBeginTime = that.data.canteens[index0].intBeginTime
@@ -148,7 +149,6 @@ Page({
                 }
               })
               .then(res => {
-                wx.hideLoading()
                 if (res.result.success && res.result.res.stats.updated) {
                   //云函数删除云储存文件
                   wx.cloud.callFunction({
@@ -158,6 +158,7 @@ Page({
                       }
                     })
                     .then(res => {
+                      wx.hideLoading()
                       if (!(res.result[0].status)) {
                         wx.showToast({
                           title: '删除成功',
@@ -177,6 +178,7 @@ Page({
                       }, 1100)
                     })
                 } else {
+                  wx.hideLoading()
                   wx.showToast({
                     title: '数据提交失败',
                     icon: 'error',

@@ -41,7 +41,11 @@
         <view class="title text-bold">库存</view>
         <input name="allNum" value="{{form.allNum}}" type="number" class="text-right" placeholder="输入库存"></input>
       </view>
-      <view class="cu-bar bg-white margin-top">
+      <view class="cu-form-group">
+        <view class="title text-bold">标签</view>
+        <input name="tag" value="{{form.tag}}" class="text-right" placeholder="（选填）标签"></input>
+      </view>
+      <view class="cu-bar bg-white">
         <view class="action text-bold">
           商品图片
         </view>
