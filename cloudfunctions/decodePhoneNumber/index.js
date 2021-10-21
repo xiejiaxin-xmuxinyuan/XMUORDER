@@ -12,25 +12,17 @@ cloud.init({
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  try{
-    const wxContext = cloud.getWXContext()
-    if (event.phoneNumInfo.data && 
-        event.phoneNumInfo.data.phoneNumber) {
+  return new Promise((resolve, reject) => {
+    if (event.phoneNumInfo.data && event.phoneNumInfo.data.phoneNumber) {
       const phoneNumber = event.phoneNumInfo.data.phoneNumber
-      return {
+      resolve({
         success: true,
         phoneNumber
-      }
+      })
+    } else {
+      reject({
+        success: false
+      })
     }
-    else return {
-      success: false
-    }
-
-  } catch(e) {
-    console.error(e)
-    return {
-      success: false,
-      errMsg: e
-    }
-  }
+  })
 }

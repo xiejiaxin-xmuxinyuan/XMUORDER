@@ -19,14 +19,16 @@ Page({
    */
   data: {
     pageCurr: "info",
-    name: app.globalData.name,
-    phone: app.globalData.phone,
-    address: app.globalData.address,
-    identity: app.globalData.identity,
+    name: '',
+    nickName: '',
+    phone: '',
+    address: '',
+    identity: '',
     canteens: [],
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
+    noticeCurrTypeNum: 0,
     intCurTime: null,
     isLoaded: false
   },
@@ -48,10 +50,20 @@ Page({
 
     Promise.all([p1, p2]).then(res => {
       wx.hideLoading()
+      var notices = res[1]
+      var noticeCurrTypeNum = 0
+      notices.forEach(element => {
+        if (element.type === that.data.noticeCurrType) {
+          noticeCurrTypeNum++
+        }
+      })
+
       var canteens = res[0].data
       that.setData({
-        notices: res[1], //公告数据
+        notices: notices, //公告数据
+        noticeCurrTypeNum: noticeCurrTypeNum,
         name: app.globalData.name,
+        nickName: app.globalData.nickName,
         phone: app.globalData.phone,
         address: app.globalData.address,
         identity: app.globalData.identity
@@ -88,8 +100,8 @@ Page({
     })
   },
 
-  onShow: ()=>{ 
-    if (that.data.isLoaded){ //再次显示主页时触发
+  onShow: () => {
+    if (that.data.isLoaded) { //再次显示主页时触发
       that.setData({
         canteens: app.globalData.canteens, //餐厅数据
       })
@@ -111,8 +123,17 @@ Page({
     }
   },
   noticeTypeSelect: function (e) {
+    const noticeCurrType = e.currentTarget.dataset.name
+    var noticeCurrTypeNum = 0
+    var notices = that.data.notices
+    notices.forEach(element => {
+      if (element.type === noticeCurrType) {
+        noticeCurrTypeNum++
+      }
+    })
     that.setData({
-      noticeCurrType: e.currentTarget.dataset.name
+      noticeCurrType: noticeCurrType,
+      noticeCurrTypeNum: noticeCurrTypeNum
     })
   },
   toOrder: function (e) {
@@ -178,8 +199,19 @@ Page({
       } else {
         newIndex = index === 0 ? maxPage : index - 1
       }
+
+      var newType = that.data.noticeTypes[newIndex]
+      var noticeCurrTypeNum = 0
+      var notices = that.data.notices
+      notices.forEach(element => {
+        if (element.type === newType) {
+          noticeCurrTypeNum++
+        }
+      })
+
       that.setData({
-        noticeCurrType: that.data.noticeTypes[newIndex]
+        noticeCurrType: newType,
+        noticeCurrTypeNum: noticeCurrTypeNum
       })
     }
   },
