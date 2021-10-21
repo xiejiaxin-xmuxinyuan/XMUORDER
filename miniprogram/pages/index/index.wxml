@@ -1,4 +1,4 @@
-<!--pages/welcome/welcome.wxml--><!--test-->
+<!--pages/welcome/welcome.wxml-->
 <view wx:if="{{identity.type === 'superAdmin'||identity.type === 'admin'||identity.type === 'staff'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
