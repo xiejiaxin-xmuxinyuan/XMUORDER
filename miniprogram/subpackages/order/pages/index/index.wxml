@@ -11,6 +11,7 @@
       </view>
     </view>
   </scroll-view>
+  <view wx:if="{{!(noticeCurrTypeNum)}}" class="text-center margin-xl text-gray">本分类暂无公告</view>
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
       <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
@@ -96,6 +97,13 @@
         <text class="cuIcon-people text-gray"></text>
         <text>姓名</text>
         <text class="fr">{{name}}</text>
+      </view>
+    </view>
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-emoji text-gray"></text>
+        <text>昵称</text>
+        <text class="fr">{{nickName}}</text>
       </view>
     </view>
     <view class="cu-item">
