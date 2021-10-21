@@ -1,10 +1,58 @@
 /* subpackages/admin/pages/goods/goods.wxss */
 
 .tab-page {
-  min-height: 75vh; 
+  min-height: 75vh;
   margin-bottom: 5vh;
 }
 
-.footer  {
+.footer {
   margin-bottom: 0;
+}
+
+.main {
+  margin: 40rpx;
+  background-color: white;
+}
+
+.my-list {
+  display: flex;
+  margin: 30rpx 30rpx;
+  flex-direction: column;
+}
+
+.my-item {
+  margin: 20rpx 10rpx;
+  display: flex;
+  flex-direction: row;
+}
+
+.my-item>image {
+  height: 100rpx;
+  width: 100rpx;
+  border-radius: 8rpx;
+}
+
+.my-item .info {
+  margin-left: 20rpx;
+  width: 48vw;
+}
+
+.my-item .other {
+  margin-left: 20rpx;
+  margin-top: 20rpx;
+  width: 12vw;
+}
+
+.my-item .other .btn-group {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20rpx;
+}
+
+.my-item .other .btn-group button {
+  padding: 0;
+  height: auto;
+  width: auto;
+  margin-right: auto;
+  background-color: transparent;
 }

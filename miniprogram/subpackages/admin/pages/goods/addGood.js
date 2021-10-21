@@ -28,7 +28,6 @@ Page({
     that.initValidate()
     var canteens = app.globalData.canteen
     var shopPickerList = []
-    var shopPickerIndex = null
     const identity = app.globalData.identity
 
     canteens.forEach((canteen, index) => {
