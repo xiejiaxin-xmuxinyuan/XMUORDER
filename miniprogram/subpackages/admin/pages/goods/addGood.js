@@ -10,7 +10,7 @@ Page({
   data: {
     canteens: [],
     shopPickerList: [],
-    foodTypePickerList: ['请先选择所在商店'],
+    foodTypePickerList: [],
     identity: {},
     form: {
       shopPickerIndex: null,
@@ -28,7 +28,6 @@ Page({
     that.initValidate()
     var canteens = app.globalData.canteen
     var shopPickerList = []
-    var shopPickerIndex = null
     const identity = app.globalData.identity
 
     canteens.forEach((canteen, index) => {

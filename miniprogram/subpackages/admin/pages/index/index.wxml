@@ -49,8 +49,9 @@
       <view class="content">
         <text class="cuIcon-profile text-gray"></text>
         <text>身份</text>
-        <text wx:if="{{identity==='admin'}}" class="fr text-red">管理员</text>
-        <text wx:if="{{identity==='staff'}}" class="fr text-red">员工</text>
+        <text wx:if="{{identity.type==='admin'}}" class="fr">餐厅管理员</text>
+        <text wx:elif="{{identity.type==='member'}}" class="fr">餐厅员工</text>
+        <text wx:elif="{{identity.type==='superAdmin'}}" class="fr">超级管理员</text>
       </view>
     </view>
     <view class="cu-item arrow">

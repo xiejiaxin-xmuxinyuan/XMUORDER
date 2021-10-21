@@ -4,6 +4,56 @@
     <view slot="content">商品管理</view>
   </cu-custom>
 
+  <view class="main shadow-warp">
+    <view class="cu-form-group">
+      <view class="title text-bold">商店</view>
+      <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange" value="{{shopPickerIndex}}"
+        range="{{shopPickerList}}">
+        <view class="picker">
+          {{shopPickerIndex!==null? shopPickerList[shopPickerIndex] : '请选择所在商店'}}
+        </view>
+      </picker>
+      <view class="margin-right-sm text-black" wx:else>{{shopPickerList[shopPickerIndex]}}</view>
+    </view>
+
+    <view class="cu-form-group" style="border-bottom: 1rpx #eee solid;">
+      <view class="title text-bold">商品类别</view>
+      <picker wx:if="{{shopPickerIndex !== null}}" bindchange="foodTypePickerChange"
+        value="{{foodTypePickerIndex}}" range="{{foodTypePickerList}}">
+        <view class="picker">
+          {{foodTypePickerIndex!==null? foodTypePickerList[foodTypePickerIndex] : '请选择商品类型'}}
+        </view>
+      </picker>
+      <view class="margin-right-sm text-black" wx:else>请先选择所在商店</view>
+    </view>
+
+    <!-- 该类别商品列表 -->
+    <view class="my-list" wx:if="{{foodTypePickerIndex!==null}}">
+      <view wx:for="{{canteens[shopPickerIndex].foodList[foodTypePickerIndex].food}}" wx:key="_id" wx:for-item="food">
+        <view class="my-item">
+          <image src="{{food.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+          <view class="info">
+            <view class="text-black">{{food.name}}</view>
+            <view class="text-gray text-sm flex">
+              <text class="text-cut">
+                <text class="text-red text-bold margin-right-xs">￥{{food.price}}</text>
+                {{food.content}}
+              </text>
+            </view>
+          </view>
+          <view class="other">
+            <view class="text-grey text-xs text-cut">库存: {{food.curNum}}</view>
+            <view class="btn-group">
+              <button class="cu-btn cuIcon"><text class="cuIcon-edit text-black"></text></button>
+              <button class="cu-btn cuIcon"><text class="cuIcon-close text-red"></text></button>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+
+  </view>
 
   <view style="font-size: 5vw;position: fixed;bottom: 10%;right: 5%;">
     <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow" style="padding: 20rpx 40rpx;">

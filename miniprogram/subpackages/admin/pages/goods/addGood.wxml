@@ -17,11 +17,13 @@
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">商品类别</view>
-        <picker bindchange="foodTypePickerChange" value="{{form.foodTypePickerIndex}}" range="{{foodTypePickerList}}">
+        <picker wx:if="{{form.shopPickerIndex !== null}}" bindchange="foodTypePickerChange"
+          value="{{form.foodTypePickerIndex}}" range="{{foodTypePickerList}}">
           <view class="picker">
             {{form.foodTypePickerIndex!==null? foodTypePickerList[form.foodTypePickerIndex] : '请选择商品类型'}}
           </view>
         </picker>
+        <view class="margin-right-sm text-black" wx:else>请先选择所在商店</view>
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">商品名</view>
