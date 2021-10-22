@@ -1,3 +1,12 @@
+/**
+ * 云函数聚合联表查询单个餐厅信息（从food表中获取食物信息）
+ * 参数： cID: string 餐厅id
+ *                    
+ * 返回： object 
+ *        成功：{success: 1, canteen单个餐厅信息}
+ *        失败：{success: 0}
+ */
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
