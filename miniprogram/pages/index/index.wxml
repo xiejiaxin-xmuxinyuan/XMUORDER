@@ -13,7 +13,7 @@
   </view>
   <view class="flex animation-fade" style="margin-top: 5vh;width: 100%; animation-delay: 0.8s;">
     <view class="flex-sub padding margin">
-      <button class="cu-btn block bg-blue lg text-white" catchtap="redictoAdmin">
+      <button class="cu-btn block bg-blue lg text-white" catchtap="toAdmin">
         <text class="cuIcon-activityfill"> 管理系统</text>
       </button>
     </view>
