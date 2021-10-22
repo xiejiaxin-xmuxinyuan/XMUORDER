@@ -23,18 +23,33 @@ Page({
     wx.showLoading({
       title: '获取餐厅信息',
     })
-    db.collection("canteen").get()
-      .then(res => {
+    var canteensPromise = []
+    var len = app.globalData.canteen.length
+    for (let i = 0; i < len; i++) {
+      canteensPromise.push(
+        wx.cloud.callFunction({
+          name: 'getCanteen',
+          data: {
+            cID: app.globalData.canteen[i].cID
+          }
+        })
+      )
+    }
+    var canteens = app.globalData.canteen
+    Promise.all(canteensPromise)
+      .then((res) => {
         wx.hideLoading()
-        var canteens = res.data
+        res.forEach((element, index) => {
+          if (element.result.success) {
+            canteens[index] = element.result.canteen
+          }
+        })
+
         var shopPickerList = []
         const identity = app.globalData.identity
 
         //当前时间
-        let date = new Date()
-        let h = date.getHours().toString().padStart(2, '0')
-        let m = date.getMinutes().toString().padStart(2, '0')
-        let intCurTime = parseInt(h + m)
+        var intCurTime = getIntCurTime()
 
         canteens.forEach((canteen, index) => {
           shopPickerList.push(canteen.name)
@@ -134,22 +149,16 @@ Page({
               title: '正在删除商品',
               mask: true
             })
-            let path = 'foodList.' + index1 + '.food'
-            let _id = that.data.canteens[index0]._id
+            let _id = food._id
             wx.cloud.callFunction({
-                name: 'dbUpdate',
+                name: 'dbMove',
                 data: {
-                  table: 'canteen',
-                  _id: _id,
-                  formData: {
-                    _id: food._id
-                  },
-                  path: path,
-                  pull: true
+                  table: 'food',
+                  _id: _id
                 }
               })
               .then(res => {
-                if (res.result.success && res.result.res.stats.updated) {
+                if (res.result.success) {
                   //云函数删除云储存文件
                   wx.cloud.callFunction({
                       name: 'cloudFilesDelete',
@@ -213,3 +222,10 @@ Page({
 
   }
 })
+
+function getIntCurTime() {
+  var date = new Date()
+  var h = date.getHours().toString().padStart(2, '0')
+  var m = date.getMinutes().toString().padStart(2, '0')
+  return parseInt(h + m)
+}

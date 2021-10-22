@@ -160,7 +160,7 @@ Page({
           cloudPath: cloudPath,
           filePath: params.foodImg, // 文件路径
         }).then(res => {
-          //上传数据库 food 和 canteen
+          //上传数据库 food
           var newForm = {
             allNum: params.allNum,
             curNum: params.allNum,
@@ -172,52 +172,19 @@ Page({
             type: canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type,
             tag: params.tag
           }
-          //food数据库
           db.collection('food').add({
               data: newForm
             }).then(res => {
-              //canteen数据库
-              newForm._id = res._id
-              let path = 'foodList.' + params.foodTypePickerIndex + '.food'
-              let _id = canteens[params.shopPickerIndex]._id
-              wx.cloud.callFunction({
-                  name: 'dbUpdate',
-                  data: {
-                    table: 'canteen',
-                    _id: _id,
-                    formData: newForm,
-                    path: path,
-                    push: true
-                  }
-                })
-                .then(res => {
-                  wx.hideLoading()
-                  if (res.result.success && res.result.res.stats.updated === 1) {
-                    wx.showToast({
-                      title: '提交成功',
-                      icon: 'success',
-                      duration: 2000
-                    })
-                    //返回上一页
-                    setTimeout(() => {
-                      wx.navigateBack()
-                    }, 2100);
-                  } else {
-                    wx.showToast({
-                      title: '数据提交失败',
-                      icon: 'error',
-                      duration: 2000
-                    })
-                  }
-                })
-                .catch(error => {
-                  wx.hideLoading()
-                  wx.showToast({
-                    title: '数据提交失败',
-                    icon: 'error',
-                    duration: 2000
-                  })
-                })
+              wx.hideLoading()
+              wx.showToast({
+                title: '提交成功',
+                icon: 'success',
+                duration: 1500
+              })
+              //返回上一页
+              setTimeout(() => {
+                wx.navigateBack()
+              }, 1600);
             })
             .catch(error => {
               wx.hideLoading()
@@ -227,6 +194,14 @@ Page({
                 duration: 2000
               })
             })
+        })
+        .catch(error => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '数据提交失败',
+            icon: 'error',
+            duration: 2000
+          })
         })
         .catch(error => {
           wx.hideLoading()
@@ -296,7 +271,7 @@ Page({
       foodImg: {
         required: '请添加商品图片'
       },
-      tag:{
+      tag: {
         maxlength: '标签最长4个字符'
       }
     }

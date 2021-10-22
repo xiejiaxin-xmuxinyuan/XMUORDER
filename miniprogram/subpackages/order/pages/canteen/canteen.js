@@ -13,7 +13,7 @@ Page({
     VerticalNavTop: 0,
     load: true,
     showInfo: false,
-    foodList: [], //foodList
+    foodList: [],
     money: 0,
     allOrderList: {},
     orderList: {
@@ -299,60 +299,73 @@ Page({
     }
   },
   canteenRefresh: function () { //刷新canteen数据
-    const _id = that.data.canteen._id
-    db.collection("canteen").doc(_id).get()
+    const cID = that.data.canteen.cID
+    wx.cloud.callFunction({
+        name: 'getCanteen',
+        data: {
+          cID: cID
+        }
+      })
       .then(res => {
-        var newFoodList = res.data.foodList
-        var oldFoodList = that.data.foodList
-        var massages = []
-        oldFoodList.forEach((obj, index1) => {
-          // 补全本地数据
-          let keyList = ['tpyeOrderNum', 'id', 'top', 'bottom']
-          keyList.forEach(keyName => {
-            if (keyName in obj) {
-              newFoodList[index1][keyName] = obj[keyName]
-            }
-          })
-
-          if ("food" in obj) {
-            obj.food.forEach((foodObj, index2) => {
-              if ('orderNum' in foodObj) {
-                newFoodList[index1].food[index2].orderNum = foodObj.orderNum
-                if (foodObj.orderNum > newFoodList[index1].food[index2].curNum) { //已点数量大于现在的库存
-                  // 计算要减少几份
-                  let numDec = foodObj.orderNum - newFoodList[index1].food[index2].curNum
-                  that.foodOrderNumDec(index1, index2, numDec)
-                  massages.push(foodObj.name)
-                }
+        if (res.result.success) {
+          var newFoodList = res.result.canteen.foodList
+          var oldFoodList = that.data.foodList
+          var massages = []
+          oldFoodList.forEach((obj, index1) => {
+            // 补全本地数据
+            let keyList = ['tpyeOrderNum', 'id', 'top', 'bottom']
+            keyList.forEach(keyName => {
+              if (keyName in obj) {
+                newFoodList[index1][keyName] = obj[keyName]
               }
             })
-          }
-        })
-        // 更新canteen 并同步到全局
-        var newCanteen = res.data
-        var oldCanteen = that.data.canteen
-        let keyList = ['beginTime', 'intBeginTime', 'endTime', 'intEndTime']
-        keyList.forEach(keyName => {
-          if (keyName in oldCanteen) {
-            newCanteen[keyName] = oldCanteen[keyName]
-          }
-        })
-        app.globalData.canteens[that.data.cIndex] = newCanteen
 
-        that.setData({
-          canteen: newCanteen,
-          foodList: newFoodList
-        })
-        if (massages.length > 0) {
-          wx.showModal({
-            title: '购物车提示',
-            content: massages.join("、") + '  库存不足，已自动调整购买数量',
-            showCancel: false,
-            confirmText: '好的'
+            if ("food" in obj) {
+              obj.food.forEach((foodObj, index2) => {
+                if ('orderNum' in foodObj) {
+                  newFoodList[index1].food[index2].orderNum = foodObj.orderNum
+                  if (foodObj.orderNum > newFoodList[index1].food[index2].curNum) { //已点数量大于现在的库存
+                    // 计算要减少几份
+                    let numDec = foodObj.orderNum - newFoodList[index1].food[index2].curNum
+                    that.foodOrderNumDec(index1, index2, numDec)
+                    massages.push(foodObj.name)
+                  }
+                }
+              })
+            }
           })
+          // 更新canteen 并同步到全局
+          var newCanteen = res.result.canteen
+          var oldCanteen = that.data.canteen
+          let keyList = ['beginTime', 'intBeginTime', 'endTime', 'intEndTime']
+          keyList.forEach(keyName => {
+            if (keyName in oldCanteen) {
+              newCanteen[keyName] = oldCanteen[keyName]
+            }
+          })
+          app.globalData.canteens[that.data.cIndex] = newCanteen
+
+          that.setData({
+            canteen: newCanteen,
+            foodList: newFoodList
+          })
+          if (massages.length > 0) {
+            wx.showModal({
+              title: '购物车提示',
+              content: massages.join("、") + '  库存不足，已自动调整购买数量',
+              showCancel: false,
+              confirmText: '好的'
+            })
+          } else {
+            wx.showToast({
+              title: '数据刷新成功',
+              icon: 'none',
+              duration: 1000
+            })
+          }
         } else {
           wx.showToast({
-            title: '数据刷新成功',
+            title: '数据刷新失败',
             icon: 'none',
             duration: 1000
           })
@@ -372,7 +385,7 @@ Page({
     let index2 = e.currentTarget.dataset.index2
     let cIndex = that.data.cIndex
     wx.navigateTo({
-      url: './goodsDetail?index1=' + index1 + '&index2=' +index2 + '&cIndex=' +cIndex,
+      url: './goodsDetail?index1=' + index1 + '&index2=' + index2 + '&cIndex=' + cIndex,
     })
   },
   blocking: e => {} //什么也不做
