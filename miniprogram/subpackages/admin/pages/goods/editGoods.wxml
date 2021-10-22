@@ -4,7 +4,7 @@
   </cu-custom>
 
   <view class="bg-white margin-lg shadow-warp radius">
-    <form catchsubmit="addGoodsSubmit">
+    <form catchsubmit="editGoodsSubmit">
       <view class="cu-form-group">
         <view class="title text-bold">商店</view>
         <view class="margin-right-sm text-black">{{canteen.name}}</view>
@@ -29,6 +29,10 @@
       <view class="cu-form-group">
         <view class="title text-bold">库存</view>
         <input name="allNum" value="{{food.allNum}}" type="number" class="text-right" placeholder="输入库存"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">标签</view>
+        <input name="tag" value="{{food.tag}}" class="text-right" placeholder="（选填）标签"></input>
       </view>
       <view class="cu-bar bg-white margin-top">
         <view class="action text-bold">

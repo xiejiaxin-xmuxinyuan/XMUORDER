@@ -2,8 +2,15 @@
  * 云函数update数据库
  * 参数： table:  数据库表名称
  *        _id:  记录的_id
- *        path: 更新字段的路径字符串 如 'foodList.1' 'foodList.1.food'
  *        formData: 更新的数据 或 数据库命令的参数 如 {name: '新名称', type: '新类型'}
+ * 
+ *        (path视下方不同模式选填)
+ *        path: 更新字段的路径字符串 如 'foodList.1' 'foodList.1.food'
+ *        
+ *        模式：
+ *        (可选)set: any 
+ *                    带有该参数时将执行数据库set命令，此时无需path
+ *                    替换_id对应记录为formData
  *        (可选)push: any 
  *                    带有该参数时将执行数据库push命令，
  *                    对path参数连接的数组字段进行push(formData)操作
@@ -59,6 +66,24 @@ exports.main = async (event, context) => {
           data: {
             [path]: _.pull(formData)
           }
+        })
+        .then(res => {
+          resolve({
+            success: true,
+            res: res
+          })
+        })
+        .catch(e => {
+          console.error(e)
+          reject({
+            success: false
+          })
+        })
+    } else if ('set' in event) {
+      //保证没有_id
+      delete formData._id
+      db.collection(table).doc(_id).set({
+          data: formData
         })
         .then(res => {
           resolve({

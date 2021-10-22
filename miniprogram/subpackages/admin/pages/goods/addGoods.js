@@ -146,7 +146,7 @@ Page({
       let cloudPath = '餐厅图片/'
       let address = canteens[params.shopPickerIndex].address
       let shopName = shopPickerList[params.shopPickerIndex]
-      let foodType = foodTypePickerList[params.foodTypePickerIndex]
+      let foodType = canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type
 
       //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
       cloudPath = cloudPath + ({
