@@ -73,6 +73,11 @@ Page({
           canteens[index].endTime = endTime
           canteens[index].intEndTime = intEndTime
         })
+        if (that.data.shopPickerIndex !== null){
+          that.shopPickerChange(null, that.data.shopPickerIndex)
+        }
+
+
         app.globalData.canteens = canteens //同步到全局变量
         that.setData({
           canteens: canteens,
@@ -83,11 +88,7 @@ Page({
       })
       .catch(err => {
         wx.hideLoading()
-        wx.showToast({
-          title: '获取失败',
-          icon: 'error',
-          duration: 1500
-        })
+        that.showT('获取失败', 'error', 1500)
       })
   },
   shopPickerChange: function (e, setIndex = -1) {
@@ -169,17 +170,9 @@ Page({
                     .then(res => {
                       wx.hideLoading()
                       if (!(res.result[0].status)) {
-                        wx.showToast({
-                          title: '删除成功',
-                          icon: 'success',
-                          duration: 1000
-                        })
+                        that.showT('删除成功', 'success', 1000)
                       } else {
-                        wx.showToast({
-                          title: '图片删除出错',
-                          icon: 'none',
-                          duration: 1000
-                        })
+                        that.showT('图片删除出错')
                       }
                       //刷新商品页
                       setTimeout(() => {
@@ -188,39 +181,84 @@ Page({
                     })
                 } else {
                   wx.hideLoading()
-                  wx.showToast({
-                    title: '数据提交失败',
-                    icon: 'error',
-                    duration: 2000
-                  })
+                  that.showT('数据提交失败', 'error', 2000)
                 }
               })
               .catch(error => {
                 wx.hideLoading()
-                wx.showToast({
-                  title: '数据提交失败',
-                  icon: 'error',
-                  duration: 2000
-                })
+                that.showT('数据提交失败', 'error', 2000)
               })
           } else if (res.cancel) {
-            wx.showToast({
-              title: '操作已取消',
-              icon: 'none',
-              duration: 1000
-            })
+            that.showT('操作已取消')
           }
         }
       })
     } else {
-      wx.showToast({
-        title: '营业期间不允许删除商品',
-        icon: 'none',
-        duration: 1500
-      })
+      that.showT('营业期间不允许删除商品')
     }
 
-  }
+  },
+  addGoodsType: function (e) {
+    let shopPickerIndex = that.data.shopPickerIndex
+    if (shopPickerIndex === null) {
+      that.showT('请先选择商店')
+      return
+    }
+    wx.showModal({
+      title: that.data.shopPickerList[shopPickerIndex] + ': 添加商品类别',
+      confirmText: '添加',
+      editable: true,
+      placeholderText: '输入新商品类别名称',
+      success(res) {
+        if (res.confirm) {
+          let newTypeName = res.content
+          let foodTypePickerList = that.data.foodTypePickerList
+          if (foodTypePickerList.indexOf(newTypeName) >= 0) {
+            that.showT('商品类别名称重复')
+          } else {
+            wx.showLoading({
+              title: '上传中',
+              mask: true
+            })
+            let _id = that.data.canteens[shopPickerIndex]._id
+            wx.cloud.callFunction({
+                name: 'dbUpdate',
+                data: {
+                  table: 'canteen',
+                  _id: _id,
+                  path: 'foodList',
+                  formData: {
+                    name: newTypeName
+                  },
+                  push: true
+                }
+              })
+              .then(res => {
+                wx.hideLoading()
+                if (res.result.success) {
+                  that.showT('新增成功', 'success', 1500)
+                  that.canteenRefrush()
+                } else {
+                  that.showT('数据提交失败', 'error', 1500)
+                }
+              })
+              .catch(e => {
+                wx.hideLoading()
+              })
+          }
+        } else if (res.cancel) {
+          that.showT('操作已取消')
+        }
+      }
+    })
+  },
+  showT: (title, icon = 'none', duration = 1000) => {
+    wx.showToast({
+      title: title,
+      icon: icon,
+      duration: duration
+    })
+  },
 })
 
 function getIntCurTime() {

@@ -68,7 +68,7 @@
     </view>
   </view>
   <view class="fixedBtn" style="bottom: 15%;">
-    <view catchtap="" class="cuIcon-add text-black bg-white round shadow">
+    <view catchtap="addGoodsType" class="cuIcon-add text-black bg-white round shadow">
       类别
     </view>
   </view>
