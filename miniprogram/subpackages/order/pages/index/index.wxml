@@ -1,4 +1,4 @@
-<!-- 信息页面 -->
+<!-- 信息页面test -->
 <view class="tab-page" bindtouchstart="infoTouchStart" bindtouchend="infoTouchEnd" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">信息</view>
