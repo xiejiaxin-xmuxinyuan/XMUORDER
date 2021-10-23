@@ -6,7 +6,7 @@
 <view wx:if="{{notice.coverImg}}">
   <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000"
     duration="500">
-    <swiper-item wx:for="{{notice.images}}">
+    <swiper-item wx:for="{{notice.images}}" wx:key="*this">
       <image src="{{item}}" mode="aspectFill"></image>
     </swiper-item>
   </swiper>
