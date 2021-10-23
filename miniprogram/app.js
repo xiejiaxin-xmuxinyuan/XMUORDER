@@ -15,6 +15,7 @@ App({
             that.globalData.name = res.result.name,
             that.globalData.address = res.result.address,
             that.globalData.identity = res.result.identity
+            that.globalData.nickName = res.result.nickName
           }
           else{
             that.globalData.identity = 'unregistered' //标注未注册身份
