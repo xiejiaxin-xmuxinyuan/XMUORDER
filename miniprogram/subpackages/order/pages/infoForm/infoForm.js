@@ -35,8 +35,8 @@ Page({
     let userInfo = {}
     userInfo.name = e.detail.value.name
     userInfo.address = e.detail.value.address
-
     userInfo.phone = e.detail.value.phone
+    userInfo.nickName = that.data.nickName
 
     // 提示
     wx.showModal({
@@ -54,6 +54,7 @@ Page({
           app.globalData.userID = userInfo.userID,
           app.globalData.address = userInfo.address
           app.globalData.phone = userInfo.phone
+          app.globalData.nickName = userInfo.nickName
 
           // 添加用户信息到集合 users 
           db.collection('users')
@@ -63,6 +64,7 @@ Page({
                 isActive: true,
                 name: userInfo.name,
                 address: userInfo.address,
+                nickName: userInfo.nickName,
                 identity: {type: 'user'}
               }
             })

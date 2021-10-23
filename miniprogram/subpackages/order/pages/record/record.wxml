@@ -13,7 +13,7 @@
         <view class="cuIcon-message text-orange" data-index="{{index}}" catchtap="feedback"> 反馈</view>
       </view>
       <view class="mycontent">
-        <view wx:for="{{item.record}}" wx:for-item="i">
+        <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
           <view>
             <view class="text-cut text-bold">{{i.food}}</view>
             <view class="text-bold">￥{{i.price / i.num}}</view>

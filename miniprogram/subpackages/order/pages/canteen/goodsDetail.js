@@ -17,14 +17,15 @@ Page({
 
     var favourCount = 0
     var badCount = 0
-    food.comment.forEach(element => {
-      if (element.score > 0) {
-        favourCount++
-      } else if (element.score < 0) {
-        badCount++
-      }
-    })
-
+    if ('comment' in food){
+      food.comment.forEach(element => {
+        if (element.score > 0) {
+          favourCount++
+        } else if (element.score < 0) {
+          badCount++
+        }
+      })
+    }
 
     that.setData({
       canteen: canteen,
