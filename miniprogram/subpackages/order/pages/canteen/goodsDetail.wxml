@@ -22,7 +22,7 @@
         </view>
         <view wx:else class="text-center text-gray">暂无评论...</view>
 
-        <view class="item solid-top" wx:for="{{food.comment}}">
+        <view class="item solid-top" wx:for="{{food.comment}}" wx:key="*this">
           <view class="head">
             <image class="shadow-warp" src="../../../../images/avatar/{{index%10}}.jpg"></image>
             <view class="margin-left text-sm">
