@@ -29,13 +29,13 @@ exports.main = async (event, context) => {
           .match({ //匹配cID
             cID: cID
           })
-          .group({ //按type字段分组
-            _id: '$type',
+          .group({ //按typeName字段分组
+            _id: '$typeName',
             food: $.push('$$ROOT'),
           })
-          .project({ //_id 换成 type
+          .project({ //_id 换成 name
             _id: 0,
-            type: '$_id',
+            name: '$_id',
             food: 1
           })
           .done(),
@@ -49,11 +49,11 @@ exports.main = async (event, context) => {
 
           for (let index = 0; index < canteen.foodList.length; index++) {
             delete canteen.foodList[index].food //删除原有food字段
-            let type = canteen.foodList[index].type
+            let name = canteen.foodList[index].name
 
             for (let i = 0; i < newFoodList.length; i++) { //newFoodList中food匹配填入canteen中的food
               let element = newFoodList[i];
-              if (element.type === type) {
+              if (element.name === name) {
                 canteen.foodList[index].food = element.food
                 break
               }

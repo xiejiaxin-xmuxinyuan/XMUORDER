@@ -102,14 +102,14 @@ Page({
         let cloudPath = '餐厅图片/'
         let address = canteen.address
         let shopName = canteen.name
-        let foodType = params.type
+        let typeName = params.typeName
 
         //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
         cloudPath = cloudPath + ({
             XA: '翔安',
             SM: '思明',
             HY: '海韵'
-          })[address] + '/' + shopName + '/food/' + foodType + '_' + params.name + '_' +
+          })[address] + '/' + shopName + '/food/' + typeName + '_' + params.name + '_' +
           new Date().getTime() + params.img.match('.[^.]+?$')[0]
 
         wx.cloud.uploadFile({
