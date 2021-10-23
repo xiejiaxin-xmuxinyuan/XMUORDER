@@ -1,0 +1,68 @@
+<view class="tab-page">
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">编辑商品</view>
+  </cu-custom>
+
+  <view class="bg-white margin-lg shadow-warp radius">
+    <form catchsubmit="editGoodsSubmit">
+      <view class="cu-form-group">
+        <view class="title text-bold">商店</view>
+        <view class="margin-right-sm text-black">{{canteen.name}}</view>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">商品类别</view>
+        <view class="margin-right-sm text-black">{{canteen.foodList[index1].name}}</view>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">商品名</view>
+        <input name="name" value="{{food.name}}" class="text-right" placeholder="输入商品名"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">商品内容</view>
+        <input name="content" value="{{food.content}}" class="text-right" placeholder="简要描述商品内容"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">价格</view>
+        <input value="{{food.price}}" type="digit" bindblur="onPriceInputBlur" class="text-right"
+          placeholder="输入价格"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">库存</view>
+        <input name="allNum" value="{{food.allNum}}" type="number" class="text-right" placeholder="输入库存"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">标签</view>
+        <input name="tag" value="{{food.tag}}" class="text-right" placeholder="（选填）标签"></input>
+      </view>
+      <view class="cu-bar bg-white margin-top">
+        <view class="action text-bold">
+          商品图片
+        </view>
+        <view class="action">
+          {{food.img? 1 : 0}}/1
+        </view>
+      </view>
+      <view class="cu-form-group">
+        <view class="grid col-4 grid-square flex-sub">
+          <view class="bg-img" wx:if="{{food.img}}" bindtap="ViewImage" data-url="{{food.img}}">
+            <image src='{{food.img}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="DelImg">
+              <text class="cuIcon-close"></text>
+            </view>
+          </view>
+          <view class="solids" bindtap="ChooseImage" wx:if="{{!food.img}}">
+            <text class="cuIcon-cameraadd"></text>
+          </view>
+        </view>
+      </view>
+      <view style="text-align: center;padding: 1rem 0;">
+        <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg"
+          style="padding: 35rpx 120rpx;">保存</button>
+      </view>
+    </form>
+  </view>
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>

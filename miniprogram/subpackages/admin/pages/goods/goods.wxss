@@ -9,8 +9,19 @@
   margin-bottom: 0;
 }
 
+.fixedBtn {
+  font-size: 5vw;
+  position: fixed;
+  right: 5%;
+}
+
+.fixedBtn>view {
+  padding: 20rpx 40rpx;
+}
+
 .main {
   margin: 40rpx;
+  margin-bottom: 20%;
   background-color: white;
 }
 
@@ -34,13 +45,13 @@
 
 .my-item .info {
   margin-left: 20rpx;
-  width: 48vw;
+  width: 45vw;
 }
 
 .my-item .other {
   margin-left: 20rpx;
   margin-top: 20rpx;
-  width: 12vw;
+  width: 15vw;
 }
 
 .my-item .other .btn-group {

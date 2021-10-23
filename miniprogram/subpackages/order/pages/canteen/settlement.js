@@ -6,7 +6,7 @@ Page({
 
   data: {
     orderList: {},
-    list: [],
+    foodList: [],
     user: {},
     curTime: '',
     timeToPick: ['7:00', '7:30', '8:30', '11:00', '12:00', '12:30', '17:30', '18:00', '18:30'],
@@ -25,7 +25,7 @@ Page({
     }
     that.setData({
       orderList: app.globalData.settlement.orderList,
-      list: app.globalData.settlement.list,
+      foodList: app.globalData.settlement.foodList,
       canteen: app.globalData.settlement.canteen,
       money: app.globalData.settlement.money,
       user: user
@@ -65,7 +65,7 @@ Page({
   },
   settlementSubmit: function (e) {
     const orderList = that.data.orderList
-    const list = that.data.list
+    const foodList = that.data.foodList
     const canteen = that.data.canteen
     if (!that.data.isTimePick) {
       wx.showToast({
@@ -86,7 +86,7 @@ Page({
         let index1 = orderList[key][1]
         let index2 = orderList[key][2]
 
-        let food = list[index1].food[index2]
+        let food = foodList[index1].food[index2]
         let foodRecord = {
           food: food.name,
           num: food.orderNum,

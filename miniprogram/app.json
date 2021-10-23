@@ -1,9 +1,9 @@
-{"entryPagePath": "pages/index/index",
+{
+  "entryPagePath": "pages/index/index",
   "pages": [
     "pages/index/index"
   ],
-  "subpackages": [
-    {
+  "subpackages": [{
       "root": "subpackages/order",
       "pages": [
         "pages/index/index",
@@ -21,7 +21,8 @@
         "pages/index/index",
         "pages/notice/notice",
         "pages/goods/goods",
-        "pages/goods/addGood"
+        "pages/goods/addGoods",
+        "pages/goods/editGoods"
       ]
     }
   ],
@@ -29,7 +30,7 @@
     "navigationStyle": "custom"
   },
   "usingComponents": {
-      "cu-custom":"/colorui/components/cu-custom"
+    "cu-custom": "/colorui/components/cu-custom"
   },
   "sitemapLocation": "sitemap.json"
 }

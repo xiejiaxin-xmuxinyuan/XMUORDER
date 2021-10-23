@@ -33,7 +33,7 @@ Page({
       url: '../../subpackages/order/pages/index/index',
     })
   },
-  redictoAdmin: function (e) {
+  toAdmin: function (e) {
     wx.navigateTo({
       url: '../../subpackages/admin/pages/index/index',
     })

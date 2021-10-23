@@ -1,4 +1,3 @@
-<!-- 信息页面 -->
 <view class="tab-page">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">商品管理</view>
@@ -18,8 +17,8 @@
 
     <view class="cu-form-group" style="border-bottom: 1rpx #eee solid;">
       <view class="title text-bold">商品类别</view>
-      <picker wx:if="{{shopPickerIndex !== null}}" bindchange="foodTypePickerChange"
-        value="{{foodTypePickerIndex}}" range="{{foodTypePickerList}}">
+      <picker wx:if="{{shopPickerIndex !== null}}" bindchange="foodTypePickerChange" value="{{foodTypePickerIndex}}"
+        range="{{foodTypePickerList}}">
         <view class="picker">
           {{foodTypePickerIndex!==null? foodTypePickerList[foodTypePickerIndex] : '请选择商品类型'}}
         </view>
@@ -29,35 +28,48 @@
 
     <!-- 该类别商品列表 -->
     <view class="my-list" wx:if="{{foodTypePickerIndex!==null}}">
-      <view wx:for="{{canteens[shopPickerIndex].foodList[foodTypePickerIndex].food}}" wx:key="_id" wx:for-item="food">
-        <view class="my-item">
-          <image src="{{food.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
-          <view class="info">
-            <view class="text-black">{{food.name}}</view>
-            <view class="text-gray text-sm flex">
-              <text class="text-cut">
-                <text class="text-red text-bold margin-right-xs">￥{{food.price}}</text>
-                {{food.content}}
-              </text>
+      <view wx:if="{{!(canteens[shopPickerIndex].foodList[foodTypePickerIndex].food.length)}}"
+        class="text-center text-gray margin-lg">
+        该分类暂无商品
+      </view>
+      <block wx:else>
+        <view wx:for="{{canteens[shopPickerIndex].foodList[foodTypePickerIndex].food}}" wx:key="_id" wx:for-item="food">
+          <view class="my-item">
+            <image src="{{food.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            <view class="info">
+              <view class="text-black">{{food.name}}</view>
+              <view class="text-gray text-sm flex">
+                <text class="text-cut">
+                  <text class="text-red text-bold margin-right-xs">￥{{food.price}}</text>
+                  {{food.content}}
+                </text>
+              </view>
             </view>
-          </view>
-          <view class="other">
-            <view class="text-grey text-xs text-cut">库存: {{food.curNum}}</view>
-            <view class="btn-group">
-              <button class="cu-btn cuIcon"><text class="cuIcon-edit text-black"></text></button>
-              <button class="cu-btn cuIcon"><text class="cuIcon-close text-red"></text></button>
+            <view class="other">
+              <view class="text-grey text-xs text-cut">库存: {{food.curNum}}</view>
+              <view class="btn-group">
+                <button catchtap="editGoods" data-index="{{index}}" class="cu-btn cuIcon text-xl">
+                  <text class="cuIcon-edit text-black"></text>
+                </button>
+                <button catchtap="delGoods" data-index="{{index}}" class="cu-btn cuIcon text-xl">
+                  <text class="cuIcon-roundclose text-orange"></text>
+                </button>
+              </view>
             </view>
           </view>
         </view>
-      </view>
+      </block>
     </view>
-
-
   </view>
 
-  <view style="font-size: 5vw;position: fixed;bottom: 10%;right: 5%;">
-    <view catchtap="toAddGood" class="cuIcon-add text-black bg-white round shadow" style="padding: 20rpx 40rpx;">
-      添加
+  <view class="fixedBtn" style="bottom: 5%;">
+    <view catchtap="toAddGoods" class="cuIcon-add text-black bg-white round shadow">
+      商品
+    </view>
+  </view>
+  <view class="fixedBtn" style="bottom: 15%;">
+    <view catchtap="addGoodsType" class="cuIcon-add text-black bg-white round shadow">
+      类别
     </view>
   </view>
 </view>

@@ -1,4 +1,3 @@
-// subpackages/admin/pages/goods/addGood.js
 import WxValidate from '../../../../utils/WxValidate.js'
 
 const app = getApp()
@@ -19,7 +18,8 @@ Page({
       name: '',
       content: '',
       price: '',
-      allNum: ''
+      allNum: '',
+      tag: ''
     }
   },
 
@@ -146,21 +146,21 @@ Page({
       let cloudPath = '餐厅图片/'
       let address = canteens[params.shopPickerIndex].address
       let shopName = shopPickerList[params.shopPickerIndex]
-      let foodType = foodTypePickerList[params.foodTypePickerIndex]
+      let typeName = foodTypePickerList[params.foodTypePickerIndex]
 
-      //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
+      //储存路径：餐厅图片/地区名/餐厅名/food/商品类型名_商品名_时间戳.图片格式
       cloudPath = cloudPath + ({
           XA: '翔安',
           SM: '思明',
           HY: '海韵'
-        })[address] + '/' + shopName + '/food/' + foodType + '_' + params.name + '_' +
+        })[address] + '/' + shopName + '/food/' + typeName + '_' + params.name + '_' +
         new Date().getTime() + params.foodImg.match('.[^.]+?$')[0]
 
       wx.cloud.uploadFile({
           cloudPath: cloudPath,
           filePath: params.foodImg, // 文件路径
         }).then(res => {
-          //上传数据库 food 和 canteen
+          //上传数据库 food
           var newForm = {
             allNum: params.allNum,
             curNum: params.allNum,
@@ -169,54 +169,22 @@ Page({
             img: res.fileID,
             name: params.name,
             price: params.price,
-            type: canteens[params.shopPickerIndex].foodList[params.foodTypePickerIndex].type
+            typeName: typeName,
+            tag: params.tag
           }
-          //food数据库
           db.collection('food').add({
               data: newForm
             }).then(res => {
-              //canteen数据库
-              newForm._id = res._id
-              let path = 'foodList.' + params.foodTypePickerIndex + '.food'
-              let _id = canteens[params.shopPickerIndex]._id
-              wx.cloud.callFunction({
-                  name: 'dbUpdate',
-                  data: {
-                    table: 'canteen',
-                    _id: _id,
-                    formData: newForm,
-                    path: path,
-                    push: true
-                  }
-                })
-                .then(res => {
-                  wx.hideLoading()
-                  if (res.result.success && res.result.res.stats.updated === 1) {
-                    wx.showToast({
-                      title: '提交成功',
-                      icon: 'success',
-                      duration: 2000
-                    })
-                    //返回上一页
-                    setTimeout(() => {
-                      wx.navigateBack()
-                    }, 2100);
-                  } else {
-                    wx.showToast({
-                      title: '数据提交失败',
-                      icon: 'error',
-                      duration: 2000
-                    })
-                  }
-                })
-                .catch(error => {
-                  wx.hideLoading()
-                  wx.showToast({
-                    title: '数据提交失败',
-                    icon: 'error',
-                    duration: 2000
-                  })
-                })
+              wx.hideLoading()
+              wx.showToast({
+                title: '提交成功',
+                icon: 'success',
+                duration: 1500
+              })
+              //返回上一页
+              setTimeout(() => {
+                wx.navigateBack()
+              }, 1600);
             })
             .catch(error => {
               wx.hideLoading()
@@ -226,6 +194,14 @@ Page({
                 duration: 2000
               })
             })
+        })
+        .catch(error => {
+          wx.hideLoading()
+          wx.showToast({
+            title: '数据提交失败',
+            icon: 'error',
+            duration: 2000
+          })
         })
         .catch(error => {
           wx.hideLoading()
@@ -264,6 +240,9 @@ Page({
       foodImg: {
         required: true
       },
+      tag: {
+        maxlength: 4
+      }
     }
 
     const messages = {
@@ -292,6 +271,9 @@ Page({
       foodImg: {
         required: '请添加商品图片'
       },
+      tag: {
+        maxlength: '标签最长4个字符'
+      }
     }
     this.WxValidate = new WxValidate(rules, messages)
   }

@@ -44,6 +44,7 @@ Page({
 
     wx.showLoading({
       title: '获取信息中',
+      mask: true
     })
     var p1 = db.collection("canteen").get()
     var p2 = that.getUserNotices()

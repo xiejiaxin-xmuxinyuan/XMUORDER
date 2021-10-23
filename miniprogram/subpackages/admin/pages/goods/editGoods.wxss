@@ -1,0 +1,8 @@
+.tab-page {
+  min-height: 75vh;
+  margin-bottom: 5vh;
+}
+
+.footer {
+  margin-bottom: 0;
+}
