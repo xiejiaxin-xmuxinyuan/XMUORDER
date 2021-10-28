@@ -45,7 +45,7 @@ Page({
     var record = that.data.record[e.currentTarget.dataset.index]
     record = JSON.stringify(record)
     wx.navigateTo({
-      url: '../feedback/feedback?record='+record,
+      url: '../feedback/feedback?record=' + record,
     })
   }
 })
