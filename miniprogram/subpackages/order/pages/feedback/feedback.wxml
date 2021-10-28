@@ -1,18 +1,18 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="true">
-    <view slot="content">意见反馈</view>
-  </cu-custom>
+  <view slot="content">意见反馈</view>
+</cu-custom>
 
-  <view wx:if="{{ haveRecord }}">
+<form bindsubmit="onSubmit">
   <view class="cu-card article ">
     <view class="cu-item shadow-warp myorder">
       <view class="title">
         <view>
           当前订单
-          <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
-          {{record.cName}}
         </view>
       </view>
       <view class="mycontent">
+        <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
+        {{record.cName}}
         <view wx:for="{{record.record}}" wx:for-item="i">
           <view>
             <view class="text-cut text-bold">{{i.food}}</view>
@@ -32,4 +32,18 @@
       </view>
     </view>
   </view>
-</view>
+  <view class="cu-list menu card-menu margin-top shadow-warp" style="background-color: white;">
+    <view class="cu-item">
+      <view class="content">
+        <text class="cuIcon-people text-gray"></text>
+        <text>意见</text>
+        <input placeholder="请输入意见" name="feedback" class="text-right fr"></input>
+      </view>
+    </view>
+    <view class="save">
+      <button class="bg-gradual-blue round " form-type="submit">
+        <text class="cuIcon-upload"> 提交</text>
+      </button>
+    </view>
+  </view>
+</form>
