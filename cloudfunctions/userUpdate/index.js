@@ -1,3 +1,13 @@
+/**
+ * 云函数修改当前用户信息
+ * 参数： 
+ *        formData: 更新的数据如 {nickName: '新昵称', address: '新地址', identity: {type:"admin"}}
+ * 
+ * 返回： object 
+ *        成功：{success: ture, res: 数据库操作的返回值}
+ *        失败：{success: false}
+ */
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
