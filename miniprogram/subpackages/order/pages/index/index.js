@@ -248,7 +248,7 @@ Page({
   },
   toFeedback: function (e) {
     wx.navigateTo({
-      url: '../feedback/feedback',
+      url: '../feedback/index',
     })
   },
   toSetting: function (e) {
