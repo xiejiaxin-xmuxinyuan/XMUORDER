@@ -1,7 +1,7 @@
-<!-- 信息页面test -->
+<!-- 公告页面 -->
 <view class="tab-page" bindtouchstart="infoTouchStart" bindtouchend="infoTouchEnd" wx:if="{{pageCurr === 'info'}}">
   <cu-custom bgColor="bg-gradual-blue">
-    <view slot="content">信息</view>
+    <view slot="content">公告</view>
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
@@ -90,6 +90,7 @@
     <view class="flex justify-center bg-white padding">
       <view class="user-avatar">
         <open-data type="userAvatarUrl"></open-data>
+        <text catchtap="getUserProfile" class="update-btn text-gray">点击更新个人信息</text>
       </view>
     </view>
     <view class="cu-item">
@@ -160,7 +161,7 @@
     data-cur="info">
     <view class='cuIcon-activityfill'>
     </view>
-    <view>信息</view>
+    <view>公告</view>
   </view>
   <view style="color: {{pageCurr === 'shop' ? 'rgb(13, 155, 222);' : ';'}}" class="action" bindtap="onNavChange"
     data-cur="shop">

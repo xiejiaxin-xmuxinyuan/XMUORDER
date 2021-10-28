@@ -257,6 +257,59 @@ Page({
       icon: 'none'
     })
   },
+  getUserProfile: function (e) {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    wx.getUserProfile({
+        desc: '用于完善会员资料'
+      })
+      .then(res => {
+        let userInfo = res.userInfo
+        //更新数据库内信息
+        wx.cloud.callFunction({
+            name: "userUpdate",
+            data: {
+              formData: {
+                nickName: userInfo.nickName
+              }
+            }
+          })
+          .then(res => {
+            wx.hideLoading()
+            if (res.result.success) {
+              app.globalData.nickName = userInfo.nickName
+              that.setData({
+                nickName: userInfo.nickName,
+                // avatarUrl: userInfo.avatarUrl
+              })
+            } else {
+              wx.showToast({
+                title: '更新信息失败',
+                icon: 'error',
+                duration: 2000
+              })
+            }
+          })
+          .catch(e => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '更新信息失败',
+              icon: 'error',
+              duration: 2000
+            })
+          })
+      })
+      .catch(erro => {
+        wx.hideLoading()
+        wx.showToast({
+          title: '更新信息失败',
+          icon: 'error',
+          duration: 2000
+        })
+      })
+  },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
     var date = new Date(inputTime);
     var y = date.getFullYear();
