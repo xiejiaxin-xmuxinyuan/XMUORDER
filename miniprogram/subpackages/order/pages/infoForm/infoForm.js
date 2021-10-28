@@ -51,8 +51,8 @@ Page({
             mask: true
           })
           app.globalData.name = userInfo.name,
-          app.globalData.userID = userInfo.userID,
-          app.globalData.address = userInfo.address
+            app.globalData.userID = userInfo.userID,
+            app.globalData.address = userInfo.address
           app.globalData.phone = userInfo.phone
           app.globalData.nickName = userInfo.nickName
 
@@ -65,7 +65,9 @@ Page({
                 name: userInfo.name,
                 address: userInfo.address,
                 nickName: userInfo.nickName,
-                identity: {type: 'user'}
+                identity: {
+                  type: 'user'
+                }
               }
             })
             .then(() => {
@@ -101,10 +103,15 @@ Page({
   },
 
   getUserProfile: function (e) {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
     wx.getUserProfile({
         desc: '用于完善会员资料'
       })
       .then(res => {
+        wx.hideLoading()
         let userInfo = res.userInfo
         that.setData({
           nickName: userInfo.nickName,
@@ -112,6 +119,7 @@ Page({
         })
       })
       .catch(erro => {
+        wx.hideLoading()
         wx.showToast({
           title: '获取信息失败',
           icon: 'error',
