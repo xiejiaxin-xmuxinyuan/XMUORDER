@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
   const record = event.record
   const feedback = event.feedback
   try {
-    const openid = wxContext.openid
+    const openid = wxContext.OPENID
     const rID = record._id
     await db.collection('userFeedbacks').add({
       data: {
