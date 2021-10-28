@@ -18,6 +18,7 @@ exports.main = async (event, context) => {
         openid: openid,
         feedback: feedback,
         rID : rID,
+        date : record.date,
         state : 0
       }
     })
