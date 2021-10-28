@@ -19,7 +19,7 @@ Page({
       name:'getFeedback',
     }).then(res => {
       that.setData({
-        record : res.result.res.data
+        records : res.result.res.data
       })
     })
   },
