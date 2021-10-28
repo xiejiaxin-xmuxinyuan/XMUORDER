@@ -15,7 +15,7 @@ exports.main = async (event, context) => {
     await db.collection('userFeedbacks').add({
       data: {
         record: record,
-        openid: openid,
+        _openid: openid,
         feedback: feedback,
         rID : rID,
         date : record.date,
