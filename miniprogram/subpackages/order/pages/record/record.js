@@ -2,14 +2,12 @@
 var that
 const app = getApp()
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
     record: []
   },
-
   /**
    * 生命周期函数--监听页面加载
    */

@@ -23,6 +23,12 @@ Page({
       name: '公告',
       path: '../notice/notice'
     }, {
+      icon : 'commentfill',
+      color : 'green',
+      name : '反馈',
+      path : '../feedback/feedback'
+    },
+    {
       icon: 'friendfill',
       color: 'grey',
       name: '员工管理',
