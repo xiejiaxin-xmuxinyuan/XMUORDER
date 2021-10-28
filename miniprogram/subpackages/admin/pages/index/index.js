@@ -18,41 +18,48 @@ Page({
   data: {
     pageCurr: "admin",
     iconList: [{
-      icon: 'noticefill',
-      color: 'yellow',
-      name: '公告',
-      path: '../notice/notice'
-    }, {
-      icon: 'friendfill',
-      color: 'grey',
-      name: '员工管理',
-      path: ''
-    }, {
-      icon: 'taoxiaopu',
-      color: 'blue',
-      name: '商店信息',
-      path: ''
-    }, {
-      icon: 'goodsnewfill',
-      color: 'orange',
-      name: '商品管理',
-      path: '../goods/goods'
-    }, {
-      icon: 'rankfill',
-      color: 'red',
-      name: '统计',
-      path: ''
-    }, {
-      icon: 'settingsfill',
-      color: 'olive',
-      name: '设置',
-      path: ''
-    }, {
-      icon: 'questionfill',
-      color: 'black',
-      name: '帮助',
-      path: ''
-    }]
+        icon: 'noticefill',
+        color: 'yellow',
+        name: '公告',
+        path: '../notice/notice'
+      }, {
+        icon: 'commentfill',
+        color: 'green',
+        name: '反馈',
+        path: '../feedback/feedback'
+      },
+      {
+        icon: 'friendfill',
+        color: 'grey',
+        name: '员工管理',
+        path: ''
+      }, {
+        icon: 'taoxiaopu',
+        color: 'blue',
+        name: '商店信息',
+        path: ''
+      }, {
+        icon: 'goodsnewfill',
+        color: 'orange',
+        name: '商品管理',
+        path: '../goods/goods'
+      }, {
+        icon: 'rankfill',
+        color: 'red',
+        name: '统计',
+        path: ''
+      }, {
+        icon: 'settingsfill',
+        color: 'olive',
+        name: '设置',
+        path: ''
+      }, {
+        icon: 'questionfill',
+        color: 'black',
+        name: '帮助',
+        path: ''
+      }
+    ]
   },
 
   onLoad: function (options) {

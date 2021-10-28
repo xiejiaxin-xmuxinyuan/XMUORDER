@@ -23,7 +23,8 @@
         "pages/notice/notice",
         "pages/goods/goods",
         "pages/goods/addGoods",
-        "pages/goods/editGoods"
+        "pages/goods/editGoods",
+        "pages/feedback/feedback"
       ]
     }
   ],
