@@ -12,6 +12,7 @@
         "pages/canteen/goodsDetail",
         "pages/canteen/settlement",
         "pages/infoForm/infoForm",
+        "pages/feedback/index",
         "pages/feedback/feedback"
       ]
     },

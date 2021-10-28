@@ -38,3 +38,11 @@
 .myorder .my-bottom .price{
   margin-right: 15rpx;
 }
+
+.save {
+  margin: 60rpx 60rpx;
+}
+
+.save > button{
+  width: 15rem;
+}
