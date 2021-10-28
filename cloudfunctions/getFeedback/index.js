@@ -7,28 +7,21 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const record = event.record
-  const feedback = event.feedback
   try {
     const openid = wxContext.OPENID
-    const rID = record._id
-    await db.collection('userFeedbacks').add({
-      data: {
-        record: record,
-        openid: openid,
-        feedback: feedback,
-        rID : rID,
-        date : record.date,
-        state : 0
-      }
+    const res = await db.collection('userFeedbacks').where({
+      openid: openid
     })
+    .orderBy('date','desc')
+    .get()
+
     return {
-      success: true
+      success : true,
+      res : res
     }
   } catch (e) {
     return {
       success: false
     }
   }
-
 }
