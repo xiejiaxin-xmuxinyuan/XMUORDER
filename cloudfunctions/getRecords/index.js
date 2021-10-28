@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
   const openid = wxContext.OPENID
   try{
     const record = await db.collection('userRecord').where({
-      openid: openid
+      _openid: openid
     })
     .orderBy('date','desc')
     .get()

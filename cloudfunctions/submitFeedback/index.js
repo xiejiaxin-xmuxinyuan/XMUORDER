@@ -12,10 +12,11 @@ exports.main = async (event, context) => {
   try {
     const openid = wxContext.OPENID
     const rID = record._id
+    console.log(openid)
     await db.collection('userFeedbacks').add({
       data: {
         record: record,
-        openid: openid,
+        _openid: openid,
         feedback: feedback,
         rID : rID,
         date : record.date,
