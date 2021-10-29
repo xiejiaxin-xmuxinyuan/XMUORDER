@@ -11,11 +11,8 @@ const $ = _.aggregate
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
-
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
-
-
   return new Promise((resolve, reject) => {
     db.collection('userRecord')
       .where({
