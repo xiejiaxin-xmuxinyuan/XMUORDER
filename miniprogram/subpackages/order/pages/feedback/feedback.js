@@ -50,15 +50,27 @@ Page({
         if (res.result.success) {
           util.showToast('提交成功', 'success')
           setTimeout(() => {
-            wx.navigateBack()
+            wx.navigateBack({
+              delta: 2,
+            })
           }, 1000);
         } else {
           util.showToast('提交失败', 'error')
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 2,
+            })
+          }, 1000);
         }
       })
       .catch(e => {
         wx.hideLoading()
         util.showToast('提交失败', 'error')
+        setTimeout(() => {
+          wx.navigateBack({
+            delta: 2,
+          })
+        }, 1000);
       })
   }
 })

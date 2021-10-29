@@ -11,7 +11,12 @@
             <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
             {{item.cName}}
           </view>
-          <view class="cuIcon-message text-orange" data-index="{{index}}" catchtap="feedback"> 反馈</view>
+          <block>
+            <view wx:if="{{!(item.feedback.length)}}" class="cuIcon-message text-orange" data-index="{{index}}"
+              catchtap="feedback"> 反馈</view>
+            <view wx:elif="{{item.feedback[0].state}}" class="cuIcon-message text-green"> 已处理</view>
+            <view wx:else class="cuIcon-message text-red"> 待处理</view>
+          </block>
         </view>
         <view class="mycontent">
           <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">

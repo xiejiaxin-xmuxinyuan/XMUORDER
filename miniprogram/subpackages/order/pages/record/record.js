@@ -1,6 +1,6 @@
 // subpackages/order/pages/record/record.js
+var util = require('../../../../utils/util.js')
 var that
-const app = getApp()
 Page({
   /**
    * 页面的初始数据
@@ -13,33 +13,33 @@ Page({
    */
   onLoad: function (options) {
     that = this
-    wx.showLoading({
-      title: '加载中',
-    })
+    util.showLoading('加载中')
     wx.cloud.callFunction({
-      name: 'getRecords',
-      success(res) {
-        wx.hideLoading()
+        name: 'getRecords',
+      }).then(res => {
+        util.hideLoading()
         if (res.result.success) {
           that.setData({
-            record: res.result.record.data
+            record: res.result.record
           })
         } else {
-          wx.showModal({
-            showCancel: false,
-            title: '错误',
-            content: '获取订单失败',
-            success(res) {
-              if (res.confirm) {
-                wx.navigateBack({
-                  delta: 1,
-                })
-              }
-            }
-          })
+          util.showToast('加载失败', 'error')
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 1,
+            })
+          }, 1000);
         }
-      }
-    })
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('加载失败', 'error')
+        setTimeout(() => {
+          wx.navigateBack({
+            delta: 1,
+          })
+        }, 1000);
+      })
   },
   feedback: function (e) {
     var record = that.data.record[e.currentTarget.dataset.index]
