@@ -39,7 +39,7 @@ Page({
     that = this
     if (!app.globalData.isActive) {
       that.goToInform()
-      return //中断线程
+      return
     }
 
     wx.showLoading({

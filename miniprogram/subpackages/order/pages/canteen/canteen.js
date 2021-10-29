@@ -86,7 +86,11 @@ Page({
   //页面退出时保存已点购物车
   onUnload() {
     let cID = that.data.canteen.cID
-    app.globalData.allOrderList[cID] = that.data.orderList
+    if ('delete' in app.globalData.allOrderList[cID]) {
+      delete app.globalData.allOrderList[cID]
+    } else {
+      app.globalData.allOrderList[cID] = that.data.orderList
+    }
   },
   tabSelect(e) {
     //滚动到底部保证可见
