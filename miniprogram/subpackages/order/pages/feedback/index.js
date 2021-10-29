@@ -7,7 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    records:[]
+    feedbacks:[]
   },
 
   /**
@@ -15,11 +15,16 @@ Page({
    */
   onLoad: function (options) {
     var that = this
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
     wx.cloud.callFunction({
       name:'getFeedback',
     }).then(res => {
+      wx.hideLoading()
       that.setData({
-        records : res.result.res.data
+        feedbacks : res.result.res.data
       })
     })
   },
