@@ -10,14 +10,14 @@ exports.main = async (event, context) => {
   try {
     const openid = wxContext.OPENID
     const res = await db.collection('userFeedbacks').where({
-      _openid: openid
-    })
-    .orderBy('date','desc')
-    .get()
+        _openid: openid
+      })
+      .orderBy('date', 'desc')
+      .get()
 
     return {
-      success : true,
-      res : res
+      success: true,
+      res: res
     }
   } catch (e) {
     return {
