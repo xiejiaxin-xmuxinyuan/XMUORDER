@@ -1,4 +1,4 @@
-// subpackages/order/pages/feedback/feedback.js
+var util = require('../../../../utils/util.js')
 var that
 
 Page({
@@ -33,28 +33,44 @@ Page({
   onSubmit: function (e) {
     var record = that.data.record
     var feedback = e.detail.value.feedback
-    wx.showLoading({
-      title: '提交中',
-    })
+    if (!feedback.length) {
+      util.showToast('请输入意见内容')
+      return
+    }
+
+    util.showLoading('提交中')
     wx.cloud.callFunction({
-      name: 'submitFeedback',
-      data: {
-        record: record,
-        feedback: feedback
-      }
-    }).then(res => {
-      wx.hideLoading()
-      wx.showModal({
-        showCancel : false,
-        content : '提交成功',
-        success(res){
-          if(res.confirm){
+        name: 'submitFeedback',
+        data: {
+          record: record,
+          feedback: feedback
+        }
+      }).then(res => {
+        wx.hideLoading()
+        if (res.result.success) {
+          util.showToast('提交成功', 'success')
+          setTimeout(() => {
             wx.navigateBack({
-              delta: 1,
+              delta: 2,
             })
-          }
+          }, 1000);
+        } else {
+          util.showToast('提交失败', 'error')
+          setTimeout(() => {
+            wx.navigateBack({
+              delta: 2,
+            })
+          }, 1000);
         }
       })
-    })
+      .catch(e => {
+        wx.hideLoading()
+        util.showToast('提交失败', 'error')
+        setTimeout(() => {
+          wx.navigateBack({
+            delta: 2,
+          })
+        }, 1000);
+      })
   }
 })
