@@ -57,6 +57,7 @@ Page({
         }
       })
       .catch(e => {
+        wx.hideLoading()
         util.showToast('提交失败', 'error')
       })
   }

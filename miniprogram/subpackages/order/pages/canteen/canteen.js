@@ -1,6 +1,5 @@
-// pages/canteen/canteen.js
+var util = require('../../../../utils/util.js')
 var that
-const db = wx.cloud.database()
 const app = getApp()
 Page({
   /**
@@ -203,11 +202,7 @@ Page({
         money: parseFloat(money.toFixed(2))
       })
     } else {
-      wx.showToast({
-        title: '库存不足',
-        icon: 'none',
-        duration: 500
-      })
+      util.showToast('库存不足')
     }
   },
   numDecBtn: function (e) {
@@ -295,15 +290,12 @@ Page({
         url: './settlement',
       })
     } else {
-      wx.showToast({
-        title: '请选择要购买的商品',
-        icon: 'none',
-        duration: 500
-      })
+      util.showToast('请选择要购买的商品')
     }
   },
   canteenRefresh: function () { //刷新canteen数据
     const cID = that.data.canteen.cID
+    util.showLoading('加载中')
     wx.cloud.callFunction({
         name: 'getCanteen',
         data: {
@@ -311,6 +303,7 @@ Page({
         }
       })
       .then(res => {
+        util.hideLoading()
         if (res.result.success) {
           var newFoodList = res.result.canteen.foodList
           var oldFoodList = that.data.foodList
@@ -360,28 +353,14 @@ Page({
               showCancel: false,
               confirmText: '好的'
             })
-          } else {
-            wx.showToast({
-              title: '数据刷新成功',
-              icon: 'none',
-              duration: 1000
-            })
           }
         } else {
-          wx.showToast({
-            title: '数据刷新失败',
-            icon: 'none',
-            duration: 1000
-          })
+          util.showToast('数据刷新失败')
         }
       })
-      .catch(res => {
-        console.error(res)
-        wx.showToast({
-          title: '数据刷新失败',
-          icon: 'none',
-          duration: 1000
-        })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('数据刷新失败')
       })
   },
   toGoodsDetail: function (e) {
