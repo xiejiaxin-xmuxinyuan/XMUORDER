@@ -1,4 +1,8 @@
-// 云函数入口文件
+/**
+ * 云函数用于获取 用户订单记录
+ * 参数 ： openid:用户id ； 
+ * 
+ */
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
