@@ -46,7 +46,7 @@ Page({
 
     //如果全局变量中有该餐厅购物车信息，则更新到页面中
     var cID = that.data.canteen.cID
-    if (that.data.canteen.cID in that.data.allOrderList) {
+    if (cID in that.data.allOrderList) {
       var orderList = that.data.allOrderList[cID]
       var massages = []
       for (const key in orderList) {
@@ -85,8 +85,17 @@ Page({
   //页面退出时保存已点购物车
   onUnload() {
     let cID = that.data.canteen.cID
-    if ('delete' in app.globalData.allOrderList[cID]) {
+    let cIndex = that.data.cIndex
+    if ('delete' in app.globalData.allOrderList[cID]) { //如果是完成订单时触发
+      //删除对应全局数据
       delete app.globalData.allOrderList[cID]
+      var canteen = app.globalData.canteens[cIndex]
+      canteen.foodList.forEach((element, index) => {
+        canteen.foodList[index] = {
+          id: element.id,
+          name: element.name
+        }
+      })
     } else {
       app.globalData.allOrderList[cID] = that.data.orderList
     }
