@@ -169,8 +169,7 @@ Page({
             url: '../infoForm/infoForm',
           })
         }
-      },
-      fail: err => console.error(err)
+      }
     })
   },
   toAdmin: function () {

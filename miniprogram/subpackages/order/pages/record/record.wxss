@@ -1,14 +1,19 @@
 /* subpackages/order/pages/record/record.wxss */
 
-.no-record{
+.no-record {
   margin: 50% 100rpx;
   text-align: center;
   font-size: larger;
 }
 
-.no-record > view{
+.no-record>view {
   margin-bottom: 50rpx;
   font-size: 150rpx;
+}
+
+.allLoaded {
+  margin: 30rpx;
+  text-align: center;
 }
 
 .myorder {
@@ -16,7 +21,7 @@
   padding: 0 5%;
 }
 
-.myorder > .title {
+.myorder>.title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -31,21 +36,21 @@
 
 }
 
-.myorder .mycontent > view {
+.myorder .mycontent>view {
   flex-direction: column;
   padding: 30rpx 20rpx;
 }
 
-.myorder .mycontent > view > view{
+.myorder .mycontent>view>view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.myorder .my-bottom{
+.myorder .my-bottom {
   margin-top: 15rpx;
 }
 
-.myorder .my-bottom .price{
+.myorder .my-bottom .price {
   margin-right: 15rpx;
 }

@@ -39,7 +39,9 @@
       </view>
     </view>
   </view>
-
+  <view wx:if="{{currPage >= totalPage}}" class="allLoaded text-gray">
+  所有订单已加载
+  </view>
 </view>
 
 <view class="no-record text-gray" wx:else>

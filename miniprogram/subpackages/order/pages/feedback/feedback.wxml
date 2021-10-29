@@ -31,7 +31,7 @@
     </view>
   </view>
 </view>
-<view class="cu-list menu card-menu margin-top shadow-warp" style="background-color: white;">
+<view class="cu-list menu card-menu margin-top shadow-warp margin-bottom-lg" style="background-color: white;">
   <view class="cu-item">
     <view class="content">
       <text class="cuIcon-message text-grey" style="font-size: large;"></text>反馈意见
