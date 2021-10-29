@@ -1,4 +1,8 @@
-// 云函数入口文件
+/**
+ * 云函数用于获取 用户订单记录
+ * 参数 ： openid:用户id ； 
+ * 
+ */
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
@@ -11,11 +15,8 @@ const $ = _.aggregate
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
-
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
-
-
   return new Promise((resolve, reject) => {
     db.collection('userRecord')
       .where({
