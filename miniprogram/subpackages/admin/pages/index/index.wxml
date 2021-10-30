@@ -12,6 +12,15 @@
   </view>
 </view>
 
+<!-- 订单页面 -->
+<view class="tab-page" wx:if="{{pageCurr === 'order'}}">
+  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+    <view slot="content">订单</view>
+  </cu-custom>
+
+</view>
+
+
 <!-- 个人页面 -->
 <view class="tab-page" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
@@ -69,14 +78,17 @@
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
-  <view style="color: {{pageCurr === 'admin' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange"
-    data-cur="admin">
-    <view class='cuIcon-activityfill'>
+  <view style="color: {{pageCurr === 'admin' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="admin">
+    <view class='cuIcon-circlefill'>
     </view>
     <view>管理</view>
   </view>
-  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange"
-    data-cur="user">
+  <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
+    <view class='cuIcon-formfill'>
+    </view>
+    <view>订单</view>
+  </view>
+  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="user">
     <view class='cuIcon-myfill'>
     </view>
     <view>我的</view>
