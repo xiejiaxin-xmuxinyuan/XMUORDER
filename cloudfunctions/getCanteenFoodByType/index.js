@@ -1,12 +1,15 @@
 /**
- * 云函数用于获取当前用户订单记录
- * 参数 ： pageSize(选填)： 每个分页记录数，默认5
+ * 云函数获取指定商店指定类别某页的商品
+ * 参数 ：cID：餐厅ID
+ *        typeName：类别名称
+ *        pageSize(选填)： 每个分页记录数，默认5
  *        currPage(选填)： 当前页序号，默认1
+ *        
  * 返回：
  *      (成功)     
  *      object：{ 
  *      success: 1,
- *      record: 当前分页记录数组（若当前页无记录返回空数组）,
+ *      food: 当前分页记录数组,
  *      currPage: 当前页序号,
  *      totalPage: 总页数,
  *      totalCount: 总记录数,
@@ -16,72 +19,57 @@
  *        success: 1
  *      }
  */
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
-
 const db = cloud.database()
-const _ = db.command
-const $ = _.aggregate
+
 
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
-  const openid = wxContext.OPENID
+  const cID = event.cID
+  const typeName = event.typeName
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
-  const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
+  var currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
+
   return new Promise((resolve, reject) => {
-    db.collection('userRecord')
+    db.collection('food')
       .where({
-        openid: openid
+        cID: cID,
+        typeName: typeName
       })
       .count()
       .then(res => {
         const totalCount = res.total
         const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
-        if (currPage > totalPage) {
+        if (totalPage === 0) { //如果没有任何记录
           resolve({
             success: true,
-            record: [],
+            food: [],
             currPage: currPage,
             totalPage: totalPage,
             totalCount: totalCount,
           })
         }
 
-        db.collection('userRecord').aggregate()
-          .match({
-            openid: openid
-          })
-          .sort({ //日期字符串从大到小排序
-            date: -1
+        if (currPage > totalPage) {
+          currPage = totalPage
+        }
+
+        db.collection('food')
+          .where({
+            cID: cID,
+            typeName: typeName
           })
           .skip((currPage - 1) * pageSize)
           .limit(pageSize)
-          .lookup({
-            let: {
-              id: '$_id'
-            },
-            from: 'userFeedbacks',
-            pipeline: $.pipeline()
-              .match(_.expr($.and([ //匹配openid和rID
-                $.eq(['$_openid', openid]),
-                $.eq(['$rID', '$$id'])
-              ])))
-              .replaceRoot({ //只显示state
-                newRoot: {
-                  state: '$state'
-                }
-              })
-              .done(),
-            as: 'feedback' //临时位置
-          })
-          .end()
+          .get()
           .then(res => {
             resolve({
               success: true,
-              record: res.list,
+              food: res.data,
               currPage: currPage,
               totalPage: totalPage,
               totalCount: totalCount,
@@ -93,12 +81,6 @@ exports.main = async (event, context) => {
               success: false
             })
           })
-      })
-      .catch(e => {
-        console.error(e)
-        reject({
-          success: false
-        })
       })
   })
 }

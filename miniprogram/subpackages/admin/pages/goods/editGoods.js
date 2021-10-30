@@ -20,7 +20,7 @@ Page({
     let index1 = options.index1
     let index2 = options.index2
 
-    var canteen = app.globalData.canteens[index0]
+    var canteen = app.globalData.canteen[index0]
     const identity = app.globalData.identity
     var food = canteen.foodList[index1].food[index2]
     that.setData({
