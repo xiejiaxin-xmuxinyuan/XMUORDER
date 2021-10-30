@@ -86,18 +86,20 @@ Page({
   onUnload() {
     let cID = that.data.canteen.cID
     let cIndex = that.data.cIndex
-    if ('delete' in app.globalData.allOrderList[cID]) { //如果是完成订单时触发
-      //删除对应全局数据
-      delete app.globalData.allOrderList[cID]
-      var canteen = app.globalData.canteens[cIndex]
-      canteen.foodList.forEach((element, index) => {
-        canteen.foodList[index] = {
-          id: element.id,
-          name: element.name
-        }
-      })
-    } else {
-      app.globalData.allOrderList[cID] = that.data.orderList
+    if (cID in app.globalData.allOrderList) {
+      if ('delete' in app.globalData.allOrderList[cID]) { //如果是完成订单时触发
+        //删除对应全局数据
+        delete app.globalData.allOrderList[cID]
+        var canteen = app.globalData.canteens[cIndex]
+        canteen.foodList.forEach((element, index) => {
+          canteen.foodList[index] = {
+            id: element.id,
+            name: element.name
+          }
+        })
+      } else {
+        app.globalData.allOrderList[cID] = that.data.orderList
+      }
     }
   },
   tabSelect(e) {
