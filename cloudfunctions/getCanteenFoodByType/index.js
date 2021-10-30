@@ -1,3 +1,25 @@
+/**
+ * 云函数获取指定商店指定类别某页的商品
+ * 参数 ：cID：餐厅ID
+ *        typeName：类别名称
+ *        pageSize(选填)： 每个分页记录数，默认5
+ *        currPage(选填)： 当前页序号，默认1
+ *        
+ * 返回：
+ *      (成功)     
+ *      object：{ 
+ *      success: 1,
+ *      food: 当前分页记录数组,
+ *      currPage: 当前页序号,
+ *      totalPage: 总页数,
+ *      totalCount: 总记录数,
+ *      }
+ *      (失败)
+ *      object: {
+ *        success: 1
+ *      }
+ */
+
 const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
