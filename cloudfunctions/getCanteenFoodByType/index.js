@@ -16,7 +16,7 @@
  *      }
  *      (失败)
  *      object: {
- *        success: 1
+ *        success: 0
  *      }
  */
 

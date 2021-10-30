@@ -24,7 +24,7 @@ Page({
         path: '../notice/notice'
       }, {
         icon: 'commentfill',
-        color: 'green',
+        color: 'brown',
         name: '反馈',
         path: '../feedback/feedback'
       },
