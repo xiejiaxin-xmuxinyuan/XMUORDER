@@ -181,7 +181,7 @@ Page({
                 icon: 'success',
                 duration: 1500
               })
-              //返回上一页
+              // 返回上一页
               setTimeout(() => {
                 wx.navigateBack()
               }, 1600);

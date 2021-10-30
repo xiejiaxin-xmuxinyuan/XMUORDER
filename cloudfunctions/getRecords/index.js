@@ -100,7 +100,5 @@ exports.main = async (event, context) => {
           success: false
         })
       })
-
-
   })
 }

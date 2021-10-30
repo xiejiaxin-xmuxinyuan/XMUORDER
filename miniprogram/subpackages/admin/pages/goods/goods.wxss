@@ -1,18 +1,23 @@
 /* subpackages/admin/pages/goods/goods.wxss */
 
 .tab-page {
-  min-height: 75vh;
-  margin-bottom: 5vh;
+  min-height: 70vh;
 }
 
 .footer {
-  margin-bottom: 0;
+  margin-bottom: 15%;
+}
+
+.page-bar{
+  margin: 30rpx;
+  display: flex;
+  justify-content: space-between;
 }
 
 .fixedBtn {
   font-size: 5vw;
   position: fixed;
-  right: 5%;
+  bottom: 20rpx;
 }
 
 .fixedBtn>view {
@@ -21,7 +26,7 @@
 
 .main {
   margin: 40rpx;
-  margin-bottom: 20%;
+  margin-bottom: 10%;
   background-color: white;
 }
 

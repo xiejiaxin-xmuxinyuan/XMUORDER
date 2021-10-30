@@ -351,6 +351,7 @@ Page({
               newCanteen[keyName] = oldCanteen[keyName]
             }
           })
+          console.log(newCanteen)
           app.globalData.canteens[that.data.cIndex] = newCanteen
 
           that.setData({
