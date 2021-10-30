@@ -75,8 +75,10 @@ Page({
   },
   shopPickerChange: function (e, setIndex = -1) {
     //若选择项不变
-    if (that.data.shopPickerIndex === e.detail.value) {
-      return
+    if (e!==null){
+      if (that.data.shopPickerIndex === e.detail.value) {
+        return
+      }
     }
 
     if (setIndex >= 0) {
