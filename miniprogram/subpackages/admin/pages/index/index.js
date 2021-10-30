@@ -37,7 +37,7 @@ Page({
         icon: 'taoxiaopu',
         color: 'blue',
         name: '商店信息',
-        path: ''
+        path: '../shop/shop'
       }, {
         icon: 'goodsnewfill',
         color: 'orange',
