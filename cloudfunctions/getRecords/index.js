@@ -1,7 +1,20 @@
 /**
- * 云函数用于获取 用户订单记录
- * 参数 ： openid:用户id ； 
- * 
+ * 云函数用于获取当前用户订单记录
+ * 参数 ： pageSize(选填)： 每个分页记录数，默认5
+ *        currPage(选填)： 当前页序号，默认1
+ * 返回：
+ *      (成功)     
+ *      object：{ 
+ *      success: 1,
+ *      record: 当前分页记录数组（若当前页无记录返回空数组）,
+ *      currPage: 当前页序号,
+ *      totalPage: 总页数,
+ *      totalCount: 总记录数,
+ *      }
+ *      (失败)
+ *      object: {
+ *        success: 1
+ *      }
  */
 const cloud = require('wx-server-sdk')
 cloud.init({

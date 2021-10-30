@@ -1,6 +1,6 @@
 /**
- *  云函数用于提交用户反馈
- * 参数 ： openid : 用户ID ；feedback : 用户反馈信息;
+ *  云函数用于提交当前用户反馈
+ * 参数 ： feedback : 用户反馈信息;
  * 返回 ： success ： 状态码
  */
 const cloud = require('wx-server-sdk')
