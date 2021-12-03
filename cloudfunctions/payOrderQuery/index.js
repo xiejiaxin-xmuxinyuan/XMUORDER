@@ -6,8 +6,8 @@
  *    nonce_str: 随机字符串（32位以内：建议16位）
  * 
  * 返回： object 
- *        成功：{success: ture, info: 数据库操作的返回值}
- *        失败：{success: false}
+ *        成功：{success: ture, info: 订单详情}
+ *        失败：{success: false, returnMsg: 查询失败原因}
  */
 
 const cloud = require('wx-server-sdk')
@@ -32,6 +32,7 @@ exports.main = async (event, context) => {
       returnMsg: res.returnMsg
     }
   }
+
   //交易状态在前端返回值进行判断
   return {
     success: true,
