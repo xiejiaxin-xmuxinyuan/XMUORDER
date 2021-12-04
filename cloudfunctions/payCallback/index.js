@@ -12,8 +12,6 @@ cloud.init({
 
 
 exports.main = async (event, context) => {
-  console.log('回调event:', event)
-
   if (event.resultCode !== 'SUCCESS' || event.returnCode !== 'SUCCESS') {
     return {
       errcode: 1,
@@ -25,19 +23,63 @@ exports.main = async (event, context) => {
   const out_trade_no = event.outTradeNo
   const sub_mch_id = event.subMchId
   const nonce_str = event.nonceStr
-
   const res = await cloud.cloudPay.queryOrder({
     out_trade_no: out_trade_no,
     sub_mch_id: sub_mch_id,
     nonce_str: nonce_str
   })
 
-  console.log('查单结果：', res)
+  //读取数据库订单
+  const db = cloud.database()
+  var dbRes = await db.collection('orders').where({
+    'orderInfo.outTradeNo': out_trade_no
+  }).get()
+  var order = dbRes.data[0]
 
-  //校验返回的订单金额是否与商户侧的订单金额一致 TODO
-  // const totalFee = res.totalFee //订单总金额（cashFee是不包括优惠券的金额）
-  // 读取数据库 判断订单状态 数据库更新订单信息 TODO
+  //校验返回的订单金额是否与商户侧的订单金额一致
+  const totalFee = res.totalFee
+  if (totalFee !== order.payInfo.feeInfo.totalFee) { //若金额不一致则订单存在问题
+    //订单存在问题
+    if (res.tradeState === 'SUCCESS') {
+      //若已付款则退款，修改数据库信息
+    } else {
+      //若未付款则关闭订单，修改数据库信息
+    }
 
+    return {
+      errcode: 0,
+      errmsg: '金额不一致'
+    }
+  }
+
+  if (res.tradeState === 'SUCCESS') {
+    //构建更新对象
+    var formData = {}
+    var flag = false
+
+    if (order.orderInfo.orderState == 'NOTPAY') {
+      flag = true
+      formData['payInfo.tradeState'] = 'SUCCESS'
+      formData['payInfo.tradeStateMsg'] = '支付成功'
+    }
+    if (order.orderInfo.orderState == 'NOTPAY') {
+      flag = true
+      formData['orderInfo.orderState'] = 'NOTCONFIRM'
+      formData['orderInfo.orderStateMsg'] = '未确认'
+    }
+
+    if (flag) {
+      //更新数据库订单信息
+      await db.collection('orders')
+        .where({
+          'orderInfo.outTradeNo': out_trade_no
+        }).update({
+          data: {
+            ...formData
+          }
+        })
+    }
+  }
 
   return {
     errcode: 0,

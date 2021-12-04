@@ -41,29 +41,36 @@ exports.main = async (event, context) => {
         'orderInfo.outTradeNo': out_trade_no
       }).get()
 
-      //构建更新对象
       var order = dbRes.data[0]
-      var formData = {
-        'payInfo.tradeState': 'SUCCESS',
-        'payInfo.tradeStateMsg': '支付成功'
+
+      //构建更新对象
+      var formData = {}
+      var flag = false
+
+      if (order.orderInfo.orderState == 'NOTPAY') {
+        flag = true
+        formData['payInfo.tradeState'] = 'SUCCESS'
+        formData['payInfo.tradeStateMsg'] = '支付成功'
       }
       if (order.orderInfo.orderState == 'NOTPAY') {
+        flag = true
         formData['orderInfo.orderState'] = 'NOTCONFIRM'
         formData['orderInfo.orderStateMsg'] = '未确认'
       }
 
-      //更新数据库订单信息
-      res2 =  await db.collection('orders')
-        .where({
-          'orderInfo.outTradeNo': out_trade_no
-        }).update({
-          data: {
-            ...formData
-          }
-        })
+      if (flag) {
+        //更新数据库订单信息
+        await db.collection('orders')
+          .where({
+            'orderInfo.outTradeNo': out_trade_no
+          }).update({
+            data: {
+              ...formData
+            }
+          })
+      }
     }
 
-    //交易状态在前端返回值进行判断
     return {
       success: true,
       info: res
