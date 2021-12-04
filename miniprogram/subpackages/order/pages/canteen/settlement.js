@@ -90,7 +90,8 @@ Page({
             totalFee: goodsPrice + otherFee, //不包括优惠的总费用
             cashFee: goodsPrice + otherFee - discount //实付款
           },
-          tradeState: "NOTPAY" //具体见查询订单接口文档
+          tradeState: "NOTPAY",
+          tradeStateMsg: "未支付"
         },
         goodsInfo: { //商品信息
           shopInfo: {
@@ -103,7 +104,8 @@ Page({
         getFoodInfo: {
           time: that.data.timeToPick[that.data.pickedIndex],
           place: canteen.name + "默认取餐点",
-          state: 'NOTGET' //未取餐
+          getState: 'NOTGET',
+          getStateMsg: '未取餐'
         },
         orderInfo: {
           timeInfo: {
@@ -113,20 +115,22 @@ Page({
             endTime: undefined
           },
           outTradeNo: undefined,
-          orderState: 'NOTPAY' //未支付
+          orderState: 'NOTPAY',
+          orderStateMsg: '未支付'
         }
       }
 
       //填充商品信息中的商品记录 orderInfo.goodsInfo.record
       for (const key in orderList) {
-        if (key === 'length' || key=== 'delete') {
+        if (key === 'length' || key === 'delete') {
           continue
         }
         let food = foodList[orderList[key][1]].food[orderList[key][2]]
         let foodRecord = {
           food: food.name,
           num: food.orderNum,
-          price: food.price
+          price: food.price,
+          img: food.img
         }
         orderInfo.goodsInfo.record.push(foodRecord)
       }
@@ -142,7 +146,7 @@ Page({
             orderInfo: orderInfo,
             order: {
               subMchId: '1616983338',
-              body: canteen.name + "-点餐",
+              body: canteen.name + "-订餐",
               totalFee: orderInfo.payInfo.feeInfo.totalFee
             }
           }
@@ -209,7 +213,7 @@ Page({
               } else {
                 wx.hideLoading()
                 util.showToast('订单未支付', 'error')
-                setTimeout(() => {  //进入订单支付详情页面
+                setTimeout(() => { //进入订单支付详情页面
                   wx.navigateTo({
                     url: '../order/payOrder',
                   })
@@ -228,9 +232,9 @@ Page({
       wx.cloud.callFunction({
           name: 'payOrderQuery',
           data: {
-            sub_mch_id: '1616983338',
-            out_trade_no: payOrderRes.result.outTradeNo,
-            nonce_str: payOrderRes.result.payment.nonceStr //借用统一下单的随机字符串
+            sub_mch_id: sub_mch_id,
+            out_trade_no: out_trade_no,
+            nonce_str: nonce_str
           }
         })
         .then(res => {
