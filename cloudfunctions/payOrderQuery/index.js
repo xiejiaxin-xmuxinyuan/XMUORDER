@@ -16,26 +16,62 @@ cloud.init({
 })
 
 exports.main = async (event, context) => {
-  const out_trade_no = event.out_trade_no
-  const sub_mch_id = event.sub_mch_id
-  const nonce_str = event.nonce_str
+  try {
+    const out_trade_no = event.out_trade_no
+    const sub_mch_id = event.sub_mch_id
+    const nonce_str = event.nonce_str
 
-  const res = await cloud.cloudPay.queryOrder({
-    out_trade_no: out_trade_no,
-    sub_mch_id: sub_mch_id,
-    nonce_str: nonce_str
-  })
+    var res = await cloud.cloudPay.queryOrder({
+      out_trade_no: out_trade_no,
+      sub_mch_id: sub_mch_id,
+      nonce_str: nonce_str
+    })
 
-  if (res.resultCode !== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
-    return {
-      success: false,
-      returnMsg: res.returnMsg
+    if (res.resultCode !== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
+      return {
+        success: false,
+        returnMsg: res.returnMsg
+      }
     }
-  }
 
-  //交易状态在前端返回值进行判断
-  return {
-    success: true,
-    info: res
+    if (res.tradeState === 'SUCCESS') { //更新订单信息
+      //读取数据库订单信息
+      const db = cloud.database()
+      var dbRes = await db.collection('orders').where({
+        'orderInfo.outTradeNo': out_trade_no
+      }).get()
+
+      //构建更新对象
+      var order = dbRes.data[0]
+      var formData = {
+        'payInfo.tradeState': 'SUCCESS',
+        'payInfo.tradeStateMsg': '支付成功'
+      }
+      if (order.orderInfo.orderState == 'NOTPAY') {
+        formData['orderInfo.orderState'] = 'NOTCONFIRM'
+        formData['orderInfo.orderStateMsg'] = '未确认'
+      }
+
+      //更新数据库订单信息
+      res2 =  await db.collection('orders')
+        .where({
+          'orderInfo.outTradeNo': out_trade_no
+        }).update({
+          data: {
+            ...formData
+          }
+        })
+    }
+
+    //交易状态在前端返回值进行判断
+    return {
+      success: true,
+      info: res
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      success: false
+    }
   }
 }
