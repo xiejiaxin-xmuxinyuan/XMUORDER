@@ -30,7 +30,7 @@ function getStrDate(date) {
   return year + month + day + hour + min + sec
 }
 
-// 返回长度为4位的字符串
+// 返回长度为4位的随机字母字符串
 function getRandomStr() {
   return Math.random().toString(36).slice(-4)
 }

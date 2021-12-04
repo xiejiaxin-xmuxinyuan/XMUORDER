@@ -116,7 +116,8 @@ Page({
           },
           outTradeNo: undefined,
           orderState: 'NOTPAY',
-          orderStateMsg: '未支付'
+          orderStateMsg: '未支付',
+          pollingTimes: 0 //被轮询查单的次数
         }
       }
 
