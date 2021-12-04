@@ -1,6 +1,8 @@
 /**
  *  云函数用于提交当前用户反馈
- * 参数 ： feedback : 用户反馈信息;
+ * 参数 ： 
+ *      feedback : 用户反馈信息;
+ *      record: 订单数据
  * 返回 ： success ： 状态码
  */
 const cloud = require('wx-server-sdk')
@@ -15,14 +17,13 @@ exports.main = async (event, context) => {
   const feedback = event.feedback
   try {
     const openid = wxContext.OPENID
-    const rID = record._id
     await db.collection('userFeedbacks').add({
       data: {
         record: record,
         _openid: openid,
         feedback: feedback,
-        rID : rID,
-        date : record.date,
+        outTradeNo : record.orderInfo.outTradeNo,
+        date : record.orderInfo.timeInfo.formatedTime,
         state : 0
       }
     })
