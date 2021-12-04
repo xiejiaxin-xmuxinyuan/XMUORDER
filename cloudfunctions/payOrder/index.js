@@ -45,7 +45,7 @@ function getTradeNo(date) {
 
 function strDateFormat(strDate) { //14位日期转yyyy-MM-dd hh:mm:ss
   var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;
-  var formatTime = '$1/$2/$3 $4:$5:$6';
+  var formatTime = '$1-$2-$3 $4:$5:$6';
   return strDate.replace(regExp, formatTime)
 }
 
@@ -83,6 +83,7 @@ exports.main = async (event, context) => {
       order = event.orderInfo
       order.userInfo.openid = wxContext.OPENID
       order.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
+      order.orderInfo.timeInfo.formatedTime = strDateFormat(order.orderInfo.timeInfo.createTime)
       order.orderInfo.outTradeNo = outTradeNo
 
       await db.collection('orders').add({
