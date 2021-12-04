@@ -5,13 +5,13 @@
  * 参数： 
  *    order: 统一下单所需参数
  *      {subMchId: 商户号
- *      body: 商品描述(如: "南光餐厅-打包")  有要求格式：商家名称-销售商品类目
+ *      body: 商品描述(如: "南光餐厅-订餐")  有要求格式：商家名称-销售商品类目
  *      totalFee: 价格（单位为分）}
  *    orderInfo: object 订单其他相关信息
  * 
  * 返回： object 
  *        成功：{success: ture, outTradeNo: 订单号, payment: 小程序调用支付所需所有参数}
- *        失败：{success: false, returnMsg: 错误信息}
+ *        失败：{success: false, (视情况返回)returnMsg: 错误信息}
  */
 
 const cloud = require('wx-server-sdk')
@@ -100,8 +100,7 @@ exports.main = async (event, context) => {
   } catch (e) {
     console.error(e)
     return {
-      success: false,
-      returnMsg: e.toString()
+      success: false
     }
   }
 }
