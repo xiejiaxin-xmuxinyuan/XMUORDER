@@ -1,6 +1,6 @@
-// subpackages/order/pages/record/record.js
 var util = require('../../../../utils/util.js')
 var that
+
 Page({
   /**
    * 页面的初始数据
@@ -41,9 +41,15 @@ Page({
   },
   feedback: function (e) {
     var record = that.data.record[e.currentTarget.dataset.index]
-    record = JSON.stringify(record)
+    var info = {
+      goodsInfo: record.goodsInfo,
+      orderInfo: record.orderInfo,
+      payInfo: record.payInfo
+    } 
+
+    info = JSON.stringify(info)
     wx.navigateTo({
-      url: '../feedback/feedback?record=' + record,
+      url: '../feedback/feedback?record=' + info,
     })
   },
   getRecords: currPage => {
@@ -76,6 +82,18 @@ Page({
             })
           }, 1000);
         })
+    })
+  },
+  strDateFormat: strDate => { //14位日期转yyyy-MM-dd hh:mm:ss
+    var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;
+    var formatTime = '$1/$2/$3 $4:$5:$6';
+    return strDate.replace(regExp, formatTime)
+  },
+  toPayOrder: function(e){
+    var record = that.data.record[e.currentTarget.dataset.index]
+    //传递参数 TODO
+    wx.navigateTo({
+      url: '../order/payOrder'
     })
   }
 })

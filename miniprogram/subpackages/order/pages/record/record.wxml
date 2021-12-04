@@ -9,38 +9,52 @@
         <view class="title">
           <view>
             <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
-            {{item.cName}}
+            {{item.goodsInfo.shopInfo.name}}
           </view>
-          <block>
-            <view wx:if="{{!(item.feedback.length)}}" class="cuIcon-message text-orange" data-index="{{index}}"
-              catchtap="feedback"> 反馈</view>
-            <view wx:elif="{{item.feedback[0].state}}" class="cuIcon-message text-green"> 已处理</view>
-            <view wx:else class="cuIcon-message text-red"> 待处理</view>
-          </block>
+          <text class="text-gray">{{item.orderInfo.orderStateMsg}}</text>
         </view>
         <view class="mycontent">
-          <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
-            <view>
-              <view class="text-cut text-bold">{{i.food}}</view>
-              <view class="text-bold">￥{{i.price}}</view>
-            </view>
-            <view class="text-gray">
-              <view>{{i.num}}件</view>
-              <view>×{{i.num}}</view>
+          <view wx:for="{{item.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
+            <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            <view class="info">
+              <view>
+                <view class="text-cut text-bold">{{i.food}}</view>
+                <view class="text-bold">￥{{i.price}}</view>
+              </view>
+              <view class="text-gray">
+                <view>{{i.num}}件</view>
+                <view>×{{i.num}}</view>
+              </view>
             </view>
           </view>
         </view>
-        <view class="flex my-bottom" style="justify-content: space-between;">
-          <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
-          <view class="text-bold text-black text-right price">
-            总计：<text class="text-red"> ￥{{item.allPrice}}</text>
+        <view class="my-bottom">
+          <view class="info">
+            <view class="cu-tag bg-brown light lg round">{{'时间：' + item.orderInfo.timeInfo.formatedTime}}</view>
+            <view class="text-bold text-black text-right price">
+              总计：<text class="text-red"> ￥{{item.payInfo.feeInfo.totalFee / 100}}</text>
+            </view>
+          </view>
+          <view class="my-btn">
+            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toPayOrder">
+              <text class="text-bold">去支付</text>
+            </button>
+            <button wx:elif="{{!(item.feedback.length)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
+              <text class="cuIcon-message text-bold"> 反馈</text>
+            </button>
+            <view wx:elif="{{item.feedback[0].state}}" class="cu-btn bg-green round shadow">
+              <text class="text-bold">已处理</text>
+            </view>
+            <view wx:else class="cu-btn bg-red round shadow">
+              <text class="text-bold">待处理</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
   </view>
   <view wx:if="{{currPage >= totalPage}}" class="allLoaded text-gray">
-  所有订单已加载
+    所有订单已加载
   </view>
 </view>
 

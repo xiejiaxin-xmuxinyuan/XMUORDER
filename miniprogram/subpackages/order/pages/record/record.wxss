@@ -36,21 +36,43 @@
 
 }
 
-.myorder .mycontent>view {
-  flex-direction: column;
+.myorder .mycontent> view {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   padding: 30rpx 20rpx;
 }
 
-.myorder .mycontent>view>view {
+.myorder .mycontent .info {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding-left: 30rpx;
+  justify-content: center;
+}
+
+.myorder .mycontent .info > view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .myorder .my-bottom {
-  margin-top: 15rpx;
+  display: flex;
+  flex-direction: column;
 }
 
-.myorder .my-bottom .price {
+.myorder .my-bottom .info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30rpx;
+}
+
+.myorder .my-bottom .info .price {
   margin-right: 15rpx;
+}
+
+.myorder .my-bottom .my-btn {
+  margin-top: 30rpx;
+  text-align: right;
 }
