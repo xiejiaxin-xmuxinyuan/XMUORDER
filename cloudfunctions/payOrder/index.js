@@ -1,10 +1,13 @@
 /**
- * 云函数统一下单
+ * 云函数下单
+ * 调用统一下单接口后，将订单保存到数据库
+ * 
  * 参数： 
- *    subMchId: 商户号
- *    body: 商品描述(如: "南光餐厅-打包")  有要求格式：商家名称-销售商品类目
- *    detail: 订单详情（如: "商品详情：打包服务"）
- *    totalFee: 价格（单位为分）
+ *    order: 统一下单所需参数
+ *      {subMchId: 商户号
+ *      body: 商品描述(如: "南光餐厅-打包")  有要求格式：商家名称-销售商品类目
+ *      totalFee: 价格（单位为分）}
+ *    orderInfo: object 订单其他相关信息
  * 
  * 返回： object 
  *        成功：{success: ture, outTradeNo: 订单号, payment: 小程序调用支付所需所有参数}
@@ -40,34 +43,52 @@ function getTradeNo(date) {
   return tradeNo
 }
 
+function strDateFormat(strDate) { //14位日期转yyyy-MM-dd hh:mm:ss
+  var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;
+  var formatTime = '$1/$2/$3 $4:$5:$6';
+  return strDate.replace(regExp, formatTime)
+}
+
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
 
-  const outTradeNo = getTradeNo(new Date())
-  const subMchId = event.subMchId
-  const body = event.body
-  const detail = event.detail
-  const totalFee = event.totalFee
+  try {
+    const wxContext = cloud.getWXContext()
+    const db = cloud.database()
 
-  //似乎不支持promise
-  const res = await cloud.cloudPay.unifiedOrder({
-    functionName: "payCallback", //支付成功后回调函数
-    envId: 'cloud1-4g4b6j139b4e50e0', //云开发中复制
-    subMchId: subMchId,
-    body: body,
-    detail: detail,
-    outTradeNo: outTradeNo,
-    totalFee: totalFee, //单位为分
-    spbillCreateIp: '127.0.0.1', //不方便获取
-    openid: wxContext.OPENID
-  })
+    const outTradeNo = getTradeNo(new Date())
+    const subMchId = event.order.subMchId
+    const body = event.order.body
+    const totalFee = event.order.totalFee
 
-    if ( res.resultCode!== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
+    //似乎不支持promise
+    const res = await cloud.cloudPay.unifiedOrder({
+      functionName: "payCallback", //支付成功后回调函数
+      envId: 'cloud1-4g4b6j139b4e50e0', //云开发中复制
+      subMchId: subMchId,
+      body: body,
+      outTradeNo: outTradeNo,
+      totalFee: totalFee, //单位为分
+      spbillCreateIp: '127.0.0.1', //不方便获取
+      openid: wxContext.OPENID
+    })
+
+    if (res.resultCode !== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
       return {
         success: false,
         returnMsg: res.returnMsg
       }
     } else {
+      //保存订单
+
+      order = event.orderInfo
+      order.userInfo.openid = wxContext.OPENID
+      order.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
+      order.orderInfo.outTradeNo = outTradeNo
+
+      await db.collection('orders').add({
+        data: order
+      })
+      
       //若有需要res中其他信息再修改下方
       return {
         success: true,
@@ -75,4 +96,11 @@ exports.main = async (event, context) => {
         outTradeNo: outTradeNo
       }
     }
+  } catch (e) {
+    console.error(e)
+    return {
+      success: false,
+      returnMsg: e.toString()
+    }
+  }
 }
