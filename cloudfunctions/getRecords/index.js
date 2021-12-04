@@ -31,9 +31,9 @@ exports.main = async (event, context) => {
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
   return new Promise((resolve, reject) => {
-    db.collection('userRecord')
+    db.collection('orders')
       .where({
-        openid: openid
+        'userInfo.openid': openid
       })
       .count()
       .then(res => {
@@ -50,24 +50,24 @@ exports.main = async (event, context) => {
           })
         }
 
-        db.collection('userRecord').aggregate()
+        db.collection('orders').aggregate()
           .match({
-            openid: openid
+            'userInfo.openid': openid
           })
           .sort({ //日期字符串从大到小排序
-            date: -1
+            'orderInfo.timeInfo.createTime': -1
           })
           .skip((currPage - 1) * pageSize)
           .limit(pageSize)
-          .lookup({
+          .lookup({ //联表查询订单用户反馈 state
             let: {
-              id: '$_id'
+              outTradeNo: '$orderInfo.outTradeNo'
             },
             from: 'userFeedbacks',
             pipeline: $.pipeline()
               .match(_.expr($.and([ //匹配openid和rID
                 $.eq(['$_openid', openid]),
-                $.eq(['$rID', '$$id'])
+                $.eq(['$outTradeNo', '$$outTradeNo'])
               ])))
               .replaceRoot({ //只显示state
                 newRoot: {
@@ -75,7 +75,7 @@ exports.main = async (event, context) => {
                 }
               })
               .done(),
-            as: 'feedback' //临时位置
+            as: 'feedback'
           })
           .end()
           .then(res => {
