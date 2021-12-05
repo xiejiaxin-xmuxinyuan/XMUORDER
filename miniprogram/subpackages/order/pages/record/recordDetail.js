@@ -30,9 +30,5 @@ Page({
         util.hideLoading()
         util.showToast('加载失败', 'error')
       })
-
-
-
   },
-
 })
