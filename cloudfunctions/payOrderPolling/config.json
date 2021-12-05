@@ -3,7 +3,7 @@
     {
       "name": "payOrderPolling",
       "type": "timer",
-      "config": "*/30 * * * * * *"
+      "config": "*/30 * 6-19 * * * *"
     }
   ]
 }
