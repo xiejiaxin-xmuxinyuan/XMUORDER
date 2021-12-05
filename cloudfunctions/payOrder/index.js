@@ -57,6 +57,8 @@ exports.main = async (event, context) => {
   try {
     const wxContext = cloud.getWXContext()
 
+    var orderInfo = event.orderInfo
+
     const outTradeNo = getTradeNo(new Date())
     const subMchId = event.order.subMchId
     const body = event.order.body
@@ -66,7 +68,7 @@ exports.main = async (event, context) => {
 
     //读取库存判断
     let proList = []
-    let record = event.orderInfo.goodsInfo.record
+    let record = orderInfo.goodsInfo.record
     for (let index = 0; index < record.length; index++) {
       const food = record[index]
       proList.push(
@@ -127,7 +129,8 @@ exports.main = async (event, context) => {
         proList2.push(
           db.collection('food').doc(data._id).update({
             data: {
-              curNum: _.inc(-data.num)
+              curNum: _.inc(-data.num),
+              allNum: _.inc(-data.num)
             }
           })
         )
@@ -144,13 +147,13 @@ exports.main = async (event, context) => {
       }
 
       //保存订单
-      order.userInfo.openid = wxContext.OPENID
-      order.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
-      order.orderInfo.timeInfo.formatedTime = strDateFormat(order.orderInfo.timeInfo.createTime)
-      order.orderInfo.outTradeNo = outTradeNo
+      orderInfo.userInfo.openid = wxContext.OPENID
+      orderInfo.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
+      orderInfo.orderInfo.timeInfo.formatedTime = strDateFormat(orderInfo.orderInfo.timeInfo.createTime)
+      orderInfo.orderInfo.outTradeNo = outTradeNo
 
       await db.collection('orders').add({
-        data: order
+        data: orderInfo
       })
 
 

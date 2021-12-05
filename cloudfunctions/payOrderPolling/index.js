@@ -32,7 +32,6 @@ function getRandomStr() {
 
 exports.main = async (event, context) => {
   try {
-    const db = cloud.database()
     var date = new Date()
     date.setTime(date.getTime() - 1000 * 60 * 10) //时间前推10分钟
 
@@ -69,8 +68,11 @@ exports.main = async (event, context) => {
             formData['orderInfo.orderState'] = 'NOTCONFIRM'
             formData['orderInfo.orderStateMsg'] = '未确认'
           }
+          if (!('payTime' in order.orderInfo.timeInfo)) {
+            formData['orderInfo.timeInfo.payTime'] = getStrDate(new Date())
+          }
 
-          db.collection('orders')
+          await db.collection('orders')
             .doc(order._id)
             .update({
               data: {
@@ -88,23 +90,43 @@ exports.main = async (event, context) => {
           if (closeRes.resultCode === 'SUCCESS' && closeRes.returnCode === 'SUCCESS') {
             console.log(index, '关闭订单成功')
             //修改订单状态
-            //构建更新对象
             var formData = {
               'orderInfo.orderState': 'CLOSED',
               'orderInfo.orderStateMsg': '已取消',
               'orderInfo.timeInfo.endTime': getStrDate(new Date())
             }
-            db.collection('orders')
+            await db.collection('orders')
               .doc(order._id)
               .update({
                 data: {
                   ...formData
                 }
               })
+
+            //释放库存
+            let record = order.goodsInfo.record
+            let proList = []
+            record.forEach(food => {
+              proList.push(
+                db.collection('food').doc(food._id).update({
+                  data: {
+                    curNum: _.inc(food.num),
+                    allNum: _.inc(food.num)
+                  }
+                })
+              )
+            })
+
+            try {
+              await Promise.all(proList)
+              console.log('释放库存成功')
+            } catch (err) {
+              console.error('释放库存出错', err)
+            }
           }
         } else { // 仍未支付则 pollingTimes += 1
-          console.log(index, '轮询次数+1')
-          db.collection('orders')
+          console.log(index, '轮询次数+1, 当前次数：', order.orderInfo.pollingTimes+1)
+          await db.collection('orders')
             .doc(order._id)
             .update({
               data: {

@@ -15,6 +15,16 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
+function getStrDate(date) {
+  let year = date.getFullYear()
+  let month = (date.getMonth() + 1).toString().padStart(2, '0')
+  let day = date.getDate().toString().padStart(2, '0')
+  let hour = date.getHours().toString().padStart(2, '0')
+  let min = date.getMinutes().toString().padStart(2, '0')
+  let sec = date.getSeconds().toString().padStart(2, '0')
+  return year + month + day + hour + min + sec
+}
+
 exports.main = async (event, context) => {
   try {
     const out_trade_no = event.out_trade_no
@@ -56,6 +66,10 @@ exports.main = async (event, context) => {
         flag = true
         formData['orderInfo.orderState'] = 'NOTCONFIRM'
         formData['orderInfo.orderStateMsg'] = '未确认'
+      }
+      if (!('payTime' in order.orderInfo.timeInfo)) {
+        flag = true
+        formData['orderInfo.timeInfo.payTime'] = getStrDate(new Date())
       }
 
       if (flag) {
