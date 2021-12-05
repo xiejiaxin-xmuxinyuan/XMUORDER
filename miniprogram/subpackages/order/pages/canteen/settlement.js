@@ -72,9 +72,9 @@ Page({
       util.showToast('时间未选择', 'error')
     } else {
       //构造订单数据
-      const goodsPrice = that.data.money * 100
-      const otherFee = 0 //打包费等等（单位分）
-      const discount = 0 //优惠
+      const goodsPrice = parseInt(that.data.money * 100)
+      const otherFee = parseInt(0) //打包费等等（单位分）
+      const discount = parseInt(0) //优惠
 
       var orderInfo = {
         userInfo: { //用户信息
@@ -87,8 +87,8 @@ Page({
             goodsPrice: goodsPrice,
             otherFee: otherFee,
             discount: discount,
-            totalFee: goodsPrice + otherFee, //不包括优惠的总费用
-            cashFee: goodsPrice + otherFee - discount //实付款
+            totalFee: parseInt(goodsPrice + otherFee), //不包括优惠的总费用
+            cashFee: parseInt(goodsPrice + otherFee - discount) //实付款
           },
           tradeState: "NOTPAY",
           tradeStateMsg: "未支付"
@@ -147,7 +147,7 @@ Page({
             orderInfo: orderInfo,
             order: {
               subMchId: '1616983338',
-              body: canteen.name + "-订餐",
+              body: canteen.name + "-食堂",
               totalFee: orderInfo.payInfo.feeInfo.totalFee
             }
           }
@@ -177,15 +177,23 @@ Page({
               that.orderQuery('1616983338', outTradeNo, nonceStr)
                 .then(() => { //进入支付成功页面
                   setTimeout(() => {
-                    wx.navigateTo({
-                      url: '../order/paySuccess',
+                    wx.navigateBack({
+                      delta: 2,
+                    }).then(res => {
+                      wx.navigateTo({
+                        url: '../order/paySuccess',
+                      })
                     })
                   }, 1000)
                 })
                 .catch(() => { //进入订单支付详情页面
                   setTimeout(() => {
-                    wx.navigateTo({
-                      url: '../order/payOrder',
+                    wx.navigateBack({
+                      delta: 2,
+                    }).then(res => {
+                      wx.navigateTo({
+                        url: '../order/payOrder',
+                      })
                     })
                   }, 1000)
                 })
@@ -199,24 +207,36 @@ Page({
                 that.orderQuery('1616983338', outTradeNo, nonceStr)
                   .then(() => { //进入支付成功页面
                     setTimeout(() => {
-                      wx.navigateTo({
-                        url: '../order/paySuccess',
+                      wx.navigateBack({
+                        delta: 2,
+                      }).then(res => {
+                        wx.navigateTo({
+                          url: '../order/paySuccess',
+                        })
                       })
                     }, 1000)
                   })
                   .catch(() => { //进入订单支付详情页面
                     setTimeout(() => {
-                      wx.navigateTo({
-                        url: '../order/payOrder',
+                      wx.navigateBack({
+                        delta: 2,
+                      }).then(res => {
+                        wx.navigateTo({
+                          url: '../order/payOrder',
+                        })
                       })
                     }, 1000)
                   })
-              } else {
+              } else { // 用户取消支付
                 wx.hideLoading()
                 util.showToast('订单未支付', 'error')
                 setTimeout(() => { //进入订单支付详情页面
-                  wx.navigateTo({
-                    url: '../order/payOrder',
+                  wx.navigateBack({
+                    delta: 2,
+                  }).then(res => {
+                    wx.navigateTo({
+                      url: '../order/payOrder',
+                    })
                   })
                 }, 1000)
               }
