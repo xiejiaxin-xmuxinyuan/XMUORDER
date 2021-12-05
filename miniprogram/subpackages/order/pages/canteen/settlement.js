@@ -131,7 +131,8 @@ Page({
           food: food.name,
           num: food.orderNum,
           price: food.price,
-          img: food.img
+          img: food.img,
+          _id: food._id
         }
         orderInfo.goodsInfo.record.push(foodRecord)
       }
@@ -155,7 +156,11 @@ Page({
         .then(payOrderRes => {
           wx.hideLoading()
           if (!payOrderRes.result.success) { //下单失败
-            util.showToast('订单提交失败', 'error')
+            if ('toastMsg' in payOrderRes.result) {
+              util.showToast(payOrderRes.result.toastMsg)
+            } else {
+              util.showToast('订单提交失败', 'error')
+            }
             return
           }
 

@@ -88,114 +88,120 @@ Page({
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
       that.showT(error.msg)
-    } else {
-      wx.showLoading({
-        title: '上传中',
-        mask: true
-      })
-
-      //若有更换图片则先上传新图片，然后修改为新img值，再删除原来的云储存图片, 最后修改数据库
-      if (that.data.oldImg) {
-        //上传图片
-        let canteen = that.data.canteen
-
-        let cloudPath = '餐厅图片/'
-        let address = canteen.address
-        let shopName = canteen.name
-        let typeName = params.typeName
-
-        //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
-        cloudPath = cloudPath + ({
-            XA: '翔安',
-            SM: '思明',
-            HY: '海韵'
-          })[address] + '/' + shopName + '/food/' + typeName + '_' + params.name + '_' +
-          new Date().getTime() + params.img.match('.[^.]+?$')[0]
-
-        wx.cloud.uploadFile({
-            cloudPath: cloudPath,
-            filePath: params.img, // 文件路径
-          })
-          .then(res => {
-            //修改为云图片路径
-            params.img = res.fileID
-
-            //删除原图片
-            wx.cloud.callFunction({
-                name: 'cloudFilesDelete',
-                data: {
-                  fileIDs: [that.data.oldImg]
-                }
-              })
-              .then(res => {
-                if (res.result[0].status) {
-                  wx.hideLoading()
-                  that.showT('原图片删除出错')
-                } else {
-                  //更新数据库
-                  wx.cloud.callFunction({
-                      name: 'dbUpdate',
-                      data: {
-                        table: 'food',
-                        _id: food._id,
-                        formData: params,
-                        set: true
-                      }
-                    })
-                    .then(res => {
-                      wx.hideLoading()
-                      if (res.result.success) {
-                        that.showT('保存成功', 'success', 1500)
-                        //返回上一页
-                        setTimeout(() => {
-                          wx.navigateBack()
-                        }, 1600);
-                      } else {
-                        that.showT('数据提交失败', 'error', 1500)
-                      }
-                    })
-                    .catch(e => {
-                      that.showT('数据提交失败', 'error', 1500)
-                    })
-                }
-              })
-              .catch(res => {
-                wx.hideLoading()
-                that.showT('图片删除出错')
-              })
-          })
-          .catch(e => {
-            wx.hideLoading()
-            that.showT('图片上传失败', 'error', 1500)
-          })
-      } else {
-        //否则直接更新数据库
-        wx.cloud.callFunction({
-            name: 'dbUpdate',
-            data: {
-              table: 'food',
-              _id: food._id,
-              formData: params,
-              set: true
-            }
-          })
-          .then(res => {
-            wx.hideLoading()
-            if (res.result.success) {
-              that.showT('保存成功', 'success', 1500)
-              //返回上一页
-              setTimeout(() => {
-                wx.navigateBack()
-              }, 1600);
-            } else {
-              that.showT('数据提交失败', 'error', 1500)
-            }
-          })
-          .catch(e => {
-            that.showT('数据提交失败', 'error', 1500)
-          })
-      }
+      return
     }
+
+    //库存转为数字格式
+    params.allNum =  parseInt(params.allNum)
+    params.curNum =  params.allNum
+
+    wx.showLoading({
+      title: '上传中',
+      mask: true
+    })
+
+    //若有更换图片则先上传新图片，然后修改为新img值，再删除原来的云储存图片, 最后修改数据库
+    if (that.data.oldImg) {
+      //上传图片
+      let canteen = that.data.canteen
+
+      let cloudPath = '餐厅图片/'
+      let address = canteen.address
+      let shopName = canteen.name
+      let typeName = params.typeName
+
+      //储存路径：餐厅图片/地区名/餐厅名/food/商品类型_商品名_时间戳.图片格式
+      cloudPath = cloudPath + ({
+          XA: '翔安',
+          SM: '思明',
+          HY: '海韵'
+        })[address] + '/' + shopName + '/food/' + typeName + '_' + params.name + '_' +
+        new Date().getTime() + params.img.match('.[^.]+?$')[0]
+
+      wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: params.img, // 文件路径
+        })
+        .then(res => {
+          //修改为云图片路径
+          params.img = res.fileID
+
+          //删除原图片
+          wx.cloud.callFunction({
+              name: 'cloudFilesDelete',
+              data: {
+                fileIDs: [that.data.oldImg]
+              }
+            })
+            .then(res => {
+              if (res.result[0].status) {
+                wx.hideLoading()
+                that.showT('原图片删除出错')
+              } else {
+                //更新数据库
+                wx.cloud.callFunction({
+                    name: 'dbUpdate',
+                    data: {
+                      table: 'food',
+                      _id: food._id,
+                      formData: params,
+                      set: true
+                    }
+                  })
+                  .then(res => {
+                    wx.hideLoading()
+                    if (res.result.success) {
+                      that.showT('保存成功', 'success', 1500)
+                      //返回上一页
+                      setTimeout(() => {
+                        wx.navigateBack()
+                      }, 1600);
+                    } else {
+                      that.showT('数据提交失败', 'error', 1500)
+                    }
+                  })
+                  .catch(e => {
+                    that.showT('数据提交失败', 'error', 1500)
+                  })
+              }
+            })
+            .catch(res => {
+              wx.hideLoading()
+              that.showT('图片删除出错')
+            })
+        })
+        .catch(e => {
+          wx.hideLoading()
+          that.showT('图片上传失败', 'error', 1500)
+        })
+    } else {
+      //否则直接更新数据库
+      wx.cloud.callFunction({
+          name: 'dbUpdate',
+          data: {
+            table: 'food',
+            _id: food._id,
+            formData: params,
+            set: true
+          }
+        })
+        .then(res => {
+          wx.hideLoading()
+          if (res.result.success) {
+            that.showT('保存成功', 'success', 1500)
+            //返回上一页
+            setTimeout(() => {
+              wx.navigateBack()
+            }, 1600);
+          } else {
+            that.showT('数据提交失败', 'error', 1500)
+          }
+        })
+        .catch(e => {
+          that.showT('数据提交失败', 'error', 1500)
+        })
+    }
+
   },
   showT: (title, icon = 'none', duration = 1000) => {
     wx.showToast({
@@ -237,11 +243,11 @@ Page({
       },
       price: {
         required: '请输入价格',
-        number: '请输入正确价格'
+        number: '请输入正确格式的价格'
       },
       allNum: {
         required: '请输入库存',
-        digits: '请输入非负整数'
+        digits: '请输入非负整数的库存'
       },
       img: {
         required: '请添加商品图片'

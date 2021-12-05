@@ -11,7 +11,7 @@
  * 
  * 返回： object 
  *        成功：{success: ture, outTradeNo: 订单号, payment: 小程序调用支付所需所有参数}
- *        失败：{success: false, (视情况返回)returnMsg: 错误信息}
+ *        失败：{success: false, (视情况返回)returnMsg: 错误信息, （视情况）toastMsg: 用于showToast的消息}
  */
 
 const cloud = require('wx-server-sdk')
@@ -49,16 +49,58 @@ function strDateFormat(strDate) { //14位日期转yyyy-MM-dd hh:mm:ss
   return strDate.replace(regExp, formatTime)
 }
 
+const db = cloud.database()
+const _ = db.command
+
 exports.main = async (event, context) => {
 
   try {
     const wxContext = cloud.getWXContext()
-    const db = cloud.database()
 
     const outTradeNo = getTradeNo(new Date())
     const subMchId = event.order.subMchId
     const body = event.order.body
     const totalFee = event.order.totalFee
+
+    var dbRes
+
+    //读取库存判断
+    let proList = []
+    let record = event.orderInfo.goodsInfo.record
+    for (let index = 0; index < record.length; index++) {
+      const food = record[index]
+      proList.push(
+        new Promise((resolve, reject) => {
+          db.collection('food').doc(food._id).get().then(res => {
+            resolve({
+              curNum: res.data.curNum,
+              num: food.num,
+              _id: food._id
+            })
+          }).catch(err => {
+            reject(err)
+          })
+        }))
+    }
+
+    try {
+      dbRes = await Promise.all(proList)
+      for (let index = 0; index < dbRes.length; index++) {
+        const data = dbRes[index]
+        if (data.curNum < data.num) {
+          return {
+            success: false,
+            toastMsg: '库存不足'
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      return {
+        success: false,
+        returnMsg: '库存读取失败'
+      }
+    }
 
     //似乎不支持promise
     const res = await cloud.cloudPay.unifiedOrder({
@@ -75,11 +117,33 @@ exports.main = async (event, context) => {
     if (res.resultCode !== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
       return {
         success: false,
-        returnMsg: '统一下单失败：' + res.returnMsg
+        returnMsg: res.returnMsg,
+        toastMsg: '统一下单失败'
       }
-    } else {
+    } else { //下单成功
+      //减少库存
+      let proList2 = []
+      dbRes.forEach(data => {
+        proList2.push(
+          db.collection('food').doc(data._id).update({
+            data: {
+              curNum: _.inc(-data.num)
+            }
+          })
+        )
+      })
+
+      try {
+        await Promise.all(proList2)
+      } catch (err) {
+        console.error(err)
+        return {
+          success: false,
+          toastMsg: '库存出错'
+        }
+      }
+
       //保存订单
-      order = event.orderInfo
       order.userInfo.openid = wxContext.OPENID
       order.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
       order.orderInfo.timeInfo.formatedTime = strDateFormat(order.orderInfo.timeInfo.createTime)
@@ -88,7 +152,9 @@ exports.main = async (event, context) => {
       await db.collection('orders').add({
         data: order
       })
-      
+
+
+
       //若有需要res中其他信息再修改下方
       return {
         success: true,
