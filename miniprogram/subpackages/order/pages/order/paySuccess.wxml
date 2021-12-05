@@ -1,3 +1,0 @@
-<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-  <view slot="content">支付成功</view>
-</cu-custom>

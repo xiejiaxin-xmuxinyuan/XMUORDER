@@ -1,6 +1,9 @@
 var util = require('../../../../utils/util.js')
 var that
 const app = getApp()
+
+var outTradeNo //订单号
+
 Page({
 
   data: {
@@ -155,6 +158,8 @@ Page({
         })
         .then(payOrderRes => {
           wx.hideLoading()
+          outTradeNo = payOrderRes.result.outTradeNo
+
           if (!payOrderRes.result.success) { //下单失败
             if ('toastMsg' in payOrderRes.result) {
               util.showToast(payOrderRes.result.toastMsg)
@@ -177,73 +182,31 @@ Page({
               util.showLoading('核实订单中')
 
               //云函数查单
-              const outTradeNo = payOrderRes.result.outTradeNo
               let nonceStr = payOrderRes.result.payment.nonceStr
               that.orderQuery('1616983338', outTradeNo, nonceStr)
                 .then(() => { //进入支付成功页面
-                  setTimeout(() => {
-                    wx.navigateBack({
-                      delta: 2,
-                    }).then(res => {
-                      wx.navigateTo({
-                        url: '../order/paySuccess',
-                      })
-                    })
-                  }, 1000)
+                  that.toOrderDetail()
                 })
                 .catch(() => { //进入订单支付详情页面
-                  setTimeout(() => {
-                    wx.navigateBack({
-                      delta: 2,
-                    }).then(res => {
-                      wx.navigateTo({
-                        url: '../order/payOrder',
-                      })
-                    })
-                  }, 1000)
+                  that.toOrderDetail()
                 })
             })
             .catch(err => { //支付出错
               if (err.errMsg !== 'requestPayment:fail cancel') { //非取消支付报错则进行查单
                 util.showLoading('核实订单中')
                 //云函数查单
-                const outTradeNo = payOrderRes.result.outTradeNo
                 let nonceStr = payOrderRes.result.payment.nonceStr
                 that.orderQuery('1616983338', outTradeNo, nonceStr)
                   .then(() => { //进入支付成功页面
-                    setTimeout(() => {
-                      wx.navigateBack({
-                        delta: 2,
-                      }).then(res => {
-                        wx.navigateTo({
-                          url: '../order/paySuccess',
-                        })
-                      })
-                    }, 1000)
+                    that.toOrderDetail()
                   })
                   .catch(() => { //进入订单支付详情页面
-                    setTimeout(() => {
-                      wx.navigateBack({
-                        delta: 2,
-                      }).then(res => {
-                        wx.navigateTo({
-                          url: '../order/payOrder',
-                        })
-                      })
-                    }, 1000)
+                    that.toOrderDetail()
                   })
               } else { // 用户取消支付
                 wx.hideLoading()
                 util.showToast('订单未支付', 'error')
-                setTimeout(() => { //进入订单支付详情页面
-                  wx.navigateBack({
-                    delta: 2,
-                  }).then(res => {
-                    wx.navigateTo({
-                      url: '../order/payOrder',
-                    })
-                  })
-                }, 1000)
+                that.toOrderDetail()
               }
             })
         })
@@ -252,6 +215,19 @@ Page({
           util.showToast('订单提交失败', 'error')
         })
     }
+  },
+  toOrderDetail: function () {
+    setTimeout(() => { //进入订单支付详情页面
+      wx.navigateBack({
+        delta: 2,
+      }).then(res => {
+        wx.navigateTo({
+          url: '../order/orderDetail?data=' + JSON.stringify({
+            outTradeNo: outTradeNo
+          })
+        })
+      })
+    }, 1000)
   },
   orderQuery: function (sub_mch_id, out_trade_no, nonce_str) {
     return new Promise((resolve, reject) => {

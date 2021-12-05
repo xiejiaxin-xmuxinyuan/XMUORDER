@@ -45,7 +45,7 @@ Page({
       goodsInfo: record.goodsInfo,
       orderInfo: record.orderInfo,
       payInfo: record.payInfo
-    } 
+    }
 
     info = JSON.stringify(info)
     wx.navigateTo({
@@ -89,11 +89,13 @@ Page({
     var formatTime = '$1/$2/$3 $4:$5:$6';
     return strDate.replace(regExp, formatTime)
   },
-  toPayOrder: function(e){
+  toPayOrder: function (e) {
     var record = that.data.record[e.currentTarget.dataset.index]
-    //传递参数 TODO
+    var outTradeNo = record.orderInfo.outTradeNo
     wx.navigateTo({
-      url: '../order/payOrder'
+      url: '../order/orderDetail?data=' + JSON.stringify({
+        outTradeNo: outTradeNo
+      })
     })
   }
 })

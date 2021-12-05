@@ -14,8 +14,7 @@
         "pages/infoForm/infoForm",
         "pages/feedback/index",
         "pages/feedback/feedback",
-        "pages/order/payOrder",
-        "pages/order/paySuccess"
+        "pages/order/orderDetail"
       ]
     },
     {
