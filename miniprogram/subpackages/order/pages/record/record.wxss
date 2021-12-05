@@ -33,7 +33,6 @@
   padding: 1rem 5rpx 0 5rpx;
   flex-direction: column;
   border-bottom: 2rpx solid #eee;
-
 }
 
 .myorder .mycontent> view {

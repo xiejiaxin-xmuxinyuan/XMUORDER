@@ -1,3 +1,125 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-  <view slot="content">订单结算</view>
+  <view slot="content">订单详情</view>
 </cu-custom>
+
+<view class="head">
+  <view class="content">
+    <view>
+      <text class="cuIcon-formfill text-grey"></text>
+      订单<text class="text-orange">{{order.orderInfo.orderStateMsg}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="key-info my-block shadow-warp">
+  <!-- 关键信息 -->
+  <view class="message">
+    <block wx:if="{{order.orderInfo.orderState==='NOTPAY'}}">
+      <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 等待支付</view>
+      <view class="text-sm text-gray">5分钟后订单取消</view>
+    </block>
+    <block wx:elif="{{order.orderInfo.orderState==='NOTCONFIRM'}}">
+      <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 支付成功，等待商家接单</view>
+      <view class="text-sm text-gray">10分钟后订单取消，退回全款</view>
+    </block>
+    <block wx:elif="{{order.orderInfo.orderState==='NOTGET'}}">
+      <view>取餐时间：<text class="text-orange text-lg">{{order.getFoodInfo.time}}</text></view>
+      <view class="text-sm text-gray">{{order.getFoodInfo.place}}</view>
+    </block>
+    <block wx:elif="{{order.orderInfo.orderState==='SUCCESS'}}">
+      <view>
+        <text class="text-xl text-orange"> {{order.goodsInfo.shopInfo.name}}</text>
+        <text class="margin-left">期待您的再次光临~</text>
+      </view>
+    </block>
+    <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
+      <view>
+        <text>订单已关闭，</text>
+        <text class="text-orange">您可以在点餐界面重新下单</text>
+      </view>
+    </block>
+  </view>
+  <!-- 支付相关按钮 -->
+  <view wx:if="{{order.orderInfo.orderState==='NOTPAY'}}" class="btn-group">
+    <view>
+      <text class="my-ico cuIcon-roundclose"></text>
+      <view>取消订单</view>
+    </view>
+    <view class="text-orange">
+      <text class="my-ico cuIcon-roundcheck"></text>
+      <view>立即支付</view>
+    </view>
+  </view>
+</view>
+
+<view class="myorder my-block shadow-warp">
+  <view class="title">
+    <view>
+      <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
+      <text class="text-bold"> {{order.goodsInfo.shopInfo.name}}</text>
+    </view>
+  </view>
+  <view class="mycontent">
+    <view wx:for="{{order.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
+      <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+      <view class="info">
+        <view>
+          <view class="text-cut text-bold">{{i.food}}</view>
+          <view class="text-bold">￥{{i.price}}</view>
+        </view>
+        <view class="text-gray">
+          <view>{{i.num}}件</view>
+          <view>×{{i.num}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="my-bottom">
+    <view class="other-price">
+      <view>其他费用</view>
+      <view> ￥{{order.payInfo.feeInfo.otherFee/100}}</view>
+    </view>
+    <view class="other-price">
+      <view>优惠</view>
+      <view class="text-red"> -￥{{order.payInfo.feeInfo.discount/100}}</view>
+    </view>
+    <view class="price">
+      总计：<text class="text-red"> ￥{{order.payInfo.feeInfo.cashFee / 100}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="my-info my-block shadow-warp">
+  <view class="title">取餐信息</view>
+  <view class="content">
+    <view>
+      <view class="text-gray">预定时间</view>
+      <view >{{order.getFoodInfo.time}}</view>
+    </view>
+    <view>
+      <view class="text-gray">取餐地点</view>
+      <view >{{order.getFoodInfo.place}}</view>
+    </view>
+    <view wx:if="{{order.orderInof.timeInfo.formatedReceiveTime}}">
+      <view class="text-gray">取餐时间</view>
+      <view >{{order.orderInof.timeInfo.formatedReceiveTime}}</view>
+    </view>
+  </view>
+</view>
+
+<view class="my-info my-block shadow-warp">
+  <view class="title">订单信息</view>
+  <view class="content">
+    <view>
+      <view class="text-gray">订单号码</view>
+      <view><text selectable='true'>{{order.orderInfo.outTradeNo}}</text></view>
+    </view>
+    <view>
+      <view class="text-gray">下单时间</view>
+      <view>{{order.orderInfo.timeInfo.formatedTime}}</view>
+    </view>
+  </view>
+</view>
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>
