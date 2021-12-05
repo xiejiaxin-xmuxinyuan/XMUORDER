@@ -13,7 +13,7 @@
           </view>
           <text class="text-gray">{{item.orderInfo.orderStateMsg}}</text>
         </view>
-        <view class="mycontent">
+        <view class="mycontent" data-index="{{index}}" catchtap="toRecoredDetail" >
           <view wx:for="{{item.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
             <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
             <view class="info">
@@ -36,7 +36,7 @@
             </view>
           </view>
           <view class="my-btn">
-            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toPayOrder">
+            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toOrderDetail">
               <text class="text-bold">去支付</text>
             </button>
             <button wx:elif="{{!(item.feedback.length)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">

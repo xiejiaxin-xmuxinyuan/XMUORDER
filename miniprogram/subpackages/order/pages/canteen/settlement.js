@@ -185,10 +185,10 @@ Page({
               let nonceStr = payOrderRes.result.payment.nonceStr
               that.orderQuery('1616983338', outTradeNo, nonceStr)
                 .then(() => { //进入支付成功页面
-                  that.toOrderDetail()
+                  that.toRecordDetail()
                 })
                 .catch(() => { //进入订单支付详情页面
-                  that.toOrderDetail()
+                  that.toRecordDetail()
                 })
             })
             .catch(err => { //支付出错
@@ -198,15 +198,15 @@ Page({
                 let nonceStr = payOrderRes.result.payment.nonceStr
                 that.orderQuery('1616983338', outTradeNo, nonceStr)
                   .then(() => { //进入支付成功页面
-                    that.toOrderDetail()
+                    that.toRecordDetail()
                   })
                   .catch(() => { //进入订单支付详情页面
-                    that.toOrderDetail()
+                    that.toRecordDetail()
                   })
               } else { // 用户取消支付
                 wx.hideLoading()
                 util.showToast('订单未支付', 'error')
-                that.toOrderDetail()
+                that.toRecordDetail()
               }
             })
         })
@@ -216,13 +216,13 @@ Page({
         })
     }
   },
-  toOrderDetail: function () {
+  toRecordDetail: function () {
     setTimeout(() => { //进入订单支付详情页面
       wx.navigateBack({
         delta: 2,
       }).then(res => {
         wx.navigateTo({
-          url: '../order/orderDetail?data=' + JSON.stringify({
+          url: '../record/recordDetail?data=' + JSON.stringify({
             outTradeNo: outTradeNo
           })
         })

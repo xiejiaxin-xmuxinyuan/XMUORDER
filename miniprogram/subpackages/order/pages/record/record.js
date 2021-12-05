@@ -93,7 +93,9 @@ Page({
     var record = that.data.record[e.currentTarget.dataset.index]
     //传递参数 TODO
     wx.navigateTo({
-      url: '../order/payOrder'
+      url: './recordDetail?data=' + JSON.stringify({
+        outTradeNo: record.orderInfo.outTradeNo
+      })
     })
   }
 })
