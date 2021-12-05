@@ -75,11 +75,10 @@ exports.main = async (event, context) => {
     if (res.resultCode !== 'SUCCESS' || res.returnCode !== 'SUCCESS') {
       return {
         success: false,
-        returnMsg: res.returnMsg
+        returnMsg: '统一下单失败：' + res.returnMsg
       }
     } else {
       //保存订单
-
       order = event.orderInfo
       order.userInfo.openid = wxContext.OPENID
       order.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
