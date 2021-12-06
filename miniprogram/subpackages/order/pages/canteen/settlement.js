@@ -13,7 +13,9 @@ Page({
     curTime: '',
     timeToPick: ['7:00', '7:30', '8:30', '11:00', '12:00', '12:30', '17:30', '18:00', '18:30'],
     pickedIndex: null,
-    totalPrice: 0,
+    goodsPrice: 0, //食物价格（单位元）
+    otherFee: 0, //打包费等等（单位元）
+    discount: 0, //优惠（单位元）
     isTimePick: false
   },
 
@@ -29,7 +31,7 @@ Page({
       orderList: app.globalData.settlement.orderList,
       foodList: app.globalData.settlement.foodList,
       canteen: app.globalData.settlement.canteen,
-      money: app.globalData.settlement.money,
+      goodsPrice: app.globalData.settlement.money,
       user: user
     })
     that.timeAbleToPick() // 根据当前时间修改可选的点餐时间
@@ -75,9 +77,9 @@ Page({
       util.showToast('时间未选择', 'error')
     } else {
       //构造订单数据
-      const goodsPrice = parseInt(that.data.money * 100)
-      const otherFee = parseInt(0) //打包费等等（单位分）
-      const discount = parseInt(0) //优惠
+      const goodsPrice = parseInt(that.data.goodsPrice * 100)
+      const otherFee = parseInt(that.data.otherFee * 100) //打包费等等（单位分）
+      const discount = parseInt(that.data.discount * 100) //优惠
 
       var orderInfo = {
         userInfo: { //用户信息
@@ -114,7 +116,7 @@ Page({
           timeInfo: {
             createTime: undefined,
             payTime: undefined,
-            receiveTime: undefined,
+            confirmTime: undefined,
             endTime: undefined
           },
           outTradeNo: undefined,

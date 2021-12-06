@@ -1,3 +1,9 @@
+@import "../../../../colorui/animation.wxss";
+
+.animation-fade{
+  animation-delay: 0.5s;
+}
+
 .my-block {
   background-color: white;
   margin: 15rpx 30rpx;

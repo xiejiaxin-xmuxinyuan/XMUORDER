@@ -59,19 +59,21 @@
 .myorder .my-bottom {
   display: flex;
   flex-direction: column;
+  margin: 15rpx;
+}
+
+.myorder .my-bottom >view{
+  margin: 15rpx 0;
 }
 
 .myorder .my-bottom .info {
   display: flex;
   justify-content: space-between;
-  margin-top: 30rpx;
 }
 
-.myorder .my-bottom .info .price {
-  margin-right: 15rpx;
-}
-
-.myorder .my-bottom .my-btn {
-  margin-top: 30rpx;
-  text-align: right;
+.myorder .my-bottom .other-price {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
 }
