@@ -11,7 +11,9 @@
             <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
             {{item.goodsInfo.shopInfo.name}}
           </view>
-          <text class="text-gray">{{item.orderInfo.orderStateMsg}}</text>
+          <view class="{{item.orderInfo.orderState==='NOTPAY'?'text-orange':'text-gray'}}">
+            {{item.orderInfo.orderStateMsg}}
+          </view>
         </view>
         <view class="mycontent" data-index="{{index}}" catchtap="toRecoredDetail">
           <view wx:for="{{item.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
@@ -45,7 +47,7 @@
           </view>
         </view>
         <!-- 反馈相关按钮 -->
-        <block  wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}">
+        <block wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}">
           <view class="text-right">
             <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toOrderDetail">
               <text class="text-bold">去支付</text>

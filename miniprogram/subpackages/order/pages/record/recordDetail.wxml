@@ -46,7 +46,7 @@
         <text class="my-ico cuIcon-roundclose"></text>
         <view>取消订单</view>
       </view>
-      <view class="text-orange">
+      <view class="text-blue">
         <text class="my-ico cuIcon-roundcheck"></text>
         <view>立即支付</view>
       </view>
