@@ -16,13 +16,18 @@
         <view class="cu-avatar lg bg-white">
           <open-data type="userAvatarUrl"></open-data>
         </view>
-        <view class="content" style="width: 75%;">
-          <text class="time">取餐时间：</text>
-          <picker bindchange="timePickerChange" value="{{pickedIndex}}" range="{{timeToPick}}" class="time">
-            <text class="picker">{{pickedIndex?timeToPick[pickedIndex]:'点击选择时间'}}</text>
-          </picker>
-          <view class="text-gray">{{user.name}}</view>
-          <view class="text-gray text-sm flex">{{user.phone}}</view>
+        <view class="my-info">
+          <view>
+            <view class="text-gray">{{user.name}}</view>
+            <view class="text-gray text-sm flex">{{user.phone}}</view>
+          </view>
+          <view class="time">
+            <view class="text-gray">取餐时间</view>
+            <picker bindchange="timePickerChange" value="{{pickedIndex}}" range="{{timeToPick}}" class="time">
+              <view class="time-value" wx:if="{{pickedIndex}}">{{timeToPick[pickedIndex]}}</view>
+              <button wx:else class="cu-btn line-brown shadow sm">选择时间</button>
+            </picker>
+          </view>
         </view>
       </view>
     </view>
@@ -33,20 +38,31 @@
   <view class="padding bg-white">
     <view class="padding-bottom-sm text-center solid-bottom">订单详情</view>
     <!-- ui模板 -->
-    <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
-      <image class="cu-avatar lg food-img " src="{{foodList[item[1]].food[item[2]].img}}" mode="aspectFill"
-        lazy-load="{{true}}"></image>
-      <view class="content text-cut">
+    <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length' && index!=='delete'}}" wx:key="*this">
+      <view class="food-img">
+        <image src="{{foodList[item[1]].food[item[2]].img}}" mode="scaleToFill" lazy-load="{{true}}"></image>
+      </view>
+      <view class="content">
         <view class="text-black text-bold">{{foodList[item[1]].food[item[2]].name}}</view>
-        <view class="text-grey text-xs">{{foodList[item[1]].food[item[2]].content}}</view>
+        <view class="text-grey text-xs  text-cut">{{foodList[item[1]].food[item[2]].content}}</view>
         <view class="text-grey text-sm">×{{foodList[item[1]].food[item[2]].orderNum}}</view>
       </view>
       <view class="text-black text-bold price">￥{{foodList[item[1]].food[item[2]].price *
         foodList[item[1]].food[item[2]].orderNum}}</view>
     </view>
     <!-- ui模板结束 -->
-    <view class="padding-top margin-top solid-top text-bold text-black text-right">
-      总计：<text class="text-red"> ￥{{money}}</text>
+    <view class="my-bottom">
+      <view class="other-price">
+        <view>其他费用</view>
+        <view> ￥{{otherFee}}</view>
+      </view>
+      <view class="other-price">
+        <view>优惠</view>
+        <view class="text-red"> -￥{{discount}}</view>
+      </view>
+      <view class="price">
+        总计：<text class="text-red"> ￥{{goodsPrice+otherFee-discount}}</text>
+      </view>
     </view>
   </view>
 </view>
@@ -54,9 +70,8 @@
 <view class="bg-white shadow round margin" style="position: fixed;bottom: 0;width: 90%;">
   <view class="flex" style="justify-content: space-between;">
     <view class="text-black text-bold" style="width: 40%;margin: auto;">
-      总计：<text class="text-red text-bold text-xxl"> ￥{{money}}</text>
+      总计：<text class="text-red text-bold text-xxl"> ￥{{goodsPrice+otherFee-discount}}</text>
     </view>
-    <view catchtap="settlementSubmit" style="padding:30rpx 80rpx;border-radius: 0 5000rpx 5000rpx 0;"
-      class="bg-gradual-orange">提交订单</view>
+    <view catchtap="settlementSubmit" style="padding:30rpx 80rpx;border-radius: 0 5000rpx 5000rpx 0;" class="bg-gradual-orange">提交订单</view>
   </view>
 </view>

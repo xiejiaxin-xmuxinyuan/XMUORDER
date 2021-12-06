@@ -162,8 +162,8 @@ Page({
         }).then(res => {
           //上传数据库 food
           var newForm = {
-            allNum: params.allNum,
-            curNum: params.allNum,
+            allNum: parseInt(params.allNum),
+            curNum: parseInt(params.allNum),
             cID: canteens[params.shopPickerIndex].cID,
             content: params.content,
             img: res.fileID,
@@ -262,11 +262,11 @@ Page({
       },
       price: {
         required: '请输入价格',
-        number: '请输入正确价格'
+        number: '请输入正确格式的价格'
       },
       allNum: {
         required: '请输入库存',
-        digits: '请输入非负整数'
+        digits: '请输入非负整数的库存'
       },
       foodImg: {
         required: '请添加商品图片'

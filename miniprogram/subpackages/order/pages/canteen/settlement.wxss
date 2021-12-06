@@ -1,39 +1,75 @@
 /* subpackages/order/pages/canteen/settlement.wxss */
 
-text.time {
-  color: gray;
-  position: absolute;
-  right: 0;
-  font-size: smaller !important;
-  width: 30%;
+.my-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 75%;
+  height: 80%;
+  align-items: center;
+}
+
+.my-info .time {
+  margin-right: 15rpx;
+  font-size: 25rpx;
+  width: 150rpx;
   text-align: center;
 }
 
-picker.time {
-  color: #e54d42;
+.my-info .time .time-value {
+  margin: 10rpx 0;
+  color: #a5673f;
   font-weight: bold;
-  position: absolute;
-  right: 0;
-  font-size: smaller;
-  top: 50%;
-  width: 30%;
-  text-align: center;
 }
 
 .order {
+  display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
   justify-content: space-between;
+  margin: 30rpx 0;
+}
+
+.order .food-img>image {
+  height: 100rpx;
+  width: 100rpx;
 }
 
 .order .content {
+  display: flex;
   flex-direction: column;
-  width: 60%;
-  margin-left: 50rpx;
-  margin-right: 50rpx;
+  width: 350rpx;
+  margin: auto;
 }
 
 .order .price {
-  margin: auto;
-  width: 15%;
+  margin: auto 0;
+  width: 100rpx;
+  text-align: left;
+}
+
+.my-bottom {
+  margin-top: 30rpx;
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+.my-bottom>view {
+  font-size: small;
+  font-weight: bold;
+  margin: 15rpx 0;
+}
+
+.my-bottom .other-price {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.my-bottom .price {
+  border-top: 2rpx solid #eee;
+  text-align: right;
+  padding-top: 30rpx;
+  margin-bottom: 0;
+  font-size: 32rpx;
 }

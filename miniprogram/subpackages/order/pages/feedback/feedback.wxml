@@ -10,23 +10,24 @@
       </view>
     </view>
     <view class="mycontent">
-      <text class="cuIcon-taoxiaopu text-blue" style="font-size: large;"></text>
-      {{record.cName}}
-      <view wx:for="{{record.record}}" wx:for-item="i">
-        <view>
-          <view class="text-cut text-bold">{{i.food}}</view>
-          <view class="text-bold">￥{{i.price / i.num}}</view>
-        </view>
-        <view class="text-gray">
-          <view>{{i.num}}件</view>
-          <view>×{{i.num}}</view>
+      <view wx:for="{{record.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
+        <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+        <view class="info">
+          <view>
+            <view class="text-cut text-bold">{{i.food}}</view>
+            <view class="text-bold">￥{{i.price}}</view>
+          </view>
+          <view class="text-gray">
+            <view>{{i.num}}件</view>
+            <view>×{{i.num}}</view>
+          </view>
         </view>
       </view>
     </view>
     <view class="flex my-bottom" style="justify-content: space-between;">
-      <view class="cu-tag bg-brown light lg round">{{record.date}}</view>
+      <view class="cu-tag bg-brown light lg round">{{record.orderInfo.timeInfo.formatedTime}}</view>
       <view class="text-bold text-black text-right price">
-        总计：<text class="text-red"> ￥{{record.allPrice}}</text>
+        总计：<text class="text-red"> ￥{{record.payInfo.feeInfo.totalFee / 100}}</text>
       </view>
     </view>
   </view>

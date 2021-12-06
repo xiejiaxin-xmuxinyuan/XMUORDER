@@ -1,0 +1,139 @@
+@import "../../../../colorui/animation.wxss";
+
+.animation-fade{
+  animation-delay: 0.5s;
+}
+
+.my-block {
+  background-color: white;
+  margin: 15rpx 30rpx;
+  padding: 30rpx;
+  border-radius: 5rpx;
+}
+
+.myorder {
+  display: flex;
+  flex-direction: column;
+}
+
+.myorder .title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #ddd;
+  padding-bottom: 30rpx;
+}
+
+.myorder .mycontent {
+  padding: 1rem 5rpx 0 5rpx;
+  flex-direction: column;
+  border-bottom: 2rpx solid #eee;
+}
+
+.myorder .mycontent>view {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 30rpx 20rpx;
+}
+
+.myorder .mycontent .info {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding-left: 30rpx;
+  justify-content: center;
+}
+
+.myorder .mycontent .info>view {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.myorder .my-bottom {
+  margin-top: 15rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.myorder .my-bottom>view {
+  margin: 15rpx;
+}
+
+.myorder .my-bottom .other-price {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.myorder .my-bottom .price {
+  border-top: 2rpx solid #eee;
+  text-align: right;
+  padding-top: 15rpx;
+  margin-right: 15rpx;
+  font-weight: bold;
+}
+
+.head {
+  background-color: #f6f6f6;
+}
+
+.head .content {
+  padding: 30rpx 30rpx;
+  font-size: 50rpx;
+  font-weight: 450;
+}
+
+.key-info .message {
+  display: flex;
+  flex-direction: column;
+  color: #333333;
+  font-weight: 550;
+}
+
+.key-info .message>view {
+  margin: 8rpx 0;
+}
+
+.key-info .btn-group {
+  margin-top: 35rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.key-info .btn-group>view {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.key-info .btn-group>view>view {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.key-info .btn-group .my-ico {
+  font-size: 50rpx;
+  text-align: center;
+}
+
+.my-info .title {
+  font-weight: bold;
+  font-size: larger;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #eee;
+}
+
+.my-info .content>view {
+  margin: 15rpx 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.my-info .content>view >view{
+  margin: auto 0;
+}
