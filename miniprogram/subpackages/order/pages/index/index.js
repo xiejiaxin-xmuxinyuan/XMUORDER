@@ -1,6 +1,7 @@
 // pages/index/index.js
 const app = getApp()
 const db = wx.cloud.database()
+const util = require('../../../../utils/util.js')
 var that
 
 function userNoticesSort(a, b) { //辅助函数 用于sort排序
@@ -42,10 +43,7 @@ Page({
       return
     }
 
-    wx.showLoading({
-      title: '获取信息中',
-      mask: true
-    })
+    util.showLoading('获取信息中')
     var p1 = db.collection("canteen").get()
     var p2 = that.getUserNotices()
 
@@ -76,20 +74,14 @@ Page({
       let m = date.getMinutes().toString().padStart(2, '0')
       let intCurTime = parseInt(h + m)
 
-      //canteens 营业时间计算
-      canteens.forEach((info, index) => {
-        let breakfast = info.breakfast
-        let beginTime = breakfast.substring(0, breakfast.indexOf('-'))
-        let intBeginTime = parseInt(beginTime.replace(':', ''))
-
-        let dinner = info.dinner
-        let endTime = dinner.substring(dinner.indexOf('-') + 1)
-        let intEndTime = parseInt(endTime.replace(':', ''))
-
-        canteens[index].beginTime = beginTime
-        canteens[index].intBeginTime = intBeginTime
-        canteens[index].endTime = endTime
-        canteens[index].intEndTime = intEndTime
+      canteens.forEach(canteen => {
+        for (let i = 0; i < canteen.businessTime.length; i++) {
+          const time = canteen.businessTime[i];
+          if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
+            canteen.inBusiness = true
+            break
+          }
+        }
       })
 
       app.globalData.canteens = canteens //同步到全局变量
@@ -137,25 +129,38 @@ Page({
       noticeCurrTypeNum: noticeCurrTypeNum
     })
   },
-  toOrder: function (e) {
+  toCanteen: function (e) {
+    const index = e.currentTarget.dataset.index
     if (!app.globalData.isActive) {
       that.goToInform()
     } else {
-      var myDate = new Date()
-      var myTime = that.formatDate(myDate)
-      var index = e.currentTarget.dataset.index
-      var canteen = that.data.canteens[index]
-      var endTime = canteen.endTime
-      // if(endTime < myTime){
-      //   wx.showToast({
-      //     title: '不在营业时间',
-      //     icon:'error'
-      //   })
-      // }else{
-      wx.navigateTo({
-        url: '../canteen/canteen?index=' + index,
+      const businessTime = that.data.canteens[index].businessTime
+
+      //当前时间
+      let date = new Date()
+      let h = date.getHours().toString().padStart(2, '0')
+      let m = date.getMinutes().toString().padStart(2, '0')
+      let intCurTime = parseInt(h + m)
+
+      for (let i = 0; i < businessTime.length; i++) {
+        const time = businessTime[i];
+        if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
+          that.setData({
+            intCurTime,
+            ['canteens['+ index +'].inBusiness']: true
+          })
+          wx.navigateTo({
+            url: '../canteen/canteen?index=' + index,
+          })
+          return
+        }
+      }
+
+      util.showToast('不在营业时间', 'error')
+      that.setData({
+        intCurTime,
+        ['canteens['+ index +'].inBusiness']: false
       })
-      // }
     }
   },
   goToInform: function () {
@@ -257,10 +262,7 @@ Page({
     })
   },
   getUserProfile: function (e) {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    util.showToast('加载中')
     wx.getUserProfile({
         desc: '用于完善会员资料'
       })
@@ -283,35 +285,19 @@ Page({
                 nickName: userInfo.nickName,
                 // avatarUrl: userInfo.avatarUrl
               })
-              wx.showToast({
-                title: '更新成功',
-                icon: 'success',
-                duration: 1000
-              })
+              util.showToast('更新成功', 'success', 1000)
             } else {
-              wx.showToast({
-                title: '更新信息失败',
-                icon: 'error',
-                duration: 2000
-              })
+              util.showToast('更新信息失败', 'error', 2000)
             }
           })
           .catch(e => {
             wx.hideLoading()
-            wx.showToast({
-              title: '更新信息失败',
-              icon: 'error',
-              duration: 2000
-            })
+            util.showToast('更新信息失败', 'error', 2000)
           })
       })
       .catch(erro => {
         wx.hideLoading()
-        wx.showToast({
-          title: '更新信息失败',
-          icon: 'error',
-          duration: 2000
-        })
+        util.showToast('更新信息失败', 'error', 2000)
       })
   },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
