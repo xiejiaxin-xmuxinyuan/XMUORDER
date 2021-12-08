@@ -13,10 +13,63 @@
 }
 
 .tab-page {
-  min-height: 75vh; 
+  min-height: 75vh;
   margin-bottom: 5vh;
 }
 
-.footer  {
+.footer {
   margin-bottom: 10vh;
+}
+
+.my-block{
+  margin: 15rpx 15rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  padding: 30rpx 15rpx;
+}
+
+.order .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.order .header .title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-right: 15rpx;
+}
+
+.order .header .switch {
+  margin-left: auto;
+}
+
+.main-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.main-info .content{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  text-align: center;
+  padding: 30rpx;
+  margin: 0 30rpx;
+  margin-top: 10rpx;
+  background-color: #f0f0f0;
+  border-radius: 10rpx;
+}
+
+.main-info .content .title{
+  font-size: 25rpx;
+  color: #666;
+  margin-bottom: 5rpx;
+}
+
+.main-info .content .value{
+  font-size: 45rpx;
+  font-weight: bold;
+  text-align: center;
 }

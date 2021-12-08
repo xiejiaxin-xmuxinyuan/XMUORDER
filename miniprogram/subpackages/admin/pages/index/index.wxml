@@ -17,7 +17,36 @@
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">订单</view>
   </cu-custom>
-  <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
+  <view class="order my-block">
+    <view class="header solid-bottom">
+      <view class="title cuIcon-title">{{canteen.name}}</view>
+      <view class="cu-tag round light bg-olive" wx:if="{{canteen.inBusiness}}">
+        <text class="cuIcon-roundcheckfill text-green"> 营业中</text>
+      </view>
+      <view class="cu-tag round" wx:else>
+        <text class="cuIcon-timefill text-grey"> 歇业中</text>
+      </view>
+      <view class="switch">
+        <text class="margin-right-sm text-grey">订单推送</text>
+        <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
+      </view>
+    </view>
+  </view>
+  <view class="main-info my-block">
+    <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
+      开启订单推送，实时推送最新订单
+    </view>
+    <view class="content">
+      <view>
+        <view class="title">今日成交订单</view>
+        <view class="value">{{orders.finishedOrdersCount}}</view>
+      </view>
+      <view>
+        <view class="title">未处理订单</view>
+        <view class="value {{orders.newOrders.length>0? 'text-red': ''}}">{{orders.newOrders.length}}</view>
+      </view>
+    </view>
+  </view>
 </view>
 
 
@@ -37,30 +66,30 @@
       <view class="content">
         <text class="cuIcon-peoplefill text-gray"></text>
         <text>姓名</text>
-        <text class="fr">{{name}}</text>
+        <text class="fr">{{user.name}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-phone text-gray"></text>
         <text>电话</text>
-        <text class="fr">{{phone}}</text>
+        <text class="fr">{{user.phone}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-locationfill text-gray"></text>
         <text>地址</text>
-        <text class="fr">{{address}}</text>
+        <text class="fr">{{user.address}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-profile text-gray"></text>
         <text>身份</text>
-        <text wx:if="{{identity.type==='admin'}}" class="fr">餐厅管理员</text>
-        <text wx:elif="{{identity.type==='member'}}" class="fr">餐厅员工</text>
-        <text wx:elif="{{identity.type==='superAdmin'}}" class="fr">超级管理员</text>
+        <text wx:if="{{user.identity.type==='admin'}}" class="fr">餐厅管理员</text>
+        <text wx:elif="{{user.identity.type==='member'}}" class="fr">餐厅员工</text>
+        <text wx:elif="{{user.identity.type==='superAdmin'}}" class="fr">超级管理员</text>
       </view>
     </view>
   </view>
@@ -77,11 +106,13 @@
     </view>
     <view>管理</view>
   </view>
-  <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
-    <view class='cuIcon-formfill'>
+  <block wx:if="{{user.identity.cID}}">
+    <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
+      <view class='cuIcon-formfill'>
+      </view>
+      <view>订单</view>
     </view>
-    <view>订单</view>
-  </view>
+  </block>
   <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="user">
     <view class='cuIcon-myfill'>
     </view>
