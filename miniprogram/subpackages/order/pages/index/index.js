@@ -316,17 +316,12 @@ Page({
   },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
     var date = new Date(inputTime);
-    var y = date.getFullYear();
-    var m = date.getMonth() + 1;
-    m = m < 10 ? ('0' + m) : m;
-    var d = date.getDate();
-    d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
-    h = h < 10 ? ('0' + h) : h;
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    minute = minute < 10 ? ('0' + minute) : minute;
-    second = second < 10 ? ('0' + second) : second;
-    return h + ':' + minute;
+    let year = date.getFullYear()
+    let month = (date.getMonth() + 1).toString().padStart(2, '0')
+    let day = date.getDate().toString().padStart(2, '0')
+    let hour = date.getHours().toString().padStart(2, '0')
+    let min = date.getMinutes().toString().padStart(2, '0')
+    let sec = date.getSeconds().toString().padStart(2, '0')
+    return hour + ':' + min;
   }
 })
