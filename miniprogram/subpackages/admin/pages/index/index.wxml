@@ -17,7 +17,7 @@
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">订单</view>
   </cu-custom>
-
+  <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
 </view>
 
 

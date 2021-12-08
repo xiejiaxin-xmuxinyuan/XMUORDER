@@ -1,8 +1,10 @@
 // pages/index/index.js
 const app = getApp()
 const db = wx.cloud.database()
-var that
+const util = require('../../../../utils/util.js')
 
+var that
+var watcher //订单监听
 
 function userNoticesSort(a, b) { //辅助函数 用于sort排序
   if (a.top !== b.top) {
@@ -17,6 +19,7 @@ function userNoticesSort(a, b) { //辅助函数 用于sort排序
 Page({
   data: {
     pageCurr: "admin",
+    watchOrderFlag: false,
     iconList: [{
         icon: 'noticefill',
         color: 'yellow',
@@ -64,10 +67,8 @@ Page({
 
   onLoad: function (options) {
     that = this
-    wx.showLoading({
-      title: '获取信息中',
-      mask: true
-    })
+    util.showLoading('获取信息中')
+
     var p1 = db.collection("canteen").get()
     var p2 = that.getUserNotices()
 
@@ -98,10 +99,7 @@ Page({
         url: e.currentTarget.dataset.path,
       })
     } else {
-      wx.showToast({
-        title: '功能未开放',
-        icon: 'none'
-      })
+      util.showToast('功能未开放')
     }
   },
   getUserNotices: async function () {
@@ -128,5 +126,39 @@ Page({
     })
     res.data.sort(userNoticesSort)
     return res.data //返回排序后数据
+  },
+  watchOrder: function (e) { //订单监听
+    var watchOrderFlag = e.detail.value
+
+    if (watchOrderFlag) {
+      util.showLoading('开启订单推送')
+
+      let cID = that.data.identity.cID
+      watcher = db.collection('orders')
+        .where({
+          'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
+          'orderInfo.orderState': 'NOTCONFIRM' // 仅监听未确认状态的订单
+        })
+        .watch({
+          onChange: function (snapshot) {
+            if (snapshot.type === 'init') {
+              wx.hideLoading()
+              util.showToast('订单推送已开启', 'success', 2000)
+              that.setData({
+                watchOrderFlag: watchOrderFlag
+              })
+            } else {
+              console.log(snapshot)
+            }
+          },
+          onError: function (err) {
+            wx.hideLoading()
+            util.showToast('订单推送异常', 'error', 2000)
+            that.setData({
+              watchOrderFlag: false
+            })
+          }
+        })
+    }
   }
 })
