@@ -283,6 +283,11 @@ Page({
                 nickName: userInfo.nickName,
                 // avatarUrl: userInfo.avatarUrl
               })
+              wx.showToast({
+                title: '更新成功',
+                icon: 'success',
+                duration: 1000
+              })
             } else {
               wx.showToast({
                 title: '更新信息失败',

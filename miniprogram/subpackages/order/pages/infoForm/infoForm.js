@@ -51,8 +51,8 @@ Page({
             mask: true
           })
           app.globalData.name = userInfo.name,
-            app.globalData.userID = userInfo.userID,
-            app.globalData.address = userInfo.address
+          app.globalData.userID = userInfo.userID,
+          app.globalData.address = userInfo.address
           app.globalData.phone = userInfo.phone
           app.globalData.nickName = userInfo.nickName
 
@@ -60,6 +60,7 @@ Page({
           db.collection('users')
             .add({
               data: {
+                _id: '{openid}',
                 phone: userInfo.phone, //that.data.phoneNumber,
                 isActive: true,
                 name: userInfo.name,
