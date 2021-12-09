@@ -245,18 +245,21 @@ Page({
         })
     })
   },
-  getNewOrders: function(){
+  getNewOrders: function () {
     const cID = that.data.user.identity.cID
     return new Promise((resolve, reject) => {
       db.collection('orders')
-      .where({
-        'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-        'orderInfo.orderState': 'NOTCONFIRM',
-      }).get().then(res => {
-        resolve(res.data)
-      }).catch(e => {
-        reject(e)
-      })
+        .where({
+          'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
+          'orderInfo.orderState': 'NOTCONFIRM',
+        }).get().then(res => {
+          res.data.forEach(order => {
+            order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
+          });
+          resolve(res.data)
+        }).catch(e => {
+          reject(e)
+        })
     })
   }
 })

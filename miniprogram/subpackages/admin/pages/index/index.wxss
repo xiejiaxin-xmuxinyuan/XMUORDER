@@ -21,8 +21,8 @@
   margin-bottom: 10vh;
 }
 
-.my-block{
-  margin: 15rpx 15rpx;
+.my-block {
+  margin: 20rpx 30rpx;
   background-color: white;
   border-radius: 10rpx;
   padding: 30rpx 15rpx;
@@ -44,13 +44,14 @@
   margin-left: auto;
 }
 
-.main-info {
+.order .main-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 30rpx;
 }
 
-.main-info .content{
+.order .main-info .content {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -62,14 +63,107 @@
   border-radius: 10rpx;
 }
 
-.main-info .content .title{
+.order .main-info .content .title {
   font-size: 25rpx;
   color: #666;
   margin-bottom: 5rpx;
 }
 
-.main-info .content .value{
+.order .main-info .content .value {
   font-size: 45rpx;
   font-weight: bold;
   text-align: center;
+}
+
+.order .new-order {
+  display: flex;
+  flex-direction: column;
+  min-height: 450rpx;
+}
+
+.order .new-order .tip {
+  text-align: center;
+  color: #aaa;
+  font-size: 20rpx;
+  margin-top: 50rpx;
+}
+
+.order .new-order .content {
+  margin: 30rpx 15rpx;
+}
+
+.order .new-order .content .item {
+  margin: 30rpx 0;
+  padding: 15rpx 30rpx;
+  border: 5rpx black solid;
+  border-radius: 15rpx;
+}
+
+.order .new-order .content .item>view:not(.bottom) {
+  margin-bottom: 15rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 5rpx #ccc dotted;
+}
+
+.order .new-order .content .item .header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.order .new-order .content .item .header .title>text {
+  font-weight: bold;
+  font-size: 64rpx;
+}
+
+.order .new-order .content .item .header .time {
+  font-size: 25rpx;
+  color: #666;
+}
+
+.order .new-order .content .item .user .info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15rpx 0;
+}
+
+.order .new-order .content .item .user .place {
+  font-size: small;
+  color: #666;
+  margin: 15rpx 0;
+}
+
+.goods .goods-content {
+  display: flex;
+  flex-direction: column;
+  margin: 15rpx 15rpx;
+  font-size: small;
+  color: #666;
+}
+
+.goods .goods-content .good-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.goods .goods-content .fee {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.goods .goods-content .price {
+  margin-top: 20rpx;
+  color: #e54d42;
+  text-align: right;
+}
+
+.order .new-order .content .item .bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15rpx 30rpx;
 }

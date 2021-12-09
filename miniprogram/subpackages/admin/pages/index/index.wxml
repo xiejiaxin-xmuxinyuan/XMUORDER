@@ -17,33 +17,99 @@
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">订单</view>
   </cu-custom>
-  <view class="order my-block">
-    <view class="header solid-bottom">
-      <view class="title cuIcon-title">{{canteen.name}}</view>
-      <view class="cu-tag round light bg-olive" wx:if="{{canteen.inBusiness}}">
-        <text class="cuIcon-roundcheckfill text-green"> 营业中</text>
+  <view class="order">
+    <view class="my-block">
+      <view class="header">
+        <view class="title cuIcon-title">{{canteen.name}}</view>
+        <view class="cu-tag round light bg-olive" wx:if="{{canteen.inBusiness}}">
+          <text class="cuIcon-roundcheckfill text-green"> 营业中</text>
+        </view>
+        <view class="cu-tag round" wx:else>
+          <text class="cuIcon-timefill text-grey"> 歇业中</text>
+        </view>
+        <view class="switch">
+          <text class="margin-right-sm text-gray">订单推送</text>
+          <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
+        </view>
       </view>
-      <view class="cu-tag round" wx:else>
-        <text class="cuIcon-timefill text-grey"> 歇业中</text>
-      </view>
-      <view class="switch">
-        <text class="margin-right-sm text-grey">订单推送</text>
-        <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
+      <view class="main-info">
+        <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
+          开启订单推送，实时推送最新订单
+        </view>
+        <view class="content">
+          <view>
+            <view class="title">今日成交订单</view>
+            <view class="value">{{orders.finishedOrdersCount}}</view>
+          </view>
+          <view>
+            <view class="title">未处理订单</view>
+            <view class="value {{orders.newOrders.length>0? 'text-orange': ''}}">
+              {{orders.newOrders.length}}
+            </view>
+          </view>
+        </view>
       </view>
     </view>
-  </view>
-  <view class="main-info my-block">
-    <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
-      开启订单推送，实时推送最新订单
-    </view>
-    <view class="content">
-      <view>
-        <view class="title">今日成交订单</view>
-        <view class="value">{{orders.finishedOrdersCount}}</view>
-      </view>
-      <view>
-        <view class="title">未处理订单</view>
-        <view class="value {{orders.newOrders.length>0? 'text-red': ''}}">{{orders.newOrders.length}}</view>
+    <view class="new-order my-block">
+      <view class="text-bold cuIcon-titles">未处理订单</view>
+      <view wx:if="{{orders.newOrders.length===0}}" class="tip">暂无未处理订单</view>
+      <view class="content">
+        <view class="item" wx:for="{{orders.newOrders}}">
+          <view class="header">
+            <view>
+              <view class="title"># <text>{{index+1}}</text></view>
+              <view class="time">取餐时间：<text class="text-black text-bold">{{item.getFoodInfo.time}}</text>
+              </view>
+            </view>
+            <view class="text-black text-bold">等待卖家确认</view>
+          </view>
+          <view class="user">
+            <view class="info">
+              <view class="text-lg text-bold">{{item.userInfo.name}}</view>
+              <view class="text-sm">尾号{{item.userInfo.phoneEnd}}</view>
+            </view>
+            <view class="place">取餐地点：<text>{{item.getFoodInfo.place}}</text></view>
+          </view>
+          <view class="goods">
+            <view class="text-xl text-bold">{{item.goodsInfo.record.length}} 件商品</view>
+            <view class="goods-content">
+              <view class="good-item" wx:for="{{item.goodsInfo.record}}" wx:for-item="food">
+                <view class="flex-treble">{{food.food}}</view>
+                <view class="flex-sub">{{food.num}}份</view>
+                <view class="flex-sub text-right">￥{{food.price}}</view>
+              </view>
+              <view class="fee margin-bottom-sm margin-top-sm text-gray">
+                <view>小计</view>
+                <view>￥{{item.payInfo.feeInfo.goodsPrice/100}}</view>
+              </view>
+              <view class="fee">
+                <view>其他费用</view>
+                <view>￥{{item.payInfo.feeInfo.otherFee/100}}</view>
+              </view>
+              <view class="fee">
+                <view>优惠券</view>
+                <view>-￥{{item.payInfo.feeInfo.discount/100}}</view>
+              </view>
+              <view class="fee">
+                <view>平台服务费</view>
+                <view>-￥{{item.payInfo.feeInfo.serviceFee/100}}</view>
+              </view>
+              <view class="fee text-orange text-bold margin-top-sm">
+                <view>合计收入</view>
+                <view>￥{{(item.payInfo.feeInfo.cashFee - item.payInfo.feeInfo.serviceFee)/100}}</view>
+              </view>
+            </view>
+
+          </view>
+          <view class="bottom">
+            <button class="cu-btn lines-gray round">
+              <text class="cuIcon-roundclosefill"> 拒单</text>
+            </button>
+            <button class="cu-btn lines-olive round">
+              <text class="cuIcon-roundcheckfill"> 接单</text>
+            </button>
+          </view>
+        </view>
       </view>
     </view>
   </view>
