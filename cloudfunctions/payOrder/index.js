@@ -151,6 +151,10 @@ exports.main = async (event, context) => {
       orderInfo.orderInfo.timeInfo.createTime = outTradeNo.substr(0, 14)
       orderInfo.orderInfo.timeInfo.formatedTime = strDateFormat(orderInfo.orderInfo.timeInfo.createTime)
       orderInfo.orderInfo.outTradeNo = outTradeNo
+      //平台服务费（支付后分账）
+      //（待确定）订单总金额（不包括优惠）的0.05%，向下取整数，保底1分
+      var serviceFee = parseInt(parseInt(totalFee) * 0.05)
+      orderInfo.payInfo.feeInfo.serviceFee = serviceFee < 1 ? 1 : sserviceFee
 
       await db.collection('orders').add({
         data: orderInfo
