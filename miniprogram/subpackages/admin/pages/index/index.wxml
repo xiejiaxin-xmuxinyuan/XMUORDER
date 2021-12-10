@@ -43,8 +43,8 @@
           </view>
           <view>
             <view class="title">未处理订单</view>
-            <view class="value {{orders.newOrders.length>0? 'text-orange': ''}}">
-              {{orders.newOrders.length}}
+            <view class="value {{orders.totalCount>0? 'text-orange': ''}}">
+              {{orders.totalCount}}
             </view>
           </view>
         </view>
@@ -99,7 +99,6 @@
                 <view>￥{{(item.payInfo.feeInfo.cashFee - item.payInfo.feeInfo.serviceFee)/100}}</view>
               </view>
             </view>
-
           </view>
           <view class="bottom">
             <button class="cu-btn lines-gray round">
@@ -111,6 +110,7 @@
           </view>
         </view>
       </view>
+      <view wx:if="{{orders.currPage === orders.totalPage}}" class="text-center text-gray">所有订单已加载</view>
     </view>
   </view>
 </view>

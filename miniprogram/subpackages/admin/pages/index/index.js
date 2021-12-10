@@ -136,7 +136,10 @@ Page({
         Promise.all([p3, p4]).then(res => {
           that.setData({
             'orders.finishedOrdersCount': res[0],
-            'orders.newOrders': res[1]
+            'orders.newOrders': res[1].record,
+            'orders.currPage': res[1].currPage,
+            'orders.totalPage': res[1].totalPage,
+            'orders.totalCount': res[1].totalCount,
           })
           wx.hideLoading()
         })
@@ -190,24 +193,42 @@ Page({
 
     if (watchOrderFlag) {
       util.showLoading('开启订单推送')
-
       let cID = that.data.user.identity.cID
       watcher = db.collection('orders')
         .where({
           'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
           'orderInfo.orderState': 'NOTCONFIRM' // 仅监听未确认状态的订单
         })
+        .orderBy('orderInfo.timeInfo.createTime', 'desc')
         .watch({
           onChange: function (snapshot) {
+            var newOrders = snapshot.docs
+            var totalCount = newOrders.length
+            var totalPage = totalCount === 0 ? 0 : totalCount <= 5 ? 1 : Math.ceil(totalCount / 5)
+            var setData = {
+              'orders.newOrders': newOrders,
+              'orders.totalCount': totalCount,
+              'orders.totalPage': totalPage,
+              'orders.currPage': totalPage,
+            }
             if (snapshot.type === 'init') {
               wx.hideLoading()
               util.showToast('订单推送已开启', 'success', 1500)
-              that.setData({
-                watchOrderFlag: true
-              })
+              setData.watchOrderFlag = true
             } else {
-              console.log(snapshot)
+              var newCount = 0 //新增订单数
+              for (let i = 0; i < snapshot.docChanges.length; i++) {
+                const change = snapshot.docChanges[i];
+                if ('updatedFields.orderInfo.orderState' in change && change.updatedFields.orderInfo.orderState) {
+                  newCount += 1
+                }
+              }
+              if (newCount) {
+                util.showToast('你有' + newCount + '条新订单啦')
+              }
             }
+            // 保存
+            that.setData(setData)
           },
           onError: function (err) {
             wx.hideLoading()
@@ -245,23 +266,76 @@ Page({
         })
     })
   },
-  getNewOrders: function () {
+  getNewOrders: function (currPage = 1) {
     const cID = that.data.user.identity.cID
     return new Promise((resolve, reject) => {
+      // 统计订单数
       db.collection('orders')
         .where({
           'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
           'orderInfo.orderState': 'NOTCONFIRM',
-        }).get().then(res => {
-          res.data.forEach(order => {
-            order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
-          });
-          resolve(res.data)
-        }).catch(e => {
-          reject(e)
+        }).count().then(res => {
+          const totalCount = res.total
+          const totalPage = totalCount === 0 ? 0 : totalCount <= 5 ? 1 : Math.ceil(totalCount / 5)
+
+          if (currPage > totalPage) {
+            resolve({
+              record: [],
+              currPage: currPage,
+              totalPage: totalPage,
+              totalCount: totalCount,
+            })
+          }
+          // 读取当前页订单
+          db.collection('orders')
+            .where({
+              'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
+              'orderInfo.orderState': 'NOTCONFIRM',
+            })
+            .skip((currPage - 1) * 5)
+            .limit(5)
+            .get().then(res => {
+              res.data.forEach(order => {
+                order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
+              });
+              resolve({
+                record: res.data,
+                currPage: currPage,
+                totalPage: totalPage,
+                totalCount: totalCount,
+              })
+            }).catch(e => {
+              reject()
+            })
+        })
+        .catch(e => {
+          reject()
         })
     })
-  }
+  },
+  onReachBottom() {
+    const pageCurr = that.data.pageCurr
+    if (pageCurr === 'order') {
+      const totalPage = that.data.orders.totalPage
+      var watchOrderFlag = that.data.watchOrderFlag
+      var currPage = that.data.orders.currPage
+      if (currPage < totalPage && !watchOrderFlag) {
+        util.showLoading('加载中')
+        that.getNewOrders(currPage + 1).then(res => {
+          var newOrders = that.data.orders.newOrders
+          that.setData({
+            'orders.newOrders': newOrders.concat(res.record),
+            'orders.currPage': res.currPage,
+            'orders.totalPage': res.totalPage,
+            'orders.totalCount': res.totalCount,
+          })
+          wx.hideLoading()
+        }).catch(e => {
+          wx.hideLoading()
+        })
+      }
+    }
+  },
 })
 
 function getTodayDateTime() {
