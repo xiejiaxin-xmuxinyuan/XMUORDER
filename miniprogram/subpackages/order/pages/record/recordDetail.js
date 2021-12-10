@@ -79,14 +79,14 @@ Page({
       }
       //刷新订单详情
       setTimeout(() => {
-        that.getOrder(out_trade_no)
+        that.refreshOrder()
       }, 1000)
     }).catch(e => {
       wx.hideLoading()
       util.showToast('订单核实失败')
       //刷新订单详情
       setTimeout(() => {
-        that.getOrder(out_trade_no)
+        that.refreshOrder()
       }, 1000)
     })
   },
@@ -123,6 +123,35 @@ Page({
       .catch(e => {
         util.hideLoading()
         util.showToast('加载失败', 'error')
+      })
+  },
+  refreshOrder: function (e) {
+    const outTradeNo = that.data.order.orderInfo.outTradeNo
+    that.getOrder(outTradeNo)
+  },
+  cancelOrder: function (e) {
+    util.showLoading('取消订单中')
+    const order = that.data.order
+
+    wx.cloud.callFunction({
+        name: 'payOrderCancel',
+        data: {
+          outTradeNo: order.orderInfo.outTradeNo,
+        }
+      }).then(res => {
+        util.hideLoading()
+        if (res.result.success) {
+          util.showToast('订单取消成功', 'success')
+        } else {
+          util.showToast('订单取消失败', 'error')
+        }
+        setTimeout(() => {
+          that.refreshOrder()
+        }, 1000);
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('订单取消失败', 'error')
       })
   }
 })
