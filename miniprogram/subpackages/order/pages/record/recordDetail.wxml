@@ -42,11 +42,11 @@
     </view>
     <!-- 支付相关按钮 -->
     <view wx:if="{{order.orderInfo.orderState==='NOTPAY'}}" class="btn-group">
-      <view>
+      <view class="text-grey">
         <text class="my-ico cuIcon-roundclose"></text>
         <view>取消订单</view>
       </view>
-      <view class="text-blue">
+      <view catchtap="payOrder" class="text-green">
         <text class="my-ico cuIcon-roundcheck"></text>
         <view>立即支付</view>
       </view>
@@ -87,7 +87,7 @@
         <view class="text-red"> -￥{{order.payInfo.feeInfo.discount/100}}</view>
       </view>
       <view class="price">
-        总计：<text class="text-red"> ￥{{order.payInfo.feeInfo.cashFee / 100}}</text>
+        合计：<text class="text-red"> ￥{{order.payInfo.feeInfo.cashFee / 100}}</text>
       </view>
     </view>
   </view>

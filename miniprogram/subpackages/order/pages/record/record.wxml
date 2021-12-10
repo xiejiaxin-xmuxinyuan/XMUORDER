@@ -49,7 +49,7 @@
         <!-- 反馈相关按钮 -->
         <block wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}">
           <view class="text-right">
-            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toOrderDetail">
+            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toRecoredDetail">
               <text class="text-bold">去支付</text>
             </button>
             <button wx:elif="{{!(item.feedback.length)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">

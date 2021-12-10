@@ -143,10 +143,7 @@ Page({
       }
 
       //请求下单
-      wx.showLoading({
-        title: '提交订单中',
-        mask: true
-      })
+      util.showLoading('提交订单中')
       wx.cloud.callFunction({
           name: 'payOrder',
           data: {
@@ -159,10 +156,9 @@ Page({
           }
         })
         .then(payOrderRes => {
-          wx.hideLoading()
           outTradeNo = payOrderRes.result.outTradeNo
-
           if (!payOrderRes.result.success) { //下单失败
+            wx.hideLoading()
             if ('toastMsg' in payOrderRes.result) {
               util.showToast(payOrderRes.result.toastMsg)
             } else {
