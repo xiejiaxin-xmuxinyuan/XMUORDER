@@ -55,12 +55,19 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  text-align: center;
+  align-items: center;
   padding: 30rpx;
   margin: 0 30rpx;
   margin-top: 10rpx;
   background-color: #f0f0f0;
   border-radius: 10rpx;
+}
+
+.order .main-info .content .cuIcon-right{
+  position: absolute;
+  right: 80rpx;
+  font-size: 40rpx;
+  color: #999;
 }
 
 .order .main-info .content .title {
@@ -129,7 +136,7 @@
   margin: 15rpx 0;
 }
 
-.order .new-order .content .item .user .place {
+.order .new-order .content .item .user .line {
   font-size: small;
   color: #666;
   margin: 15rpx 0;

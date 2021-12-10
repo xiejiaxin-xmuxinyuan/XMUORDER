@@ -34,19 +34,21 @@
       </view>
       <view class="main-info">
         <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
-          开启订单推送，实时推送最新订单
+          开启订单推送，实时反馈订单状态
         </view>
         <view class="content">
-          <view>
-            <view class="title">今日成交订单</view>
-            <view class="value">{{orders.finishedOrdersCount}}</view>
-          </view>
           <view>
             <view class="title">未处理订单</view>
             <view class="value {{orders.totalCount>0? 'text-orange': ''}}">
               {{orders.totalCount}}
             </view>
           </view>
+          <view>
+            <view class="title">未送出订单</view>
+            <view class="value {{orders.acceptedOrdersCount>0? 'text-brown': ''}}">
+              {{orders.acceptedOrdersCount}}</view>
+          </view>
+          <text class="cuIcon-right"></text>
         </view>
       </view>
     </view>
@@ -68,7 +70,9 @@
               <view class="text-lg text-bold">{{item.userInfo.name}}</view>
               <view class="text-sm">尾号{{item.userInfo.phoneEnd}}</view>
             </view>
-            <view class="place">取餐地点：<text>{{item.getFoodInfo.place}}</text></view>
+            <view class="line">订单号：<text>{{item.orderInfo.outTradeNo}}</text></view>
+            <view class="line">取餐地点：<text>{{item.getFoodInfo.place}}</text></view>
+            <view class="line">下单时间：<text>{{item.orderInfo.timeInfo.formatedTime}}</text></view>
           </view>
           <view class="goods">
             <view class="text-xl text-bold">{{item.goodsInfo.record.length}} 件商品</view>
@@ -101,10 +105,10 @@
             </view>
           </view>
           <view class="bottom">
-            <button class="cu-btn lines-gray round">
+            <button catchtap="rejectOrder" data-index="{{index}}" class="cu-btn lines-gray round">
               <text class="cuIcon-roundclosefill"> 拒单</text>
             </button>
-            <button class="cu-btn lines-olive round">
+            <button catchtap="acceptOrder" data-index="{{index}}" class="cu-btn lines-olive round">
               <text class="cuIcon-roundcheckfill"> 接单</text>
             </button>
           </view>

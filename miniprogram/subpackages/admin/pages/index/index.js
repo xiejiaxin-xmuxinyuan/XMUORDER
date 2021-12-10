@@ -25,7 +25,7 @@ Page({
     intCurTime: 0,
     orders: {
       newOrders: [],
-      finishedOrdersCount: 0
+      acceptedOrdersCount: 0
     },
     iconList: [{
         icon: 'noticefill',
@@ -93,23 +93,35 @@ Page({
       }
     })
 
-    var p1, p2, p3, p4
+    var proList = []
+
+    // 餐厅信息
     if (identity.type !== 'superAdmin') {
-      p1 = db.collection("canteen").where({
-        cID: identity.cID
-      }).get()
+      proList.push(
+        db.collection("canteen").where({
+          cID: identity.cID
+        }).get()
+      )
     } else {
-      p1 = db.collection("canteen").get()
+      proList.push(
+        db.collection("canteen").get()
+      )
     }
 
-    p2 = that.getUserNotices()
+    // 公告信息
+    proList.push(
+      that.getUserNotices()
+    )
 
+    // 未处理订单相关信息
     if (identity.type !== 'superAdmin') {
-      p3 = that.getFinishedOrdersCount()
-      p4 = that.getNewOrders()
+      proList.push(
+        that.getAcceptedOrdersCount(),
+        that.getNewOrders()
+      )
     }
 
-    Promise.all([p1, p2]).then(res => {
+    Promise.all(proList).then(res => {
 
       //放入全局变量
       var canteens = res[0].data //餐厅数据
@@ -127,25 +139,19 @@ Page({
             break
           }
         }
+
         that.setData({
           intCurTime,
           canteen,
-          pageCurr: 'order'
+          pageCurr: 'order',
+          'orders.acceptedOrdersCount': res[2],
+          'orders.newOrders': res[3].record,
+          'orders.currPage': res[3].currPage,
+          'orders.totalPage': res[3].totalPage,
+          'orders.totalCount': res[3].totalCount,
         })
-
-        Promise.all([p3, p4]).then(res => {
-          that.setData({
-            'orders.finishedOrdersCount': res[0],
-            'orders.newOrders': res[1].record,
-            'orders.currPage': res[1].currPage,
-            'orders.totalPage': res[1].totalPage,
-            'orders.totalCount': res[1].totalCount,
-          })
-          wx.hideLoading()
-        })
-      } else {
-        wx.hideLoading()
       }
+      wx.hideLoading()
     })
   },
   onNavChange: function (e) {
@@ -188,8 +194,13 @@ Page({
     res.data.sort(userNoticesSort)
     return res.data //返回排序后数据
   },
-  watchOrder: function (e) { //订单监听
-    var watchOrderFlag = e.detail.value
+  watchOrder: function (e, flag = null) { //订单监听
+    var watchOrderFlag
+    if (flag !== null) {
+      watchOrderFlag = flag
+    } else {
+      watchOrderFlag = e.detail.value
+    }
 
     if (watchOrderFlag) {
       util.showLoading('开启订单推送')
@@ -205,6 +216,9 @@ Page({
             var newOrders = snapshot.docs
             var totalCount = newOrders.length
             var totalPage = totalCount === 0 ? 0 : totalCount <= 5 ? 1 : Math.ceil(totalCount / 5)
+            newOrders.forEach(order => {
+              order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
+            })
             var setData = {
               'orders.newOrders': newOrders,
               'orders.totalCount': totalCount,
@@ -217,14 +231,26 @@ Page({
               setData.watchOrderFlag = true
             } else {
               var newCount = 0 //新增订单数
+              var getAceptFlag = false //是否要刷新未送出订单数
               for (let i = 0; i < snapshot.docChanges.length; i++) {
                 const change = snapshot.docChanges[i];
-                if ('updatedFields.orderInfo.orderState' in change && change.updatedFields.orderInfo.orderState) {
-                  newCount += 1
+                if ('updatedFields' in change && 'orderInfo.orderState' in change.updatedFields) {
+                  if (change.updatedFields['orderInfo.orderState'] === 'NOTCONFIRM') {
+                    newCount += 1
+                  } else if (change.updatedFields['orderInfo.orderState'] === 'ACCEPT') {
+                    getAceptFlag = true
+                  }
                 }
               }
+              if (getAceptFlag) {
+                that.getAcceptedOrdersCount().then(res => {
+                  that.setData({
+                    'orders.acceptedOrdersCount': res,
+                  })
+                })
+              }
               if (newCount) {
-                util.showToast('你有' + newCount + '条新订单啦')
+                util.showToast('你有' + newCount + '条新订单啦', 2000)
               }
             }
             // 保存
@@ -251,14 +277,13 @@ Page({
       })
     }
   },
-  getFinishedOrdersCount: function () {
+  getAcceptedOrdersCount: function () {
     const cID = that.data.user.identity.cID
     return new Promise((resolve, reject) => {
       db.collection('orders')
         .where({
           'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-          'orderInfo.orderState': 'SUCCESS',
-          'orderInfo.timeInfo.endTime': _.gte(getTodayDateTime())
+          'orderInfo.orderState': 'ACCEPT',
         }).count().then(res => {
           resolve(res.total)
         }).catch(e => {
@@ -336,12 +361,87 @@ Page({
       }
     }
   },
-})
+  rejectOrder: function (e) {
+    if (!that.data.watchOrderFlag) {
+      wx.showModal({
+        title: '提示',
+        content: '请先开启订单推送！',
+        confirmText: '开启',
+      }).then(res => {
+        if (res.confirm) {
+          that.watchOrder(null, true)
+        }
+      })
+      return
+    }
 
-function getTodayDateTime() {
-  var date = new Date()
-  let year = date.getFullYear()
-  let month = (date.getMonth() + 1).toString().padStart(2, '0')
-  let day = date.getDate().toString().padStart(2, '0')
-  return year + month + day + '000000'
-}
+    const index = e.currentTarget.dataset.index
+    const outTradeNo = that.data.orders.newOrders[index].orderInfo.outTradeNo
+
+    util.showLoading('拒单请求中')
+    wx.cloud.callFunction({
+        name: 'payOrderCancel',
+        data: {
+          outTradeNo: outTradeNo,
+          reject: true
+        }
+      }).then(res => {
+        util.hideLoading()
+        if (res.result.success) {
+          util.showToast('拒单成功', 'success')
+        } else {
+          util.showToast('拒单失败', 'error')
+        }
+        setTimeout(() => {
+          that.refreshOrder()
+        }, 1000);
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('拒单失败', 'error')
+      })
+  },
+  acceptOrder: function (e) {
+    if (!that.data.watchOrderFlag) {
+      wx.showModal({
+        title: '提示',
+        content: '请先开启订单推送！',
+        confirmText: '开启',
+      }).then(res => {
+        if (res.confirm) {
+          that.watchOrder(null, true)
+        }
+      })
+      return
+    }
+
+    const index = e.currentTarget.dataset.index
+    const order = that.data.orders.newOrders[index]
+    //接单请求
+    util.showLoading('接单请求中')
+    wx.cloud.callFunction({
+        name: 'dbUpdate',
+        data: {
+          table: 'orders',
+          _id: order._id,
+          formData: {
+            'orderInfo.orderState': 'ACCEPT',
+            'orderInfo.orderStateMsg': '已受理'
+          }
+        }
+      }).then(res => {
+        util.hideLoading()
+        console.log(res.result)
+        if (res.result.success && res.result.res.stats.updated === 1) {
+          util.showToast('接单成功', 'success')
+        } else {
+          util.showToast('接单失败', 'error')
+        }
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('接单失败', 'error')
+      })
+  },
+
+})

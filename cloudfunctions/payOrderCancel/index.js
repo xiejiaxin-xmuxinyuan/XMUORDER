@@ -39,8 +39,15 @@ exports.main = async (event, context) => {
     const subMchId = order.goodsInfo.shopInfo.subMchId
     const totalFee = order.payInfo.feeInfo.totalFee
 
+
+    //定义修改对象
+    var formData = {
+      'orderInfo.orderState': 'CLOSED',
+      'orderInfo.orderStateMsg': '已取消',
+    }
+
     // 退款
-    if (order.orderInfo.orderState === 'NOTCONFIRM') {      
+    if (order.orderInfo.orderState === 'NOTCONFIRM') {
       var refundRes = await cloud.cloudPay.refund({
         envId: 'cloud1-4g4b6j139b4e50e0', //云开发中复制
         subMchId: subMchId,
@@ -50,6 +57,22 @@ exports.main = async (event, context) => {
         totalFee: totalFee,
         refundFee: totalFee
       })
+
+      if ('rejectOrder' in event) { // 卖家拒单
+        formData['orderInfo.orderState'] = 'NOTACCEPT'
+        formData['orderInfo.orderStateMsg'] = '被拒'
+      }
+
+      if (refundRes.resultCode === 'SUCCESS' && refundRes.returnCode === 'SUCCESS') {
+        console.log("退款成功")
+        formData['payInfo.tradeState'] = 'REFUND'
+        formData['payInfo.tradeStateMsg'] = '转入退款'
+      } else {
+        console.log("退款失败", refundRes)
+        formData['payInfo.tradeState'] = 'REFUNDERRO'
+        formData['payInfo.tradeStateMsg'] = '退款失败'
+      }
+
     } else if (order.orderInfo.orderState === 'NOTPAY') {
       // NOTPAY则关闭订单
       await cloud.cloudPay.closeOrder({
@@ -65,21 +88,7 @@ exports.main = async (event, context) => {
       }
     }
 
-    var formData = {
-      'orderInfo.orderState': 'CLOSED',
-      'orderInfo.orderStateMsg': '已取消',
-      'orderInfo.timeInfo.endTime': getStrDate(new Date())
-    }
-
-    if (refundRes.resultCode === 'SUCCESS' && refundRes.returnCode === 'SUCCESS') {
-      console.log("退款成功")
-      formData['payInfo.tradeState'] = 'REFUND'
-      formData['payInfo.tradeStateMsg'] = '转入退款'
-    } else {
-      console.log("退款失败", refundRes)
-      formData['payInfo.tradeState'] = 'REFUNDERRO'
-      formData['payInfo.tradeStateMsg'] = '退款失败'
-    }
+    formData['orderInfo.timeInfo.endTime'] = getStrDate(new Date())
 
     // 修改订单状态
     await db.collection('orders').doc(order._id).update({
