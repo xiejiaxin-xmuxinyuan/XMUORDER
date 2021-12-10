@@ -11,17 +11,21 @@
       </view>
     </view>
   </scroll-view>
+
+
+  <!-- 公告内容 -->
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
       <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
         <view class="title">
           <view class="text-cut">
             <text class="cuIcon-top" wx:if="{{item.top}}"></text>
-            {{item.title}}<text class="cuIcon-close fr" style="font-size: 5vw;"></text>
+            {{item.title}}
+              <text class="cuIcon-close fr" style="font-size: 5vw;" catchtap="delNotices" data-index="{{index}}"></text>
           </view>
         </view>
         <view class="content">
-          <image wx:if="{{ item.coverImg }}" src="{{ item.coverImg }}" mode="aspectFill"></image>
+          <image wx:if="{{item.coverImg}}" src="{{item.coverImg}}" mode="aspectFill" ></image>
           <view class="desc">
             <view class="text-content" style="width: 100%;">
               {{item.content}}
@@ -29,7 +33,7 @@
             <view class="margin-top-sm">
               <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
               <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
-              <text class="cuIcon-repairfill fr" style="position: relative;top: 50%;"></text>
+              <text class="cuIcon-repairfill fr" style="position: relative;top: 50%;" catchtap="editNotices" data-index="{{index}}"></text>
             </view>
           </view>
         </view>
@@ -43,5 +47,5 @@
 </view>
 
 <view style="font-size: 10vw;position: fixed;bottom: 10%;right: 5%;">
-  <text class="cuIcon-edit text-yellow bg-white round padding shadow"></text>
+  <text class="cuIcon-edit text-yellow bg-white round padding shadow" catchtap="toAddNotices"></text>
 </view>

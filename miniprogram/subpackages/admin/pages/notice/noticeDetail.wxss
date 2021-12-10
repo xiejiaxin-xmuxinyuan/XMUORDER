@@ -1,0 +1,4 @@
+/* subpackages/admin/pages/notice/noticeDetail.wxss */
+page {
+  background-color: white;
+}
