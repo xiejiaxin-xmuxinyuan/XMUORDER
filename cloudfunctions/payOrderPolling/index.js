@@ -12,7 +12,7 @@ cloud.init({
 
 const db = cloud.database()
 const _ = db.command
-const $ = _.aggregate
+
 
 //返回14位字符串日期20210102030405
 function getStrDate(date) {
@@ -75,12 +75,11 @@ exports.main = async (event, context) => {
           await db.collection('orders')
             .doc(order._id)
             .update({
-              data: {
-                ...formData
-              }
+              data: formData
             })
-        } else if (order.orderInfo.pollingTimes >= 10) { //如果是第11次查询则关闭订单
-          console.log(index, '关闭订单')
+        } else if (order.orderInfo.pollingTimes >= 10) { //如果是第11次查询则超时关闭订单
+          console.log(index, '超时关闭订单')
+
           let nonce_str = getRandomStr() + getRandomStr() + getRandomStr() + getRandomStr()
           let closeRes = await cloud.cloudPay.closeOrder({
             out_trade_no: order.orderInfo.outTradeNo,
@@ -90,18 +89,15 @@ exports.main = async (event, context) => {
           if (closeRes.resultCode === 'SUCCESS' && closeRes.returnCode === 'SUCCESS') {
             console.log(index, '关闭订单成功')
             //修改订单状态
-            var formData = {
-              'orderInfo.orderState': 'CLOSED',
-              'orderInfo.orderStateMsg': '已取消',
-              'orderInfo.timeInfo.endTime': getStrDate(new Date())
-            }
-            await db.collection('orders')
-              .doc(order._id)
-              .update({
-                data: {
-                  ...formData
-                }
-              })
+            await db.collection('orders').doc(order._id).update({
+              data: {
+                'orderInfo.orderState': 'CLOSED',
+                'orderInfo.orderStateMsg': '已取消',
+                'payInfo.tradeState': 'TIMEOUT',
+                'payInfo.tradeStateMsg': '支付超时',
+                'orderInfo.timeInfo.endTime': getStrDate(new Date())
+              }
+            })
 
             //释放库存
             let record = order.goodsInfo.record
@@ -125,7 +121,7 @@ exports.main = async (event, context) => {
             }
           }
         } else { // 仍未支付则 pollingTimes += 1
-          console.log(index, '轮询次数+1, 当前次数：', order.orderInfo.pollingTimes+1)
+          console.log(index, '轮询次数+1, 当前次数：', order.orderInfo.pollingTimes + 1)
           await db.collection('orders')
             .doc(order._id)
             .update({
