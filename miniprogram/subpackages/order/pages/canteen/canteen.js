@@ -345,7 +345,7 @@ Page({
           // 更新canteen 并同步到全局
           var newCanteen = res.result.canteen
           var oldCanteen = that.data.canteen
-          let keyList = ['beginTime', 'intBeginTime', 'endTime', 'intEndTime']
+          let keyList = ['inBusiness']
           keyList.forEach(keyName => {
             if (keyName in oldCanteen) {
               newCanteen[keyName] = oldCanteen[keyName]
