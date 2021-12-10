@@ -40,16 +40,16 @@ Page({
     }
   },
   feedback: function (e) {
-    var record = that.data.record[e.currentTarget.dataset.index]
+    var order = that.data.record[e.currentTarget.dataset.index]
     var info = {
-      goodsInfo: record.goodsInfo,
-      orderInfo: record.orderInfo,
-      payInfo: record.payInfo
+      goods: order.goodsInfo.record,
+      formatedTime: order.orderInfo.timeInfo.formatedTime,
+      feeInfo: order.payInfo.feeInfo,
+      outTradeNo: order.orderInfo.outTradeNo
     } 
-
     info = JSON.stringify(info)
     wx.navigateTo({
-      url: '../feedback/feedback?record=' + info,
+      url: '../feedback/feedback?info=' + info,
     })
   },
   getRecords: currPage => {

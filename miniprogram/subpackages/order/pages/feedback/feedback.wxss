@@ -20,7 +20,7 @@
 
 }
 
-.myorder .mycontent> view {
+.myorder .mycontent>view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -35,23 +35,72 @@
   justify-content: center;
 }
 
-.myorder .mycontent .info > view {
+.myorder .mycontent .info>view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .myorder .my-bottom {
-  margin-top: 15rpx;
+  display: flex;
+  flex-direction: column;
+  margin: 15rpx;
 }
 
-.myorder .my-bottom .price {
-  margin-right: 15rpx;
+.myorder .my-bottom>view {
+  margin: 15rpx 0;
 }
 
-textarea {
+.myorder .my-bottom .info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.myorder .my-bottom .other-price {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.feedback {
+  background-color: white;
+  padding: 0 30rpx;
+  margin: 0 30rpx;
+}
+
+.feedback .header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 15rpx;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #ddd;
+}
+
+.feedback .header > .title {
+  font-size: 36rpx;
+}
+
+.feedback .header > .title >text {
+  font-size: 28rpx;
+}
+
+.feedback textarea {
   height: 150rpx;
-  margin: 30rpx 50rpx;
+  margin: 30rpx 30rpx;
+}
+
+.feedback .checkbox-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkbox-group > checkbox{
+  margin-left: 15rpx;
 }
 
 .save {

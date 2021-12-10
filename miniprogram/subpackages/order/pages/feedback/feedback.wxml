@@ -4,13 +4,9 @@
 
 <view class="cu-card article ">
   <view class="cu-item shadow-warp myorder">
-    <view class="title">
-      <view>
-        当前订单
-      </view>
-    </view>
+    <view class="title">当前订单</view>
     <view class="mycontent">
-      <view wx:for="{{record.goodsInfo.record}}" wx:for-item="i" wx:key="*this">
+      <view wx:for="{{info.goods}}" wx:for-item="i" wx:key="*this">
         <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
         <view class="info">
           <view>
@@ -24,23 +20,38 @@
         </view>
       </view>
     </view>
-    <view class="flex my-bottom" style="justify-content: space-between;">
-      <view class="cu-tag bg-brown light lg round">{{record.orderInfo.timeInfo.formatedTime}}</view>
-      <view class="text-bold text-black text-right price">
-        总计：<text class="text-red"> ￥{{record.payInfo.feeInfo.totalFee / 100}}</text>
+    <view class="my-bottom">
+      <view class="other-price">
+        <view>其他费用</view>
+        <view> ￥{{info.feeInfo.otherFee/100}}</view>
+      </view>
+      <view class="other-price">
+        <view>优惠</view>
+        <view class="text-red"> -￥{{info.feeInfo.discount/100}}</view>
+      </view>
+      <view class="info">
+        <view class="cu-tag bg-brown light lg round">{{'时间：' + info.formatedTime}}</view>
+        <view class="text-bold text-black text-right">
+          合计：<text class="text-red"> ￥{{info.feeInfo.cashFee / 100}}</text>
+        </view>
       </view>
     </view>
   </view>
 </view>
-<view class="cu-list menu card-menu margin-top shadow-warp margin-bottom-lg" style="background-color: white;">
-  <view class="cu-item">
-    <view class="content">
-      <text class="cuIcon-message text-grey" style="font-size: large;"></text>反馈意见
+
+<view class="feedback">
+  <view class="header">
+    <view class="title cuIcon-message">
+      <text> 反馈意见</text>
+    </view>
+    <view catchtap="checkboxChange" class="checkbox-group">
+      <view>请求退款</view>
+      <checkbox class="round" checked="{{refund}}"></checkbox>
     </view>
   </view>
 
   <form bindsubmit="onSubmit">
-    <textarea placeholder="请输入反馈意见" name="feedback" maxlength="200"></textarea>
+    <textarea placeholder="请输入反馈意见、理由等等" name="feedback" maxlength="200"></textarea>
     <view class="save">
       <button form-type="submit" class="cu-btn round bg-gradual-blue shadow">提交</button>
     </view>
