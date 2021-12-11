@@ -25,10 +25,21 @@
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='NOTCONFIRM'}}">
         <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 支付成功，等待商家接单</view>
-        <view class="text-sm text-gray">10分钟后订单取消，退回全款</view>
+        <view class="text-sm text-gray">10分钟后视为商家拒单，退回全款</view>
       </block>
+      <view wx:elif="{{order.orderInfo.orderState==='NOTACCEPT'}}">
+        <block wx:if="{{order.payInfo.tradeState==='REFUND'}}">
+          <text class="text-orange">订单已全额退款</text>
+          <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
+            零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
+        </block>
+        <block wx:elif="{{order.payInfo.tradeState==='REFUNDERROR'}}">
+          <text>商家未接单，退款发生异常，</text>
+          <text class="text-orange">具体请咨询客服</text>
+        </block>
+      </view>
       <block wx:elif="{{order.orderInfo.orderState==='ACCEPT'}}">
-        <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 商家接单已接单，等待订单送出</view>
+        <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 商家已接单，等待订单送出</view>
         <view class="text-sm text-gray">提示：订单送出后，可到取餐地点取餐</view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='NOTGET'}}">
@@ -42,7 +53,7 @@
         </view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
-        <view wx:if="{{order.payInfo.tradeState==='NOTPAY'}}">
+        <view wx:if="{{order.payInfo.tradeState==='TIMEOUT'}}">
           <text>订单已关闭，</text>
           <text class="text-orange">您可以在点餐界面重新下单</text>
         </view>
@@ -52,8 +63,8 @@
           <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
             零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
         </view>
-        <view wx:elif="{{order.payInfo.tradeState==='REFUNDERRO'}}">
-          <text>订单退款失败，</text>
+        <view wx:elif="{{order.payInfo.tradeState==='REFUNDERROR'}}">
+          <text>订单退款异常，</text>
           <text class="text-orange">具体请咨询客服</text>
         </view>
       </block>
@@ -83,7 +94,7 @@
         <view>刷新订单</view>
       </view>
     </view>
-    <view wx:else class="btn-group">
+    <view wx:elif="{{order.orderInfo.orderState!=='NOTACCEPT'&&order.orderInfo.orderState!=='CLOSED'}}" class="btn-group">
       <view catchtap="refreshOrder" class="text-green">
         <text class="my-ico cuIcon-refresh"></text>
         <view>刷新订单</view>

@@ -17,6 +17,11 @@ function userNoticesSort(a, b) { //辅助函数 用于sort排序
   }
 }
 
+function newOrdersSort(a, b) {
+  return a.orderInfo.timeInfo.createTime > b.orderInfo.timeInfo.createTime ? 1 : -1;
+}
+
+
 //返回14位字符串日期20210102030405
 function getStrDate(date) {
   let year = date.getFullYear()
@@ -165,6 +170,13 @@ Page({
       wx.hideLoading()
     })
   },
+  onUnload: function () {
+    if (that.data.watchOrderFlag) {
+      watcher.close().then(res => {
+        util.showToast('订单推送已关闭')
+      })
+    }
+  },
   onNavChange: function (e) {
     const pageCurr = e.currentTarget.dataset.cur
     that.setData({
@@ -227,6 +239,7 @@ Page({
             var newOrders = snapshot.docs
             var totalCount = newOrders.length
             var totalPage = totalCount === 0 ? 0 : totalCount <= 5 ? 1 : Math.ceil(totalCount / 5)
+            newOrders.sort(newOrdersSort) //排序
             newOrders.forEach(order => {
               order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
             })
@@ -399,7 +412,7 @@ Page({
             name: 'payOrderCancel',
             data: {
               outTradeNo: outTradeNo,
-              reject: true
+              rejectOrder: true
             }
           }).then(res => {
             util.hideLoading()
@@ -408,9 +421,6 @@ Page({
             } else {
               util.showToast('拒单失败', 'error')
             }
-            setTimeout(() => {
-              that.refreshOrder()
-            }, 1000);
           })
           .catch(e => {
             util.hideLoading()
