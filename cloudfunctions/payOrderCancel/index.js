@@ -69,7 +69,7 @@ exports.main = async (event, context) => {
         formData['payInfo.tradeStateMsg'] = '转入退款'
       } else {
         console.log("退款失败", refundRes)
-        formData['payInfo.tradeState'] = 'REFUNDERRO'
+        formData['payInfo.tradeState'] = 'REFUNDERROR'
         formData['payInfo.tradeStateMsg'] = '退款失败'
       }
 
@@ -94,6 +94,26 @@ exports.main = async (event, context) => {
     await db.collection('orders').doc(order._id).update({
       data: formData
     })
+
+    try { //释放库存
+      let record = order.goodsInfo.record
+      let proList = []
+      record.forEach(food => {
+        proList.push(
+          db.collection('food').doc(food._id).update({
+            data: {
+              curNum: _.inc(food.num),
+              allNum: _.inc(food.num)
+            }
+          })
+        )
+      })
+      await Promise.all(proList)
+      console.log('释放库存成功')
+    } catch (err) {
+      console.log('释放库存出错', err)
+    }
+
 
     return {
       success: true,

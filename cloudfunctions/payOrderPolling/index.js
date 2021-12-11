@@ -25,31 +25,30 @@ function getStrDate(date) {
   return year + month + day + hour + min + sec
 }
 
-// 返回长度为4位的随机字母字符串
-function getRandomStr() {
-  return Math.random().toString(36).slice(-4)
+// 返回长度为16位的随机字母字符串
+function getNonceStr() {
+  var out = ''
+  for (let i = 0; i < 4; i++) {
+    out += Math.random().toString(36).slice(-4)
+  }
+  return out
 }
+
+
 
 exports.main = async (event, context) => {
   try {
-    var date = new Date()
-    date.setTime(date.getTime() - 1000 * 60 * 10) //时间前推10分钟
+    var res = await db.collection('orders').where({
+      'orderInfo.pollingTimes': _.lte(10), //实现每个订单最多被轮询查单11次（大约5分钟后支付超时）
+      'orderInfo.orderState': 'NOTPAY'
+    }).get()
 
-    //获取距当前时间10分钟内的
-    var res = await db.collection('orders').aggregate()
-      .match({
-        'orderInfo.timeInfo.createTime': _.gt(getStrDate(date)),
-        'orderInfo.pollingTimes': _.lte(10), //实现每个订单最多被轮询查单11次（大约5分钟后支付超时）
-        'orderInfo.orderState': 'NOTPAY'
-      })
-      .end()
-
-    var orders = res.list
+    var orders = res.data
     for (let index = 0; index < orders.length; index++) {
       let order = orders[index]
       try {
         //查单
-        let nonce_str = getRandomStr() + getRandomStr() + getRandomStr() + getRandomStr()
+        let nonce_str = getNonceStr()
         let queryRes = await cloud.cloudPay.queryOrder({
           out_trade_no: order.orderInfo.outTradeNo,
           sub_mch_id: order.goodsInfo.shopInfo.subMchId,
@@ -72,15 +71,13 @@ exports.main = async (event, context) => {
             formData['orderInfo.timeInfo.payTime'] = getStrDate(new Date())
           }
 
-          await db.collection('orders')
-            .doc(order._id)
-            .update({
-              data: formData
-            })
+          await db.collection('orders').doc(order._id).update({
+            data: formData
+          })
         } else if (order.orderInfo.pollingTimes >= 10) { //如果是第11次查询则超时关闭订单
           console.log(index, '超时关闭订单')
 
-          let nonce_str = getRandomStr() + getRandomStr() + getRandomStr() + getRandomStr()
+          let nonce_str = getNonceStr()
           let closeRes = await cloud.cloudPay.closeOrder({
             out_trade_no: order.orderInfo.outTradeNo,
             sub_mch_id: order.goodsInfo.shopInfo.subMchId,
@@ -99,25 +96,24 @@ exports.main = async (event, context) => {
               }
             })
 
-            //释放库存
-            let record = order.goodsInfo.record
-            let proList = []
-            record.forEach(food => {
-              proList.push(
-                db.collection('food').doc(food._id).update({
-                  data: {
-                    curNum: _.inc(food.num),
-                    allNum: _.inc(food.num)
-                  }
-                })
-              )
-            })
+            try { //释放库存
+              let record = order.goodsInfo.record
+              let proList = []
+              record.forEach(food => {
+                proList.push(
+                  db.collection('food').doc(food._id).update({
+                    data: {
+                      curNum: _.inc(food.num),
+                      allNum: _.inc(food.num)
+                    }
+                  })
+                )
+              })
 
-            try {
               await Promise.all(proList)
-              console.log('释放库存成功')
+              console.log(index, '释放库存成功')
             } catch (err) {
-              console.error('释放库存出错', err)
+              console.log(index, '释放库存出错', err)
             }
           }
         } else { // 仍未支付则 pollingTimes += 1
@@ -135,9 +131,8 @@ exports.main = async (event, context) => {
         continue
       }
     }
+    return "查单数量：" + orders.length
   } catch (e) {
     console.error(e)
   }
-
-  return "查单数量：" + orders.length
 }
