@@ -17,6 +17,17 @@ function userNoticesSort(a, b) { //辅助函数 用于sort排序
   }
 }
 
+//返回14位字符串日期20210102030405
+function getStrDate(date) {
+  let year = date.getFullYear()
+  let month = (date.getMonth() + 1).toString().padStart(2, '0')
+  let day = date.getDate().toString().padStart(2, '0')
+  let hour = date.getHours().toString().padStart(2, '0')
+  let min = date.getMinutes().toString().padStart(2, '0')
+  let sec = date.getSeconds().toString().padStart(2, '0')
+  return year + month + day + hour + min + sec
+}
+
 Page({
   data: {
     pageCurr: "admin",
@@ -237,20 +248,20 @@ Page({
                 if ('updatedFields' in change && 'orderInfo.orderState' in change.updatedFields) {
                   if (change.updatedFields['orderInfo.orderState'] === 'NOTCONFIRM') {
                     newCount += 1
-                  } else if (change.updatedFields['orderInfo.orderState'] === 'ACCEPT') {
-                    getAceptFlag = true
                   }
+                  that.getAcceptedOrdersCount().then(res => {
+                    that.setData({
+                      'orders.acceptedOrdersCount': res,
+                    })
+                  })
                 }
               }
-              if (getAceptFlag) {
-                that.getAcceptedOrdersCount().then(res => {
-                  that.setData({
-                    'orders.acceptedOrdersCount': res,
-                  })
-                })
-              }
+
               if (newCount) {
-                util.showToast('你有' + newCount + '条新订单啦', 2000)
+                wx.vibrateShort({
+                  type: 'medium'
+                })
+                util.showToast('你有' + newCount + '条新订单啦，请及时在首页处理', 'none', 2000)
               }
             }
             // 保存
@@ -374,32 +385,39 @@ Page({
       })
       return
     }
+    wx.showModal({
+      title: '提示',
+      content: '确定拒单？'
+    }).then(res => {
+      if (res.confirm) {
 
-    const index = e.currentTarget.dataset.index
-    const outTradeNo = that.data.orders.newOrders[index].orderInfo.outTradeNo
+        const index = e.currentTarget.dataset.index
+        const outTradeNo = that.data.orders.newOrders[index].orderInfo.outTradeNo
 
-    util.showLoading('拒单请求中')
-    wx.cloud.callFunction({
-        name: 'payOrderCancel',
-        data: {
-          outTradeNo: outTradeNo,
-          reject: true
-        }
-      }).then(res => {
-        util.hideLoading()
-        if (res.result.success) {
-          util.showToast('拒单成功', 'success')
-        } else {
-          util.showToast('拒单失败', 'error')
-        }
-        setTimeout(() => {
-          that.refreshOrder()
-        }, 1000);
-      })
-      .catch(e => {
-        util.hideLoading()
-        util.showToast('拒单失败', 'error')
-      })
+        util.showLoading('拒单请求中')
+        wx.cloud.callFunction({
+            name: 'payOrderCancel',
+            data: {
+              outTradeNo: outTradeNo,
+              reject: true
+            }
+          }).then(res => {
+            util.hideLoading()
+            if (res.result.success) {
+              util.showToast('拒单成功', 'success')
+            } else {
+              util.showToast('拒单失败', 'error')
+            }
+            setTimeout(() => {
+              that.refreshOrder()
+            }, 1000);
+          })
+          .catch(e => {
+            util.hideLoading()
+            util.showToast('拒单失败', 'error')
+          })
+      }
+    })
   },
   acceptOrder: function (e) {
     if (!that.data.watchOrderFlag) {
@@ -415,33 +433,44 @@ Page({
       return
     }
 
-    const index = e.currentTarget.dataset.index
-    const order = that.data.orders.newOrders[index]
-    //接单请求
-    util.showLoading('接单请求中')
-    wx.cloud.callFunction({
-        name: 'dbUpdate',
-        data: {
-          table: 'orders',
-          _id: order._id,
-          formData: {
-            'orderInfo.orderState': 'ACCEPT',
-            'orderInfo.orderStateMsg': '已受理'
-          }
-        }
-      }).then(res => {
-        util.hideLoading()
-        console.log(res.result)
-        if (res.result.success && res.result.res.stats.updated === 1) {
-          util.showToast('接单成功', 'success')
-        } else {
-          util.showToast('接单失败', 'error')
-        }
-      })
-      .catch(e => {
-        util.hideLoading()
-        util.showToast('接单失败', 'error')
-      })
+    wx.showModal({
+      title: '提示',
+      content: '确定接单？',
+    }).then(res => {
+      if (res.confirm) {
+        const index = e.currentTarget.dataset.index
+        const order = that.data.orders.newOrders[index]
+        //接单请求
+        util.showLoading('接单请求中')
+        wx.cloud.callFunction({
+            name: 'dbUpdate',
+            data: {
+              table: 'orders',
+              _id: order._id,
+              formData: {
+                'orderInfo.orderState': 'ACCEPT',
+                'orderInfo.orderStateMsg': '已受理',
+                'orderInfo.timeInfo.confirmTime': getStrDate(new Date())
+              }
+            }
+          }).then(res => {
+            util.hideLoading()
+            if (res.result.success && res.result.res.stats.updated === 1) {
+              util.showToast('接单成功', 'success')
+            } else {
+              util.showToast('接单失败', 'error')
+            }
+          })
+          .catch(e => {
+            util.hideLoading()
+            util.showToast('接单失败', 'error')
+          })
+      }
+    })
   },
-
+  toAccept: function () {
+    wx.navigateTo({
+      url: '../order/accept',
+    })
+  }
 })

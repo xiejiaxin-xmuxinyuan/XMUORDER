@@ -1,5 +1,5 @@
 <!-- 管理页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'admin'}}">
+<view wx:if="{{pageCurr === 'admin'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">管理</view>
   </cu-custom>
@@ -13,7 +13,7 @@
 </view>
 
 <!-- 订单页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'order'}}">
+<view wx:if="{{pageCurr === 'order'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">订单</view>
   </cu-custom>
@@ -36,7 +36,7 @@
         <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
           开启订单推送，实时反馈订单状态
         </view>
-        <view class="content">
+        <view class="content" catchtap="toAccept">
           <view>
             <view class="title">未处理订单</view>
             <view class="value {{orders.totalCount>0? 'text-orange': ''}}">
@@ -121,7 +121,7 @@
 
 
 <!-- 个人页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
+<view wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">我的</view>
   </cu-custom>
@@ -166,7 +166,7 @@
 </view>
 
 <view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
 
 <!-- tableBar -->
