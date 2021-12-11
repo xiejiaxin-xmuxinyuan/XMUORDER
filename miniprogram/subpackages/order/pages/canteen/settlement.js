@@ -113,13 +113,7 @@ Page({
           getStateMsg: '未取餐'
         },
         orderInfo: {
-          timeInfo: {
-            createTime: undefined,
-            payTime: undefined,
-            confirmTime: undefined,
-            endTime: undefined
-          },
-          outTradeNo: undefined,
+          timeInfo: {},
           orderState: 'NOTPAY',
           orderStateMsg: '未支付',
           pollingTimes: 0 //被轮询查单的次数
