@@ -9,6 +9,9 @@
       <view class="text-gray">提示：送至取餐点后，点击 “已送出” 即可完成订单送出</view>
     </view>
     <view class="content">
+      <view class="text-gray text-center margin-lg" wx:if="{{orders.length === 0}}">
+        暂无未送出订单
+      </view>
       <view class="item" wx:for="{{orders}}">
         <view class="header">
           <view>

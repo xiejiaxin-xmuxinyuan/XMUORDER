@@ -37,8 +37,8 @@ Page({
         wx.hideLoading()
         that.setData({
           orders: [],
-          currPage: currPage,
-          totalPage: totalPage,
+          currPage: 0,
+          totalPage: 0,
           totalCount: totalCount,
         })
         return
