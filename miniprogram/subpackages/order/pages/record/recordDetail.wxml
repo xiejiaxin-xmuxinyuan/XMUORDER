@@ -27,6 +27,10 @@
         <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 支付成功，等待商家接单</view>
         <view class="text-sm text-gray">10分钟后订单取消，退回全款</view>
       </block>
+      <block wx:elif="{{order.orderInfo.orderState==='ACCEPT'}}">
+        <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 商家接单已接单，等待订单送出</view>
+        <view class="text-sm text-gray">提示：订单送出后，可到取餐地点取餐</view>
+      </block>
       <block wx:elif="{{order.orderInfo.orderState==='NOTGET'}}">
         <view>取餐时间：<text class="text-orange text-lg">{{order.getFoodInfo.time}}</text></view>
         <view class="text-sm text-gray">{{order.getFoodInfo.place}}</view>
@@ -34,7 +38,7 @@
       <block wx:elif="{{order.orderInfo.orderState==='SUCCESS'}}">
         <view>
           <text class="text-xl text-orange"> {{order.goodsInfo.shopInfo.name}}</text>
-          <text class="margin-left">期待您的再次光临~</text>
+          <text>，期待您的再次光临~</text>
         </view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
@@ -74,6 +78,12 @@
         <text class="my-ico cuIcon-roundclose"></text>
         <view>取消订单</view>
       </view>
+      <view catchtap="refreshOrder" class="text-green">
+        <text class="my-ico cuIcon-refresh"></text>
+        <view>刷新订单</view>
+      </view>
+    </view>
+    <view wx:else class="btn-group">
       <view catchtap="refreshOrder" class="text-green">
         <text class="my-ico cuIcon-refresh"></text>
         <view>刷新订单</view>
