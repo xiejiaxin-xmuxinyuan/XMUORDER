@@ -42,14 +42,15 @@
           <view class="info">
             <view class="cu-tag bg-brown light lg round">{{'时间：' + item.orderInfo.timeInfo.formatedTime}}</view>
             <view class="text-bold text-black text-right">
-              总计：<text class="text-red"> ￥{{item.payInfo.feeInfo.totalFee / 100}}</text>
+              合计：<text class="text-red"> ￥{{item.payInfo.feeInfo.cashFee / 100}}</text>
             </view>
           </view>
         </view>
         <!-- 反馈相关按钮 -->
-        <block wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}">
+        <block>
+        <!-- <block wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}"> -->
           <view class="text-right">
-            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toOrderDetail">
+            <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toRecoredDetail">
               <text class="text-bold">去支付</text>
             </button>
             <button wx:elif="{{!(item.feedback.length)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">

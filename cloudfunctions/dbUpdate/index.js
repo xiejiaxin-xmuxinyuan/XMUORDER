@@ -6,6 +6,7 @@
  * 
  *        (path视下方不同模式选填)
  *        path: 更新字段的路径字符串 如 'foodList.1' 'foodList.1.food'
+ *        若不附带此参数则路径为记录的根目录
  *        
  *        模式：
  *        (可选)set: any 
@@ -98,18 +99,25 @@ exports.main = async (event, context) => {
           })
         })
     } else {
-      db.collection(table).doc(_id).update({
+      var pro
+      if ('path' in event) {
+        pro = db.collection(table).doc(_id).update({
           data: {
             [path]: formData
           }
         })
-        .then(res => {
+      } else {
+        pro = db.collection(table).doc(_id).update({
+          data: formData
+        })
+      }
+
+      pro.then(res => {
           resolve({
             success: true,
             res: res
           })
-        })
-        .catch(e => {
+        }).catch(e => {
           console.error(e)
           reject({
             success: false

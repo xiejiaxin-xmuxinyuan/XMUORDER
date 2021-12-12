@@ -19,9 +19,28 @@
         <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 等待支付</view>
         <view class="text-sm text-gray">5分钟后订单取消</view>
       </block>
+      <block wx:elif="{{order.orderInfo.orderState==='ERROR'}}">
+        <view class="text-xl"><text class="cuIcon-roundclosefill text-red"></text> 异常订单</view>
+        <view class="text-sm text-gray">订单未通过金额校核，已发起全额退款</view>
+      </block>
       <block wx:elif="{{order.orderInfo.orderState==='NOTCONFIRM'}}">
         <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 支付成功，等待商家接单</view>
-        <view class="text-sm text-gray">10分钟后订单取消，退回全款</view>
+        <view class="text-sm text-gray">10分钟后视为商家拒单，退回全款</view>
+      </block>
+      <view wx:elif="{{order.orderInfo.orderState==='NOTACCEPT'}}">
+        <block wx:if="{{order.payInfo.tradeState==='REFUND'}}">
+          <text class="text-orange">订单已全额退款</text>
+          <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
+            零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
+        </block>
+        <block wx:elif="{{order.payInfo.tradeState==='REFUNDERROR'}}">
+          <text>商家未接单，退款发生异常，</text>
+          <text class="text-orange">具体请咨询客服</text>
+        </block>
+      </view>
+      <block wx:elif="{{order.orderInfo.orderState==='ACCEPT'}}">
+        <view class="text-xl"><text class="cuIcon-timefill text-orange"></text> 商家已接单，等待订单送出</view>
+        <view class="text-sm text-gray">提示：订单送出后，可到取餐地点取餐</view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='NOTGET'}}">
         <view>取餐时间：<text class="text-orange text-lg">{{order.getFoodInfo.time}}</text></view>
@@ -30,25 +49,55 @@
       <block wx:elif="{{order.orderInfo.orderState==='SUCCESS'}}">
         <view>
           <text class="text-xl text-orange"> {{order.goodsInfo.shopInfo.name}}</text>
-          <text class="margin-left">期待您的再次光临~</text>
+          <text>，期待您的再次光临~</text>
         </view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
-        <view>
+        <view wx:if="{{order.payInfo.tradeState==='TIMEOUT'}}">
           <text>订单已关闭，</text>
           <text class="text-orange">您可以在点餐界面重新下单</text>
+        </view>
+        <view wx:elif="{{order.payInfo.tradeState==='REFUND'}}">
+          <text>订单已全额退款，</text>
+          <text class="text-orange">具体到账时间与支付方式有关</text>
+          <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
+            零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
+        </view>
+        <view wx:elif="{{order.payInfo.tradeState==='REFUNDERROR'}}">
+          <text>订单退款异常，</text>
+          <text class="text-orange">具体请咨询客服</text>
         </view>
       </block>
     </view>
     <!-- 支付相关按钮 -->
     <view wx:if="{{order.orderInfo.orderState==='NOTPAY'}}" class="btn-group">
-      <view>
+      <view catchtap="cancelOrder" class="text-grey">
         <text class="my-ico cuIcon-roundclose"></text>
         <view>取消订单</view>
       </view>
-      <view class="text-blue">
+      <view catchtap="payOrder" class="text-green">
         <text class="my-ico cuIcon-roundcheck"></text>
         <view>立即支付</view>
+      </view>
+      <view catchtap="refreshOrder" class="text-green">
+        <text class="my-ico cuIcon-refresh"></text>
+        <view>刷新订单</view>
+      </view>
+    </view>
+    <view wx:elif="{{order.orderInfo.orderState==='NOTCONFIRM'}}" class="btn-group">
+      <view catchtap="cancelOrder" class="text-grey">
+        <text class="my-ico cuIcon-roundclose"></text>
+        <view>取消订单</view>
+      </view>
+      <view catchtap="refreshOrder" class="text-green">
+        <text class="my-ico cuIcon-refresh"></text>
+        <view>刷新订单</view>
+      </view>
+    </view>
+    <view wx:elif="{{order.orderInfo.orderState!=='NOTACCEPT'&&order.orderInfo.orderState!=='CLOSED'}}" class="btn-group">
+      <view catchtap="refreshOrder" class="text-green">
+        <text class="my-ico cuIcon-refresh"></text>
+        <view>刷新订单</view>
       </view>
     </view>
   </view>
@@ -87,7 +136,7 @@
         <view class="text-red"> -￥{{order.payInfo.feeInfo.discount/100}}</view>
       </view>
       <view class="price">
-        总计：<text class="text-red"> ￥{{order.payInfo.feeInfo.cashFee / 100}}</text>
+        合计：<text class="text-red"> ￥{{order.payInfo.feeInfo.cashFee / 100}}</text>
       </view>
     </view>
   </view>

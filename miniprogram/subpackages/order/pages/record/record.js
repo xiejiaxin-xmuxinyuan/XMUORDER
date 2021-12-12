@@ -13,7 +13,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onShow: function (options) {
     that = this
     that.getRecords(1) //第一页
       .then(res => {
@@ -40,16 +40,16 @@ Page({
     }
   },
   feedback: function (e) {
-    var record = that.data.record[e.currentTarget.dataset.index]
+    var order = that.data.record[e.currentTarget.dataset.index]
     var info = {
-      goodsInfo: record.goodsInfo,
-      orderInfo: record.orderInfo,
-      payInfo: record.payInfo
+      goods: order.goodsInfo.record,
+      formatedTime: order.orderInfo.timeInfo.formatedTime,
+      feeInfo: order.payInfo.feeInfo,
+      outTradeNo: order.orderInfo.outTradeNo
     } 
-
     info = JSON.stringify(info)
     wx.navigateTo({
-      url: '../feedback/feedback?record=' + info,
+      url: '../feedback/feedback?info=' + info,
     })
   },
   getRecords: currPage => {

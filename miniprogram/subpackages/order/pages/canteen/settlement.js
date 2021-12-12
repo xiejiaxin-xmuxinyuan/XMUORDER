@@ -113,16 +113,11 @@ Page({
           getStateMsg: '未取餐'
         },
         orderInfo: {
-          timeInfo: {
-            createTime: undefined,
-            payTime: undefined,
-            confirmTime: undefined,
-            endTime: undefined
-          },
-          outTradeNo: undefined,
+          timeInfo: {},
           orderState: 'NOTPAY',
           orderStateMsg: '未支付',
-          pollingTimes: 0 //被轮询查单的次数
+          pollingTimes: 0, //被轮询查单的次数
+          confirmPollingTimes: 0 //被轮询是否接单的次数
         }
       }
 
@@ -143,10 +138,7 @@ Page({
       }
 
       //请求下单
-      wx.showLoading({
-        title: '提交订单中',
-        mask: true
-      })
+      util.showLoading('提交订单中')
       wx.cloud.callFunction({
           name: 'payOrder',
           data: {
@@ -159,10 +151,9 @@ Page({
           }
         })
         .then(payOrderRes => {
-          wx.hideLoading()
           outTradeNo = payOrderRes.result.outTradeNo
-
           if (!payOrderRes.result.success) { //下单失败
+            wx.hideLoading()
             if ('toastMsg' in payOrderRes.result) {
               util.showToast(payOrderRes.result.toastMsg)
             } else {

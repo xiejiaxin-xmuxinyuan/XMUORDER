@@ -5,8 +5,7 @@
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}"
-        wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
     </view>
@@ -45,12 +44,11 @@
   </cu-custom>
 
   <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
-    <view class="mycontent animation-fade" bindtap="toOrder" data-index="{{index}}" style="animation-delay: 0.5s;">
-      <image src="{{item.thumb}}" mode="aspectFill"
-        class="image {{intCurTime > item.intEndTime || intCurTime < item.intBeginTime ? 'img-disable':''}}">
+    <view class="mycontent animation-fade" bindtap="toCanteen" data-index="{{index}}" style="animation-delay: 0.5s;">
+      <image src="{{item.thumb}}" mode="aspectFill" class="image {{!item.inBusiness ? 'img-disable':''}}">
       </image>
       <view class="info">
-        <view wx:if="{{intCurTime > item.intEndTime || intCurTime < item.intBeginTime}}" class="cu-tag bg-grey mytag">打烊
+        <view wx:if="{{!item.inBusiness}}" class="cu-tag bg-grey mytag">打烊
         </view>
         <view wx:elif="{{item.favor >= 50 && item.favor > item.bad}}" class="cu-tag bg-blue mytag">好评</view>
         <view wx:elif="{{item.bad >= 50 && item.favor<item.bad}}" class="cu-tag bg-red mytag">差评</view>
@@ -140,8 +138,7 @@
       </view>
     </view>
 
-    <view class="cu-item arrow" bindtap="toAdmin"
-      wx:if="{{identity.type === 'admin' || identity.type === 'superAdmin'|| identity.type === 'member'}}">
+    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity.type === 'admin' || identity.type === 'superAdmin'|| identity.type === 'member'}}">
       <view class="content">
         <text class="cuIcon-commandfill text-blue"></text>
         <text class="text-blue">管理中心</text>
@@ -157,20 +154,17 @@
 
 <!-- tableBar -->
 <view class="cu-bar tabbar bg-white shadow foot">
-  <view style="color: {{pageCurr === 'info' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange"
-    data-cur="info">
+  <view style="color: {{pageCurr === 'info' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="info">
     <view class='cuIcon-activityfill'>
     </view>
     <view>公告</view>
   </view>
-  <view style="color: {{pageCurr === 'shop' ? 'rgb(13, 155, 222);' : ';'}}" class="action" bindtap="onNavChange"
-    data-cur="shop">
+  <view style="color: {{pageCurr === 'shop' ? 'rgb(13, 155, 222);' : ';'}}" class="action" bindtap="onNavChange" data-cur="shop">
     <view class='cuIcon-shopfill'>
     </view>
     <view>点餐</view>
   </view>
-  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange"
-    data-cur="user">
+  <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="user">
     <view class='cuIcon-myfill'>
     </view>
     <view>个人中心</view>

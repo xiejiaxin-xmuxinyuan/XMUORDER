@@ -13,18 +13,20 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
-  const record = event.record
   const feedback = event.feedback
+  const outTradeNo = event.outTradeNo
+  const date = event.date
+  const refund = event.refund
   try {
     const openid = wxContext.OPENID
     await db.collection('userFeedbacks').add({
       data: {
-        record: record,
         _openid: openid,
         feedback: feedback,
-        outTradeNo : record.orderInfo.outTradeNo,
-        date : record.orderInfo.timeInfo.formatedTime,
-        state : 0
+        outTradeNo: outTradeNo,
+        date: date,
+        refund: refund,
+        state: 0
       }
     })
     return {
@@ -35,5 +37,4 @@ exports.main = async (event, context) => {
       success: false
     }
   }
-
 }

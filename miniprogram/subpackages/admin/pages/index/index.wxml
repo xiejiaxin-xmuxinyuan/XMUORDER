@@ -1,5 +1,5 @@
 <!-- 管理页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'admin'}}">
+<view wx:if="{{pageCurr === 'admin'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">管理</view>
   </cu-custom>
@@ -13,16 +13,115 @@
 </view>
 
 <!-- 订单页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'order'}}">
+<view wx:if="{{pageCurr === 'order'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">订单</view>
   </cu-custom>
-
+  <view class="order">
+    <view class="my-block">
+      <view class="header">
+        <view class="title cuIcon-title">{{canteen.name}}</view>
+        <view class="cu-tag round light bg-olive" wx:if="{{canteen.inBusiness}}">
+          <text class="cuIcon-roundcheckfill text-green"> 营业中</text>
+        </view>
+        <view class="cu-tag round" wx:else>
+          <text class="cuIcon-timefill text-grey"> 歇业中</text>
+        </view>
+        <view class="switch">
+          <text class="margin-right-sm text-gray">订单推送</text>
+          <switch checked="{{watchOrderFlag}}" bindchange="watchOrder"></switch>
+        </view>
+      </view>
+      <view class="main-info">
+        <view class="text-center text-xs text-gray" wx:if="{{!watchOrderFlag}}">
+          开启订单推送，实时反馈订单状态
+        </view>
+        <view class="content" catchtap="toAccept">
+          <view>
+            <view class="title">未处理订单</view>
+            <view class="value {{orders.totalCount>0? 'text-orange': ''}}">
+              {{orders.totalCount}}
+            </view>
+          </view>
+          <view>
+            <view class="title">未送出订单</view>
+            <view class="value {{orders.acceptedOrdersCount>0? 'text-brown': ''}}">
+              {{orders.acceptedOrdersCount}}</view>
+          </view>
+          <text class="cuIcon-right"></text>
+        </view>
+      </view>
+    </view>
+    <view class="new-order my-block">
+      <view class="text-bold cuIcon-titles">未处理订单</view>
+      <view wx:if="{{orders.newOrders.length===0}}" class="tip">暂无未处理订单</view>
+      <view class="content">
+        <view class="item" wx:for="{{orders.newOrders}}">
+          <view class="header">
+            <view>
+              <view class="title"># <text>{{index+1}}</text></view>
+              <view class="time">取餐时间：<text class="text-black text-bold">{{item.getFoodInfo.time}}</text>
+              </view>
+            </view>
+            <view class="text-black text-bold">等待卖家确认</view>
+          </view>
+          <view class="user">
+            <view class="info">
+              <view class="text-lg text-bold">{{item.userInfo.name}}</view>
+              <view class="text-sm">尾号{{item.userInfo.phoneEnd}}</view>
+            </view>
+            <view class="line">订单号：<text>{{item.orderInfo.outTradeNo}}</text></view>
+            <view class="line">取餐地点：<text>{{item.getFoodInfo.place}}</text></view>
+            <view class="line">下单时间：<text>{{item.orderInfo.timeInfo.formatedTime}}</text></view>
+          </view>
+          <view class="goods">
+            <view class="text-xl text-bold">{{item.goodsInfo.record.length}} 件商品</view>
+            <view class="goods-content">
+              <view class="good-item" wx:for="{{item.goodsInfo.record}}" wx:for-item="food">
+                <view class="flex-treble">{{food.food}}</view>
+                <view class="flex-sub">{{food.num}}份</view>
+                <view class="flex-sub text-right">￥{{food.price}}</view>
+              </view>
+              <view class="fee margin-bottom-sm margin-top-sm text-gray">
+                <view>小计</view>
+                <view>￥{{item.payInfo.feeInfo.goodsPrice/100}}</view>
+              </view>
+              <view class="fee">
+                <view>其他费用</view>
+                <view>￥{{item.payInfo.feeInfo.otherFee/100}}</view>
+              </view>
+              <view class="fee">
+                <view>优惠券</view>
+                <view>-￥{{item.payInfo.feeInfo.discount/100}}</view>
+              </view>
+              <view class="fee">
+                <view>平台服务费</view>
+                <view>-￥{{item.payInfo.feeInfo.serviceFee/100}}</view>
+              </view>
+              <view class="fee text-orange text-bold margin-top-sm">
+                <view>合计收入</view>
+                <view>￥{{(item.payInfo.feeInfo.cashFee - item.payInfo.feeInfo.serviceFee)/100}}</view>
+              </view>
+            </view>
+          </view>
+          <view class="bottom">
+            <button catchtap="rejectOrder" data-index="{{index}}" class="cu-btn lines-gray round">
+              <text class="cuIcon-roundclosefill"> 拒单</text>
+            </button>
+            <button catchtap="acceptOrder" data-index="{{index}}" class="cu-btn lines-olive round">
+              <text class="cuIcon-roundcheckfill"> 接单</text>
+            </button>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{orders.currPage === orders.totalPage}}" class="text-center text-gray">所有订单已加载</view>
+    </view>
+  </view>
 </view>
 
 
 <!-- 个人页面 -->
-<view class="tab-page" wx:if="{{pageCurr === 'user'}}">
+<view wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
     <view slot="content">我的</view>
   </cu-custom>
@@ -37,37 +136,37 @@
       <view class="content">
         <text class="cuIcon-peoplefill text-gray"></text>
         <text>姓名</text>
-        <text class="fr">{{name}}</text>
+        <text class="fr">{{user.name}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-phone text-gray"></text>
         <text>电话</text>
-        <text class="fr">{{phone}}</text>
+        <text class="fr">{{user.phone}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-locationfill text-gray"></text>
         <text>地址</text>
-        <text class="fr">{{address}}</text>
+        <text class="fr">{{user.address}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-profile text-gray"></text>
         <text>身份</text>
-        <text wx:if="{{identity.type==='admin'}}" class="fr">餐厅管理员</text>
-        <text wx:elif="{{identity.type==='member'}}" class="fr">餐厅员工</text>
-        <text wx:elif="{{identity.type==='superAdmin'}}" class="fr">超级管理员</text>
+        <text wx:if="{{user.identity.type==='admin'}}" class="fr">餐厅管理员</text>
+        <text wx:elif="{{user.identity.type==='member'}}" class="fr">餐厅员工</text>
+        <text wx:elif="{{user.identity.type==='superAdmin'}}" class="fr">超级管理员</text>
       </view>
     </view>
   </view>
 </view>
 
 <view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学信息学院</view>
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
 
 <!-- tableBar -->
@@ -77,11 +176,13 @@
     </view>
     <view>管理</view>
   </view>
-  <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
-    <view class='cuIcon-formfill'>
+  <block wx:if="{{user.identity.cID}}">
+    <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
+      <view class='cuIcon-formfill'>
+      </view>
+      <view>订单</view>
     </view>
-    <view>订单</view>
-  </view>
+  </block>
   <view style="color: {{pageCurr === 'user' ? 'rgb(13,155,222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="user">
     <view class='cuIcon-myfill'>
     </view>
