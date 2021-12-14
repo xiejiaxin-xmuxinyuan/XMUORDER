@@ -32,7 +32,6 @@ Page({
       })
       .then(res => {
         // TODO: 使用canvas进行压缩
-        
         that.setData({
           ['notice.coverImg']: res.tempFilePaths[0],
         })
@@ -54,11 +53,12 @@ Page({
         // TODO: 使用canvas进行压缩
         that.data.imageNum += 1
         that.data.notice.images.push(res.tempFilePaths[0])
+        that.data.images.push(res.tempFilePaths[0])
         that.setData({
           notice: that.data.notice,
           images: that.data.notice.images,
           imageNum: that.data.imageNum,
-          
+          oldImages: that.data.notice.images
         })
       })
       .catch(res => {
@@ -95,6 +95,11 @@ Page({
       }
     })
   },
+
+
+
+
+  
   ViewcoverImage: function (e) {
     wx.previewImage({
       urls: [that.data.notice.coverImg],
@@ -134,8 +139,8 @@ Page({
       if (that.data.oldImg) {
         //上传图片
         let cloudPath = '公告图片/'
-        let type = notice.type
         let imgtype = '封面'
+        let type = notice.type
         //储存路径：公告图片/地区名/封面/时间戳.图片格式
         cloudPath = cloudPath + type + '/' +  imgtype + '/'  + 
         new Date().getTime() + params.coverImg.match('.[^.]+?$')[0]
@@ -156,7 +161,7 @@ Page({
               .then(res => {
                 if (res.result[0].status) {
                   wx.hideLoading()
-                  that.showT('原图片删除出错')
+                  that.showT('封面图片删除出错')
                 } else {
                   //更新数据库
                   wx.cloud.callFunction({
@@ -197,56 +202,88 @@ Page({
       }
       else if(that.data.oldImages.length)
       {
-        let cloudPath = '公告图片/'
+        let cloudPath2 = '公告图片/'
+        let imgtype2 = '内容'
         let type = notice.type
-        let imgtype = '内容'
+        const images = params.images
+        const cloudPath = []
         //储存路径：公告图片/地区名/封面/时间戳.图片格式
-          cloudPath = cloudPath + type + '/' +  imgtype + '/'  + 
-          new Date().getTime() + params.images[0].match('.[^.]+?$')[0]
-          wx.cloud.uploadFile({
-            cloudPath: cloudPath,
-            filePath: params.images, // 文件路径
-          })
-          .then(res => {
-            if (res.result[0].status) {
-              wx.hideLoading()
-              that.showT('原图片删除出错')
-            } 
-            else {
-              //更新数据库
-              wx.cloud.callFunction({
-                  name: 'dbUpdate',
-                  data: {
-                    table: 'notices',
-                    _id: notice._id,
-                    formData: params,
-                    set: true
-                  }
-                })
-                .then(res => {
+        images.forEach(function( _item, i) {
+          cloudPath.push( cloudPath2 + type + '/' +  imgtype2 + '/'  + 
+          new Date().getTime() + '_'  + i + images[i].match('.[^.]+?$')[0] )
+        })
+        const imagesPath = []
+        var UploadImgs = []
+        let promiseArr = [] //创建一个数组来存储一会的promise操作
+        for(var i = 0; i < params.images.length ; i++) {
+            //往数据中push promise操作
+            //一个一个取出图片数组的临时地址
+            let item = params.images[i];
+            if(item[0] == 'c' ) {continue}
+            promiseArr.push(new Promise((reslove,reject)=>{
+              //一个一个取出图片数组的临时地址
+              wx.cloud.uploadFile({
+                cloudPath: cloudPath[i],//上传至云端的路径
+                filePath: item,//小程序临时文件路径
+                success: res =>{
+                  //执行成功的吧云存储的地址一个一个push进去
+                  UploadImgs.push(res.fileID);
+                  //如果执行成功，就执行成功的回调函数
+                  reslove();
+                    wx.hideLoading();
+                    wx.showToast({
+                      title: '上传成功',
+                    });
+                },
+                fail: res=> {
                   wx.hideLoading()
-                  if (res.result.success) {
-                    that.showT('保存成功', 'success', 1500)
-                    //返回上一页
-                    setTimeout(() => {
-                      wx.navigateBack()
-                    }, 1600);
-                  } else {
-                    that.showT('数据提交失败', 'error', 1500)
-                  }
+                  wx.showToast({
+                    title: '上传失败',
+                  })
+                 }
                 })
-                .catch(e => {
-                  that.showT('数据提交失败', 'error', 1500)
-                })
+            }))
+            
+        }
+        Promise.all(promiseArr).then(res=> { //等promose数组都做完后做then方法
+          var cnt = 0
+          for( var i = 0; i < params.images.length; i++ )
+           {
+               let item = params.images[i]
+               if(item[0] == 'c' ) {continue}
+               else
+               {
+                 params.images.splice(i, 1, UploadImgs[cnt])
+                 cnt++
+               }
+           }
+           wx.cloud.callFunction({
+            name: 'dbUpdate',
+            data: {
+              table: 'notices',
+              _id: notice._id,
+              formData: params,
+              set: true
             }
           })
-          .catch(res => {
+          .then(res => {
             wx.hideLoading()
-            that.showT('图片删除出错')
+            if (res.result.success) {
+              //返回上一页
+              setTimeout(() => {
+                wx.navigateBack()
+              }, 1600)
+            } else {
+              that.showT('数据提交失败', 'error', 1500)
+            }
           })
+          .catch(e => {
+            that.showT('数据提交失败', 'error', 1500)
+          })
+        })
         
-      }
-      
+        
+      } 
       else 
       {
         //否则直接更新数据库
