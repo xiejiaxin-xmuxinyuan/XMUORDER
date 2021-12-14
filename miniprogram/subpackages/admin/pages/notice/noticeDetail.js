@@ -22,7 +22,6 @@ Page({
     },()=>{
       wx.hideLoading()
     })
-    console.log(app.globalData.notice)
     
   }
 })

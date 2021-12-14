@@ -17,7 +17,6 @@ Page({
     that.initValidate()
     let index0 = options.index0
     var notice = app.globalData.notices[index0]
-    console.log(notice)
     var imageNum = notice.images.length
     that.setData({
       notice: notice,
@@ -47,7 +46,6 @@ Page({
     var imageNum = that.data.imageNum
     var notice = that.data.notice
     var images = that.data.notice.images
-    console.log(id)
     wx.chooseImage({
         count: 1, //默认9
         sizeType: 'compressed'
@@ -78,7 +76,6 @@ Page({
     var images = that.data.notice.images
     var notice = that.data.notice
     var imageNum = that.data.imageNum
-    console.log(id)
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -123,7 +120,6 @@ Page({
     var notice = that.data.notice
     var params = Object.assign(notice, e.detail.value)
     var coverImg = that.data.notice.coverImg
-    console.log(params)
     //表单验证
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
@@ -207,7 +203,6 @@ Page({
         //储存路径：公告图片/地区名/封面/时间戳.图片格式
           cloudPath = cloudPath + type + '/' +  imgtype + '/'  + 
           new Date().getTime() + params.images[0].match('.[^.]+?$')[0]
-          console.log(params.images)
           wx.cloud.uploadFile({
             cloudPath: cloudPath,
             filePath: params.images, // 文件路径
@@ -279,7 +274,6 @@ Page({
           })
           .catch(e => {
             that.showT('数据提交失败', 'error', 1500)
-            console.log(11111)
           })
       }
     }

@@ -97,7 +97,6 @@ Page({
   delNotices: function(e){
     var index0 = e.currentTarget.dataset.index
     var notice  = that.data.notices[index0]
-    console.log(notice)
     wx.showModal({
       title: '提示', 
      content: '确认删除吗？', 
