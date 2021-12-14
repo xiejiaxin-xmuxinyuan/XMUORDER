@@ -14,23 +14,24 @@
         <view class="title text-bold">公告内容</view>
         <input name="content" value="{{form.content}}" class="text-right" placeholder="输入内容"></input>
       </view>
-      <view class="cu-form-group">
-        <view class="title text-bold">发布时间</view>
-        <input name="date" value="{{form.date}}" class="text-right" placeholder="输入时间"></input>
-      </view>
+
       <view class="cu-form-group margin-top">
         <view class="title text-bold">发布地区</view>
-        <picker bindchange="PickerChange"  value="{{form.pickerIndex}}" range="{{picker}}">
+        <picker bindchange="RegionPickerChange"  value="{{form.pickerIndex1}}" range="{{picker}}">
           <view class="picker">
-            {{form.pickerIndex !== null ? picker[form.pickerIndex]: '请选择发布地区'}}
+            {{form.pickerIndex1 !== null ? picker[form.pickerIndex1]: '请选择发布地区'}}
           </view>
         </picker>
       </view>
-      
-      <view class="cu-form-group">
+      <view class="cu-form-group margin-top">
         <view class="title text-bold">发布来源</view>
-        <input name="org" value="{{form.org}}" class="text-right" placeholder="输入发布者"></input>
+        <picker bindchange="OriginPickerChange"  value="{{form.pickerIndex2}}" range="{{org_picker}}">
+          <view class="picker">
+            {{form.pickerIndex2 !== null ? org_picker[form.pickerIndex2]: '请选择发布来源'}}
+          </view>
+        </picker>
       </view>
+
 
       <view class="cu-bar bg-white margin-top">
         <view class="action text-bold">

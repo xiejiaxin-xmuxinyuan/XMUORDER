@@ -11,6 +11,7 @@ Page({
     maxImgnum: 5,
     imageNum: 0,
     picker: ['公共', '翔安', '思明','海韵'],
+    org_picker: ['公共', '翔安', '思明','海韵', '点餐项目组'],
     form: {
       title: '',
       content: '',
@@ -22,7 +23,8 @@ Page({
       hidden : '',
       icon : '',
       top : '',
-      pickerIndex: null
+      pickerIndex1: null,
+      pickerIndex2: null
     }
   },
   onLoad: function (_options) {
@@ -46,7 +48,7 @@ Page({
 			return;
     }
   },
-  PickerChange : function (e, setIndex = -1) {
+  RegionPickerChange : function (e, setIndex = -1) {
     if (setIndex >= 0) {
       var index = setIndex
     } else {
@@ -54,10 +56,23 @@ Page({
     }
     var type = that.data.picker[index]
     that.setData({
-      ['form.pickerIndex']: index,
+      ['form.pickerIndex1']: index,
       'form.type' : type
     })
-    console.log(that.data.form.type)
+
+  },
+  OriginPickerChange : function (e, setIndex = -1) {
+    if (setIndex >= 0) {
+      var index = setIndex
+    } else {
+      var index = e.detail.value
+    }
+    var org = that.data.org_picker[index]
+    that.setData({
+      ['form.pickerIndex2']: index,
+      'form.org' : org
+    })
+
   },
   ChoosecoverImage: function (_e) {
     wx.chooseImage({
@@ -79,7 +94,6 @@ Page({
       })
   },
   ChooseImage: function (_e) {
-    var that = this
     that.setData({
       isonShow : true
     })
@@ -98,7 +112,7 @@ Page({
           imageNum: imageNum,
         })
       })
-      .catch(_res => {
+      .catch(_err => {
         wx.showToast({
           title: '图片选择取消',
           icon: 'none',
@@ -108,7 +122,6 @@ Page({
   },
   ViewImage: function (e) {
     var id = e.currentTarget.dataset.index
-    console.log(e.currentTarget.dataset.index)
     wx.previewImage({
       urls: [that.data.form.images[id]],
     });
@@ -117,7 +130,6 @@ Page({
     var id = e.currentTarget.dataset.index
     var form = that.data.form
     var imageNum = that.data.imageNum
-    console.log(e.currentTarget.dataset.index)
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -159,8 +171,6 @@ Page({
     let form = that.data.form
     const params = Object.assign(form, e.detail.value)
     //表单验证
-    console.log(form)
-    console.log(params)
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
       wx.showToast({
@@ -173,9 +183,21 @@ Page({
         title: '上传中',
         mask: true
       })
+      var timestamp = Date.parse(new Date());
+      var date = new Date(timestamp);
+      //获取年份  
+      var year =date.getFullYear();
+      //获取月份  
+      var month = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+      //获取当日日期 
+      var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(); 
+      console.log("当前时间：" + year + '年'  + month + '月' + day + '日' );
+      var date = year.toString() + '-' + month.toString() + '-' + day.toString()
       //上传图片
       let picker = that.data.picker
-      let type = picker[params.pickerIndex]
+      let org_picker = that.data.org_picker
+      let type = picker[params.pickerIndex1]
+      let org = org_picker[params.pickerIndex2]
       let cloudPath1 = '公告图片/'
       let imgtype1 = '封面'
       //储存路径：公告图片/地区名/_/时间戳.图片格式
@@ -210,7 +232,6 @@ Page({
                   success: res =>{
                     //执行成功的吧云存储的地址一个一个push进去
                     UploadImgs.push(res.fileID);
-                    console.log(res.fileID+"第"+i+"张图片");
                     //如果执行成功，就执行成功的回调函数
                     reslove();
                       wx.hideLoading();
@@ -218,23 +239,22 @@ Page({
                         title: '上传成功',
                       });
                   },
-                  fail:res=>{
-                    wx.hideLoading();
+                  fail: res=>{
+                    wx.hideLoading()
                     wx.showToast({
                       title: '上传失败',
-                    });
+                    })
                   }
                   })
               }))
             }
             Promise.all(promiseArr).then(res=> { //等promose数组都做完后做then方法
-              console.log("图片上传完成后再执行");
               var newForm = {
                 title: params.title,
                 content: params.content,
                 coverImg: coverImgID,
-                date: params.date,
-                org: params.org,
+                date: date,
+                org: org,
                 images: UploadImgs,
                 type: type,
                 hidden : params.hidden,
@@ -257,7 +277,7 @@ Page({
                 }, 1600);
               })
               .catch(_error => {
-                console.log(1)
+
                 wx.hideLoading()
                 wx.showToast({
                   title: '数据提交失败',
@@ -286,7 +306,11 @@ Page({
   },
   initValidate() { //表单验证规则和提示语
     const rules = {
-      pickerIndex: {
+      pickerIndex1: {
+        required: true,
+        digits: true
+      },
+      pickerIndex2: {
         required: true,
         digits: true
       },
@@ -299,21 +323,19 @@ Page({
       coverImg: {
         required: true
       },
-      date: {
-        required: true
-      },
-      org:{
-        required: true
-      },
       images:{
         required: true
       },
 
     }
     const messages = {
-      pickerIndex: {
+      pickerIndex1: {
         required: '请选择发布地区',
         digits: '请选择发布地区'
+      },
+      pickerIndex2: {
+        required: '请选择发布来源',
+        digits: '请选择发布来源'
       },
       title: {
         required: '请输入公告标题'
@@ -324,15 +346,9 @@ Page({
       coverImg: {
         required: '请添加公告封面'
       },
-      date: {
-        required: '请添加时间'
-      },
       images: {
         required: '请添加公告图片'
       },
-      org:{
-        required: '请添加发布者'
-      }
 
     }
     this.WxValidate = new WxValidate(rules, messages)
