@@ -191,7 +191,6 @@ Page({
       var month = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
       //获取当日日期 
       var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(); 
-      console.log("当前时间：" + year + '年'  + month + '月' + day + '日' );
       var date = year.toString() + '-' + month.toString() + '-' + day.toString()
       //上传图片
       let picker = that.data.picker
