@@ -40,14 +40,6 @@ Page({
       'form.top' : true
     })
   },
-  onShow: function (_options) {
-    if(this.data.isonShow){
-      this.setData({
-        isonShow: false
-      })
-			return;
-    }
-  },
   RegionPickerChange : function (e, setIndex = -1) {
     if (setIndex >= 0) {
       var index = setIndex
@@ -93,10 +85,7 @@ Page({
         })
       })
   },
-  ChooseImage: function (_e) {
-    that.setData({
-      isonShow : true
-    })
+  ChooseImage(){
     var imageNum = that.data.imageNum
     var form = that.data.form
     wx.chooseImage({
@@ -105,12 +94,17 @@ Page({
       })
       .then(res => {
         // TODO: 使用canvas进行压缩
-        imageNum += 1
-        form.images.push(res.tempFilePaths[0])
-        that.setData({
-          form: form,
-          imageNum: imageNum,
-        })
+        if (this.data.form.images.length != 0) {
+          this.setData({
+            'form.images': this.data.form.images.concat(res.tempFilePaths),
+            imageNum: that.data.imageNum
+          })
+        } else {
+          this.setData({
+            'form.images': res.tempFilePaths,
+            imageNum: that.data.imageNum
+          })
+        }
       })
       .catch(_err => {
         wx.showToast({
@@ -220,7 +214,7 @@ Page({
             const imagesPath = []
             var UploadImgs = [];
             let promiseArr = [];//创建一个数组来存储一会的promise操作
-            for(var i =0; i < images.length ;i++){
+            for(var i =0; i < images.length ;i++) {
               //往数据中push promise操作
               promiseArr.push(new Promise((reslove,reject)=>{
                 //一个一个取出图片数组的临时地址
