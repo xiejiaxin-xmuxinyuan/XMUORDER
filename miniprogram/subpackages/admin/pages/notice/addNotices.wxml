@@ -1,0 +1,92 @@
+<!--subpackages/admin/pages/notice/addNotices.wxml-->
+<view class="tab-page">
+  <cu-custom bgColor="bg-gradual-blue" isBack="true">
+    <view slot="content">添加公告</view>
+  </cu-custom>
+  <view class="bg-white margin-lg shadow-warp radius">
+    <form catchsubmit="editNoticesSubmit">
+
+      <view class="cu-form-group">
+        <view class="title text-bold">公告标题</view>
+        <input name="title" value="{{form.title}}" class="text-right" placeholder="输入标题"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">公告内容</view>
+        <input name="content" value="{{form.content}}" class="text-right" placeholder="输入内容"></input>
+      </view>
+
+      <view class="cu-form-group margin-top">
+        <view class="title text-bold">发布地区</view>
+        <picker bindchange="RegionPickerChange"  value="{{form.pickerIndex1}}" range="{{picker}}">
+          <view class="picker">
+            {{form.pickerIndex1 !== null ? picker[form.pickerIndex1]: '请选择发布地区'}}
+          </view>
+        </picker>
+      </view>
+      <view class="cu-form-group margin-top">
+        <view class="title text-bold">发布来源</view>
+        <picker bindchange="OriginPickerChange"  value="{{form.pickerIndex2}}" range="{{org_picker}}">
+          <view class="picker">
+            {{form.pickerIndex2 !== null ? org_picker[form.pickerIndex2]: '请选择发布来源'}}
+          </view>
+        </picker>
+      </view>
+
+
+      <view class="cu-bar bg-white margin-top">
+        <view class="action text-bold">
+          公告封面
+        </view>
+        <view class="action">
+          {{form.coverImg? 1 : 0}} / 1
+        </view>
+      </view>
+
+      <view class="cu-form-group">
+        <view class="grid col-4 grid-square flex-sub">
+          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="ViewcoverImage" data-url="{{form.coverImg}}">
+            <image src='{{form.coverImg}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="DelcoverImg">
+              <text class="cuIcon-close"></text>
+            </view>
+          </view>
+          <view class="solids" bindtap="ChoosecoverImage" wx:if="{{!form.coverImg}}">
+            <text class="cuIcon-cameraadd"></text>
+          </view>
+        </view>
+      </view>
+
+      <view class="cu-bar bg-white margin-top">
+        <view class="action text-bold">
+          公告图片
+        </view>
+        <view class="action">
+          {{form.images.length}} / {{maxImgnum}}
+        </view>
+      </view>
+
+      <view class="cu-form-group">
+        <view class="grid col-4 grid-square flex-sub">
+          <view class="bg-img" wx:for="{{form.images}}" wx:key="*this" data-index="{{index}}" bindtap="ViewImage">
+            <image src='{{item}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+              <text class="cuIcon-close"></text>
+            </view>
+          </view>
+          <view class="solids" bindtap="ChooseImage" wx:if="{{imageNum < maxImgnum}}">
+            <text class="cuIcon-cameraadd"></text>
+          </view>
+        </view>
+      </view>
+
+      <view style="text-align: center;padding: 1rem 0;">
+        <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">保存</button>
+      </view>
+    </form>
+  </view>
+</view>
+
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>
