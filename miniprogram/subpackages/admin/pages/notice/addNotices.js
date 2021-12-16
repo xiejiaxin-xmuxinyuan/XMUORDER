@@ -193,6 +193,7 @@ Page({
       let org = org_picker[params.pickerIndex2]
       let cloudPath1 = '公告图片/'
       let imgtype1 = '封面'
+      
       //储存路径：公告图片/地区名/_/时间戳.图片格式
       cloudPath1 = cloudPath1 + type + '/' +  imgtype1 + '/'  + 
         new Date().getTime() + params.coverImg.match('.[^.]+?$')[0]
