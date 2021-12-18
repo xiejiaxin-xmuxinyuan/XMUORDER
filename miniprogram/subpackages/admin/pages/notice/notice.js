@@ -114,10 +114,10 @@ Page({
     })
   },
   showNoticeDetail: function (event) {
-    //保存当前notice详情到全局
     var index = event.currentTarget.dataset.index
+    var notice = that.data.notices[index]
     wx.navigateTo({
-      url: './noticeDetail?index=' + index
+      url: './noticeDetail?notice=' + JSON.stringify(notice)
     })
   },
   getUserNotices: function (noticeCurrPage = 1, pageSize = 3) {

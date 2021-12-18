@@ -22,11 +22,11 @@
         </view>
         <view class="content">
           <image wx:if="{{ item.coverImg }}" src="{{ item.coverImg }}" mode="aspectFill"></image>
-          <view class="desc">
-            <view class="text-content" style="width: 100%;">
+          <view class="desc" style="margin:0 15rpx">
+            <view class="text-content text-center" style="width: 100%;">
               {{item.content}}
             </view>
-            <view class="margin-top-sm flex justify-between">
+            <view class="flex justify-between" style="margin-top: 15rpx;">
               <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
               <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
             </view>

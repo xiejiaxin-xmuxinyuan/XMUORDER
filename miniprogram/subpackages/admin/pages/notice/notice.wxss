@@ -42,6 +42,32 @@
   color: orange;
 }
 
+.my-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.my-title .text-cut{
+	font-size: 30rpx;
+	font-weight: 900;
+	line-height: 100rpx;
+  padding: 0 30rpx;
+  color: #333333;
+}
+
+.my-title .my-btn{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 120rpx;
+  margin-right: 15rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
 page {
   background-color: white;
 }

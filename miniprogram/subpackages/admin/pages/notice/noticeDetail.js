@@ -9,10 +9,10 @@ Page({
 
   onLoad: function (options) {
     that = this
-    var index = options.index
+    const notice = JSON.parse(options.notice)
     //读取公告详情
     that.setData({
-      notice: app.globalData.notices[index]
+      notice: notice
     })
   }
 })
