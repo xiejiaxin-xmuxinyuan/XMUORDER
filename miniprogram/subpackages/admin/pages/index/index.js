@@ -1,7 +1,6 @@
 // pages/index/index.js
 const app = getApp()
 const db = wx.cloud.database()
-const _ = db.command
 const util = require('../../../../utils/util.js')
 
 var that
@@ -124,11 +123,6 @@ Page({
       )
     }
 
-    // 公告信息
-    proList.push(
-      that.getUserNotices()
-    )
-
     // 未处理订单相关信息
     if (identity.type !== 'superAdmin') {
       proList.push(
@@ -141,9 +135,7 @@ Page({
 
       //放入全局变量
       var canteens = res[0].data //餐厅数据
-      var notices = res[1] //公告数据
       app.globalData.canteen = canteens
-      app.globalData.notices = notices
 
       if (identity.type !== 'superAdmin') {
         var canteen = canteens[0]
@@ -160,11 +152,11 @@ Page({
           intCurTime,
           canteen,
           pageCurr: 'order',
-          'orders.acceptedOrdersCount': res[2],
-          'orders.newOrders': res[3].record,
-          'orders.currPage': res[3].currPage,
-          'orders.totalPage': res[3].totalPage,
-          'orders.totalCount': res[3].totalCount,
+          'orders.acceptedOrdersCount': res[1],
+          'orders.newOrders': res[2].record,
+          'orders.currPage': res[2].currPage,
+          'orders.totalPage': res[2].totalPage,
+          'orders.totalCount': res[2].totalCount,
         })
       }
       wx.hideLoading()

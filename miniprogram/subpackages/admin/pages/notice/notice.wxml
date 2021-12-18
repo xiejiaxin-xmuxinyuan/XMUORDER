@@ -5,8 +5,7 @@
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}"
-        wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
     </view>
@@ -16,16 +15,16 @@
   <!-- 公告内容 -->
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
-      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
+      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-index="{{index}}" catchtap="showNoticeDetail">
         <view class="title">
           <view class="text-cut">
             <text class="cuIcon-top" wx:if="{{item.top}}"></text>
             {{item.title}}
-              <text class="cuIcon-close fr" style="font-size: 5vw;" catchtap="delNotices" data-index="{{index}}"></text>
+            <text class="cuIcon-close fr" style="font-size: 5vw;" catchtap="delNotices" data-index="{{index}}"></text>
           </view>
         </view>
         <view class="content">
-          <image wx:if="{{item.coverImg}}" src="{{item.coverImg}}" mode="aspectFill" ></image>
+          <image wx:if="{{item.coverImg}}" src="{{item.coverImg}}" mode="aspectFill"></image>
           <view class="desc">
             <view class="text-content" style="width: 100%;">
               {{item.content}}
@@ -42,10 +41,23 @@
   </view>
 </view>
 
-<view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+<view class="my-bar">
+  <block wx:if="{{noticeTotalPage>1&&notices.length}}">
+    <view class="page-bar">
+      <text catchtap="noticeChangePage" class="cu-btn line-black  round shadow">上一页</text>
+      <text class="text-lg margin-sm">{{noticeCurrPage}} / {{noticeTotalPage}}</text>
+      <text catchtap="noticeChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</text>
+    </view>
+    <view class="add-btn">
+      <text class="cuIcon-edit" catchtap="toAddNotices"></text>
+    </view>
+  </block>
+  <view wx:else class="add-btn" style="margin-right: 42rpx; margin-left: auto;">
+    <text class="cuIcon-edit" catchtap="toAddNotices"></text>
+  </view>
 </view>
 
-<view style="font-size: 10vw;position: fixed;bottom: 10%;right: 5%;">
-  <text class="cuIcon-edit text-yellow bg-white round padding shadow" catchtap="toAddNotices"></text>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
