@@ -209,7 +209,7 @@ Page({
       wx.hideLoading()
     })
   },
-  getUserNotices: function (noticeCurrPage = 1, pageSize = 3) {
+  getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
       const noticeCurrType = that.data.noticeCurrType
 
@@ -224,11 +224,16 @@ Page({
       if (noticeTotalPage === 0) { //如果没有任何记录
         that.setData({
           notices: [],
-          noticeCurrPage: noticeCurrPage,
-          noticeTotalPage: noticeTotalPage,
-          noticeTotalCount: noticeTotalCount,
+          noticeCurrPage: 1,
+          noticeTotalPage: 0,
+          noticeTotalCount: 0,
         })
         resolve()
+        return
+      }
+
+      if (noticeCurrPage > noticeTotalPage) {
+        noticeCurrPage = noticeTotalPage
       }
 
       db.collection('notices').where({
@@ -246,6 +251,7 @@ Page({
             noticeTotalCount: noticeTotalCount,
           })
           resolve()
+          return
         })
     })
   },

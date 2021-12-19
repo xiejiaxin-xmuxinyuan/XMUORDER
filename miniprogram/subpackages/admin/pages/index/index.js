@@ -1,4 +1,3 @@
-// pages/index/index.js
 const app = getApp()
 const db = wx.cloud.database()
 const util = require('../../../../utils/util.js')
@@ -19,7 +18,6 @@ function userNoticesSort(a, b) { //辅助函数 用于sort排序
 function newOrdersSort(a, b) {
   return a.orderInfo.timeInfo.createTime > b.orderInfo.timeInfo.createTime ? 1 : -1;
 }
-
 
 //返回14位字符串日期20210102030405
 function getStrDate(date) {

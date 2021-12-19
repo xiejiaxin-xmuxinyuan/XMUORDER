@@ -11,27 +11,31 @@
         <input name="title" value="{{form.title}}" class="text-right" placeholder="输入标题"></input>
       </view>
       <view class="cu-form-group">
+        <view class="title text-bold">公告置顶</view>
+        <switch bindchange="onSwitchChange" checked="{{form.top}}"></switch>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">公告来源</view>
+        <picker wx:if="{{identity.type==='superAdmin'}}" bindchange="orgPickerChange" value="{{orgPickerIndex}}" range="{{orgPicker}}">
+          <view class="picker">
+            {{orgPickerIndex !== null ? orgPicker[orgPickerIndex]: '请选择发布来源'}}
+          </view>
+        </picker>
+        <view wx:else class="margin-right-sm text-black">{{form.org}}</view>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">发布地区</view>
+        <picker wx:if="{{identity.type==='superAdmin'}}" bindchange="typePickerChange" value="{{typePickerIndex}}" range="{{typePicker}}">
+          <view class="picker">
+            {{typePickerIndex !== null ? typePicker[typePickerIndex]: '请选择发布地区'}}
+          </view>
+        </picker>
+        <view wx:else class="margin-right-sm text-black">{{form.type}}</view>
+      </view>
+      <view class="cu-form-group">
         <view class="title text-bold">公告内容</view>
         <input name="content" value="{{form.content}}" class="text-right" placeholder="输入内容"></input>
       </view>
-
-      <view class="cu-form-group margin-top">
-        <view class="title text-bold">发布地区</view>
-        <picker bindchange="RegionPickerChange"  value="{{form.pickerIndex1}}" range="{{picker}}">
-          <view class="picker">
-            {{form.pickerIndex1 !== null ? picker[form.pickerIndex1]: '请选择发布地区'}}
-          </view>
-        </picker>
-      </view>
-      <view class="cu-form-group margin-top">
-        <view class="title text-bold">发布来源</view>
-        <picker bindchange="OriginPickerChange"  value="{{form.pickerIndex2}}" range="{{org_picker}}">
-          <view class="picker">
-            {{form.pickerIndex2 !== null ? org_picker[form.pickerIndex2]: '请选择发布来源'}}
-          </view>
-        </picker>
-      </view>
-
 
       <view class="cu-bar bg-white margin-top">
         <view class="action text-bold">
@@ -44,13 +48,13 @@
 
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="ViewcoverImage" data-url="{{form.coverImg}}">
+          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="viewcoverImage" data-url="{{form.coverImg}}">
             <image src='{{form.coverImg}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="DelcoverImg">
+            <view class="cu-tag bg-red" catchtap="delcoverImg">
               <text class="cuIcon-close"></text>
             </view>
           </view>
-          <view class="solids" bindtap="ChoosecoverImage" wx:if="{{!form.coverImg}}">
+          <view class="solids" bindtap="chooseCoverImage" wx:if="{{!form.coverImg}}">
             <text class="cuIcon-cameraadd"></text>
           </view>
         </view>
@@ -67,13 +71,13 @@
 
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:for="{{form.images}}" wx:key="*this" data-index="{{index}}" bindtap="ViewImage">
+          <view class="bg-img" wx:for="{{form.images}}" wx:key="*this" data-index="{{index}}" bindtap="viewImage">
             <image src='{{item}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="DelImg" data-index="{{index}}">
+            <view class="cu-tag bg-red" catchtap="delImg" data-index="{{index}}">
               <text class="cuIcon-close"></text>
             </view>
           </view>
-          <view class="solids" bindtap="ChooseImage" wx:if="{{imageNum < maxImgnum}}">
+          <view class="solids" bindtap="chooseImage" wx:if="{{imageNum < maxImgnum}}">
             <text class="cuIcon-cameraadd"></text>
           </view>
         </view>

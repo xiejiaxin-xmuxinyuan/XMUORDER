@@ -71,9 +71,10 @@ Page({
       })
     }
   },
-  delNotices: function (e) {
+  delNotice: function (e) {
     var index0 = e.currentTarget.dataset.index
     var notice = that.data.notices[index0]
+    var noticeCurrPage = that.data.noticeCurrPage
     wx.showModal({
       title: '提示',
       content: '确认删除吗？',
@@ -81,34 +82,32 @@ Page({
         if (res.confirm) {
           util.showLoading('正在删除公告')
           let _id = notice._id
-          wx.cloud.callFunction({
-              name: 'dbMove',
-              data: {
-                table: 'notices',
-                _id: _id
-              }
-            })
-            .then(res => {
-              if (res.result.success) {
-                that.data.notices.splice(index0, 1)
-                setTimeout(function () {
-                  wx.hideLoading()
-                  that.setData({
-                    notices: that.data.notices
-                  })
-                  util.showToast('删除成功', 'success', 1500)
-                }, 1100)
-              } else {
+          // 公告数据
+          var p0 = wx.cloud.callFunction({
+            name: 'dbMove',
+            data: {
+              table: 'notices',
+              _id: _id
+            }
+          })
+          // 公告图片
+          var fileIDs = notice.images
+          fileIDs.push(notice.coverImg)
+          var p1 = wx.cloud.deleteFile({
+            fileList: fileIDs,
+          })
+
+          Promise.all([p0, p1]).then(res => {
+            if (res[0].result.success) {
+              that.getUserNotices(noticeCurrPage).then(() => {
                 wx.hideLoading()
-                util.showToast('数据提交失败', 'error', 2000)
-              }
-            })
-            .catch(error => {
+                util.showToast('删除成功', 'success', 1500)
+              })
+            } else {
               wx.hideLoading()
-              util.showToast('数据提交失败', 'error', 2000)
-            })
-        } else if (res.cancel) {
-          util.showToast('操作已取消')
+              util.showToast('删除失败', 'error', 2000)
+            }
+          })
         }
       }
     })
@@ -120,7 +119,7 @@ Page({
       url: './noticeDetail?notice=' + JSON.stringify(notice)
     })
   },
-  getUserNotices: function (noticeCurrPage = 1, pageSize = 3) {
+  getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
       const noticeCurrType = that.data.noticeCurrType
 
@@ -135,11 +134,16 @@ Page({
       if (noticeTotalPage === 0) { //如果没有任何记录
         that.setData({
           notices: [],
-          noticeCurrPage: noticeCurrPage,
-          noticeTotalPage: noticeTotalPage,
-          noticeTotalCount: noticeTotalCount,
+          noticeCurrPage: 1,
+          noticeTotalPage: 0,
+          noticeTotalCount: 0,
         })
         resolve()
+        return
+      }
+
+      if (noticeCurrPage > noticeTotalPage) {
+        noticeCurrPage = noticeTotalPage
       }
 
       db.collection('notices').where({
@@ -157,6 +161,7 @@ Page({
             noticeTotalCount: noticeTotalCount,
           })
           resolve()
+          return
         })
     })
   },
@@ -166,9 +171,10 @@ Page({
     })
   },
   editNotices: function (e) {
-    var index0 = e.currentTarget.dataset.index
+    var index = e.currentTarget.dataset.index
+    var notice = that.data.notices[index]
     wx.navigateTo({
-      url: './editNotices?index0=' + index0,
+      url: './editNotices?notice=' + JSON.stringify(notice)
     })
   },
   noticeChangePage: function (e) {

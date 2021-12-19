@@ -150,10 +150,12 @@ Page({
               totalPage: totalPage,
               foodTypePickerIndex: foodTypePickerIndex
             })
-            resolve() //结束
+            resolve()
+            return
           } else {
             util.showToast('加载失败', 'error')
             reject() //结束
+            return
           }
         })
         .catch(e => {

@@ -22,8 +22,12 @@
             {{item.title}}
           </view>
           <view class="my-btn">
-            <text class="cuIcon-write" catchtap="editNotices" data-index="{{index}}"></text>
-            <text class="cuIcon-close" catchtap="delNotices" data-index="{{index}}"></text>
+            <button class="cu-btn">
+              <text class="cuIcon-write" catchtap="editNotices" data-index="{{index}}"></text>
+            </button>
+            <button class="cu-btn">
+              <text class="cuIcon-close" catchtap="delNotice" data-index="{{index}}"></text>
+            </button>
           </view>
         </view>
         <view class="content">
@@ -46,9 +50,9 @@
 <view class="my-bar">
   <block wx:if="{{noticeTotalPage>1&&notices.length}}">
     <view class="page-bar">
-      <text catchtap="noticeChangePage" class="cu-btn line-black  round shadow">上一页</text>
+      <button catchtap="noticeChangePage" class="cu-btn line-black  round shadow">上一页</button>
       <text class="text-lg margin-sm">{{noticeCurrPage}} / {{noticeTotalPage}}</text>
-      <text catchtap="noticeChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</text>
+      <button catchtap="noticeChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
     </view>
     <view class="add-btn">
       <text class="cuIcon-edit" catchtap="toAddNotices"></text>

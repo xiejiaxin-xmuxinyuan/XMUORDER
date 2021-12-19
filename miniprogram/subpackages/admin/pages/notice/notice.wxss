@@ -37,7 +37,11 @@
   font-size: 45rpx;
   border-radius: 5000rpx;
   background-color: white;
-  padding: 30rpx;
+  height: 110rpx;
+  width: 110rpx;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
   border: 5rpx #eee solid;
   color: orange;
 }
@@ -62,10 +66,14 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  width: 120rpx;
   margin-right: 15rpx;
-  font-size: 36rpx;
+}
+
+.my-title .my-btn > button{
+  background: none;
+  font-size: 32rpx;
   font-weight: bold;
+  padding: 0 15rpx;
 }
 
 page {
