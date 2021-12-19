@@ -1,28 +1,39 @@
-<!--subpackages/admin/pages/notice/editNotices.wxml-->
-<!--公告详情-->
 <view class="tab-page">
-  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-    <view slot="content">编辑公告</view>
+  <cu-custom bgColor="bg-gradual-blue" isBack="true">
+    <view slot="content">添加公告</view>
   </cu-custom>
-
   <view class="bg-white margin-lg shadow-warp radius">
     <form catchsubmit="editNoticesSubmit">
 
       <view class="cu-form-group">
         <view class="title text-bold">公告标题</view>
-        <input name="title" value="{{notice.title}}" class="text-right" placeholder="输入标题"></input>
+        <input name="title" value="{{form.title}}" class="text-right" placeholder="输入标题"></input>
       </view>
       <view class="cu-form-group">
+        <view class="title text-bold">公告置顶</view>
+        <switch bindchange="onSwitchChange" checked="{{form.top}}"></switch>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">公告来源</view>
+        <picker wx:if="{{identity.type==='superAdmin'}}" bindchange="orgPickerChange" value="{{orgPickerIndex}}" range="{{orgPicker}}">
+          <view class="picker">
+            {{orgPickerIndex !== null ? orgPicker[orgPickerIndex]: '请选择发布来源'}}
+          </view>
+        </picker>
+        <view wx:else class="margin-right-sm text-black">{{form.org}}</view>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">发布地区</view>
+        <picker wx:if="{{identity.type==='superAdmin'}}" bindchange="typePickerChange" value="{{typePickerIndex}}" range="{{typePicker}}">
+          <view class="picker">
+            {{typePickerIndex !== null ? typePicker[typePickerIndex]: '请选择发布地区'}}
+          </view>
+        </picker>
+        <view wx:else class="margin-right-sm text-black">{{form.type}}</view>
+      </view>
+      <view class="my-textarea">
         <view class="title text-bold">公告内容</view>
-        <textarea name="content" value="{{notice.content}}"></textarea>
-      </view>
-      <view class="cu-form-group">
-        <view class="title text-bold">发布时间</view>
-        <input name="date" value="{{notice.date}}" class="text-right" placeholder="输入时间"></input>
-      </view>
-      <view class="cu-form-group">
-        <view class="title text-bold">发布来源</view>
-        <input name="org" value="{{notice.org}}" class="text-right" placeholder="输入发布者"></input>
+        <textarea maxlength="300" name="content" value="{{form.content}}" placeholder="输入内容..."></textarea>
       </view>
 
       <view class="cu-bar bg-white">
@@ -30,19 +41,19 @@
           公告封面
         </view>
         <view class="action">
-          {{notice.coverImg? 1 : 0}} / 1
+          {{form.coverImg? 1 : 0}} / 1
         </view>
       </view>
 
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:if="{{notice.coverImg}}" bindtap="ViewcoverImage" data-url="{{notice.coverImg}}">
-            <image src='{{notice.coverImg}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="DelcoverImg">
+          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="viewcoverImage" data-url="{{form.coverImg}}">
+            <image src='{{form.coverImg}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="delcoverImg">
               <text class="cuIcon-close"></text>
             </view>
           </view>
-          <view class="solids" bindtap="ChoosecoverImage" wx:if="{{!notice.coverImg}}">
+          <view class="solids" bindtap="chooseCoverImage" wx:if="{{!form.coverImg}}">
             <text class="cuIcon-cameraadd"></text>
           </view>
         </view>
@@ -53,22 +64,21 @@
           公告图片
         </view>
         <view class="action">
-          {{notice.images.length}} / {{maxImgnum}}
+          {{form.images.length}} / {{maxImgnum}}
         </view>
       </view>
 
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:for="{{notice.images}}" wx:key="*this" data-idx="{{index}}" bindtap="ViewImage">
+          <view class="bg-img" wx:for="{{form.images}}" wx:key="*this" data-index="{{index}}" bindtap="viewImage">
             <image src='{{item}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="DelImg" data-idx="{{index}}">
+            <view class="cu-tag bg-red" catchtap="delImg" data-index="{{index}}">
               <text class="cuIcon-close"></text>
             </view>
           </view>
-          <view class="solids" bindtap="ChooseImage" wx:if="{{imageNum < maxImgnum}}" >
-            <text  class="cuIcon-cameraadd"></text>
+          <view class="solids" bindtap="chooseImage" wx:if="{{imageNum < maxImgnum}}">
+            <text class="cuIcon-cameraadd"></text>
           </view>
-
         </view>
       </view>
 
@@ -78,6 +88,8 @@
     </form>
   </view>
 </view>
+
+
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>

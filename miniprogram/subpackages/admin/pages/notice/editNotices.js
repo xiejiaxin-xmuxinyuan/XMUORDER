@@ -1,5 +1,6 @@
 import WxValidate from '../../../../utils/WxValidate.js'
 const util = require('../../../../utils/util.js')
+const app = getApp()
 var that
 
 Page({
@@ -7,9 +8,15 @@ Page({
     notice: {},
     oldImg: '',
     oldImages: [],
+    images: [],
+
     maxImgnum: 5,
     imageNum: 0,
-    images: []
+    identity: {},
+    typePicker: ['公共', '翔安', '思明', '海韵'],
+    orgPicker: [],
+    typePickerIndex: null,
+    orgPickerIndex: null,
   },
   onLoad: function (options) {
     that = this

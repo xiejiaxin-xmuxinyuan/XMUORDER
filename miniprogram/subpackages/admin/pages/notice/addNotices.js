@@ -224,6 +224,12 @@ Page({
           date: dateStr,
         })
 
+        // 权限（cID和orgID相同的才能编辑）
+        const identity = that.data.identity
+        if (identity.type !== 'superAdmin') {
+          newForm.orgID = identity.cID
+        }
+
         db.collection('notices').add({
           data: newForm
         }).then(res => {

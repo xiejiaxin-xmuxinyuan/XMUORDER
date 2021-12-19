@@ -1,6 +1,7 @@
 // subpackages/admin/pages/notice/notice.js
 const db = wx.cloud.database()
 const util = require('../../../../utils/util.js')
+const app = getApp()
 var that
 
 Page({
@@ -173,6 +174,15 @@ Page({
   editNotices: function (e) {
     var index = e.currentTarget.dataset.index
     var notice = that.data.notices[index]
+    const identity = app.globalData.identity
+
+    if (identity !== 'superAdmin') {
+      if (identity.cID !== notice.orgID) {
+        util.showToast('您没有该公告的编辑权限')
+        return
+      }
+    }
+
     wx.navigateTo({
       url: './editNotices?notice=' + JSON.stringify(notice)
     })
