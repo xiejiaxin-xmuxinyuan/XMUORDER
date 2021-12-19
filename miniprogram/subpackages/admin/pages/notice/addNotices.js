@@ -147,12 +147,12 @@ Page({
       }
     })
   },
-  viewcoverImage: function (e) {
+  viewCoverImage: function (e) {
     wx.previewImage({
       urls: [that.data.form.coverImg],
     });
   },
-  delcoverImg: function (e) {
+  delCoverImg: function (e) {
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -172,7 +172,7 @@ Page({
     const randomStr = date.getTime() + '_' + Math.random().toString(36).slice(-4)
     return '公告图片/' + randomStr + img.match('.[^.]+?$')[0]
   },
-  editNoticesSubmit: function (e) {
+  addNoticesSubmit: function (e) {
     let form = that.data.form
     var params = Object.assign(form, e.detail.value)
 
@@ -275,11 +275,9 @@ Page({
     const messages = {
       type: {
         required: '请选择发布地区',
-        digits: '请选择发布地区'
       },
       org: {
         required: '请选择公告来源',
-        digits: '请选择公告来源'
       },
       title: {
         required: '请输入公告标题'

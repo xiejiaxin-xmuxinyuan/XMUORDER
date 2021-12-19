@@ -6,9 +6,8 @@ var that
 Page({
   data: {
     notice: {},
-    oldImg: '',
+    oldCoverImg: '',
     oldImages: [],
-    images: [],
 
     maxImgnum: 5,
     imageNum: 0,
@@ -21,63 +20,125 @@ Page({
   onLoad: function (options) {
     that = this
     that.initValidate()
+    const identity = app.globalData.identity
     var notice = JSON.parse(options.notice)
     var imageNum = notice.images.length
+
+    if (identity.type === 'superAdmin') {
+      const typePicker = that.data.typePicker
+      var typePickerIndex
+      for (let i = 0; i < typePicker.length; i++) {
+        const typeName = typePicker[i];
+        if (typeName === notice.type) {
+          typePickerIndex = i
+          break
+        }
+      }
+
+      var canteens = app.globalData.canteen
+      var orgPicker = ['点餐项目组']
+      var orgPickerIndex
+      canteens.forEach(canteen => {
+        orgPicker.push(canteen.name)
+      })
+      for (let i = 0; i < orgPicker.length; i++) {
+        const orgName = orgPicker[i];
+        if (orgName === notice.org) {
+          orgPickerIndex = i
+          break
+        }
+      }
+
+      that.setData({
+        orgPicker,
+        orgPickerIndex,
+        typePickerIndex
+      })
+    }
+
     that.setData({
       notice: notice,
-      imageNum: imageNum
+      imageNum,
+      identity
+    })
+  },
+  onSwitchChange: function (e) {
+    that.setData({
+      'notice.top': e.detail.value
+    })
+  },
+  typePickerChange: function (e) {
+    var index = e.detail.value
+    var type = that.data.typePicker[index]
+    that.setData({
+      typePickerIndex: index,
+      'notice.type': type
+    })
+  },
+  orgPickerChange: function (e) {
+    var index = e.detail.value
+    var org = that.data.orgPicker[index]
+    that.setData({
+      orgPickerIndex: index,
+      'notice.org': org
     })
   },
   chooseCoverImage: function (e) {
     wx.chooseImage({
         count: 1, //默认9
-        sizeType: 'compressed'
+        sizeType: ['compressed']
       })
       .then(res => {
         that.setData({
-          ['notice.coverImg']: res.tempFilePaths[0],
+          'notice.coverImg': res.tempFilePaths[0],
         })
       })
-      .catch(res => {
+      .catch(error => {
         util.showToast('图片选择取消')
       })
   },
-  ChooseImage: function (e) {
-    var id = e.currentTarget.dataset.idx
+  chooseImage: function (e) {
+    const maxImgnum = that.data.maxImgnum
     var imageNum = that.data.imageNum
     var notice = that.data.notice
-    var images = that.data.notice.images
     wx.chooseImage({
-        count: 1, //默认9
-        sizeType: 'compressed'
+        count: maxImgnum - imageNum, //默认9
+        sizeType: ['compressed']
+      }).then(res => {
+        var images = that.data.notice.images
+        var oldImages = that.data.oldImages
+
+        //构建setData对象
+        var formData = {
+          imageNum: imageNum + res.tempFilePaths.length
+        }
+        if (!oldImages.length) { //若从未修改过图片数组
+          formData.oldImages = [...images] //复制数组
+        }
+        if (notice.images.length !== 0) {
+          formData['notice.images'] = notice.images.concat(res.tempFilePaths)
+        } else {
+          formData['notice.images'] = res.tempFilePaths
+        }
+
+        that.setData(formData)
       })
-      .then(res => {
-        // TODO: 使用canvas进行压缩
-        that.data.imageNum += 1
-        that.data.notice.images.push(res.tempFilePaths[0])
-        that.data.images.push(res.tempFilePaths[0])
-        that.setData({
-          notice: that.data.notice,
-          images: that.data.notice.images,
-          imageNum: that.data.imageNum,
-          oldImages: that.data.notice.images
-        })
-      })
-      .catch(res => {
+      .catch(err => {
         util.showToast('图片选择取消')
       })
   },
-  ViewImage: function (e) {
-    var id = e.currentTarget.dataset.idx
+  viewImage: function (e) {
+    var index = e.currentTarget.dataset.index
     wx.previewImage({
-      urls: [that.data.notice.images[id]],
+      urls: [that.data.notice.images[index]],
     });
   },
-  DelImg: function (e) {
-    var id = e.currentTarget.dataset.idx
+  delImg: function (e) {
+    var index = e.currentTarget.dataset.index
     var images = that.data.notice.images
-    var notice = that.data.notice
     var imageNum = that.data.imageNum
+    var oldImages = that.data.oldImages
+
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -85,25 +146,27 @@ Page({
       confirmText: '是',
       success: res => {
         if (res.confirm) {
-          images.splice(id, 1)
-          that.data.imageNum -= 1
+          if (!oldImages.length) { //若从未修改过图片数组
+            oldImages = [...images] //复制数组
+          }
+          images.splice(index, 1)
+          imageNum -= 1
+
           that.setData({
-            notice: that.data.notice,
-            images: that.data.notice.images,
-            oldImages: that.data.notice.images,
-            imageNum: that.data.imageNum
+            'notice.images': images,
+            oldImages,
+            imageNum
           })
         }
       }
     })
   },
-
-  ViewcoverImage: function (e) {
+  viewCoverImage: function (e) {
     wx.previewImage({
       urls: [that.data.notice.coverImg],
     });
   },
-  DelcoverImg: function (e) {
+  delCoverImg: function (e) {
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -112,202 +175,133 @@ Page({
       success: res => {
         if (res.confirm) {
           that.setData({
-            ['notice.coverImg']: '',
-            oldImg: that.data.notice.coverImg
+            'notice.coverImg': '',
+            oldCoverImg: that.data.notice.coverImg
           })
         }
       }
     })
   },
+  getRandomPath: (img) => { //储存路径：公告图片/时间戳_4位随机数.图片格式
+    var date = new Date()
+    const randomStr = date.getTime() + '_' + Math.random().toString(36).slice(-4)
+    return '公告图片/' + randomStr + img.match('.[^.]+?$')[0]
+  },
   editNoticesSubmit: function (e) {
     var notice = that.data.notice
     var params = Object.assign(notice, e.detail.value)
-    var coverImg = that.data.notice.coverImg
     //表单验证
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
       util.showToast(error.msg)
     } else {
-      wx.showLoading({
-        title: '上传中',
-        mask: true
-      })
-      //若有更换图片则先上传新图片，然后修改为新img值，再删除原来的云储存图片, 最后修改数据库
-      // oldImg <-> coverImg
-      if (that.data.oldImg) {
-        //上传图片
-        let cloudPath = '公告图片/'
-        let imgtype = '封面'
-        let type = notice.type
-        //储存路径：公告图片/地区名/封面/时间戳.图片格式
-        cloudPath = cloudPath + type + '/' + imgtype + '/' +
-          new Date().getTime() + params.coverImg.match('.[^.]+?$')[0]
-        wx.cloud.uploadFile({
-            cloudPath: cloudPath,
-            filePath: params.coverImg, // 文件路径
-          })
-          .then(res => {
-            //修改为云图片路径
-            params.coverImg = res.fileID
-            //删除原图片
-            wx.cloud.callFunction({
-                name: 'cloudFilesDelete',
-                data: {
-                  fileIDs: [that.data.oldImg]
-                }
-              })
-              .then(res => {
-                if (res.result[0].status) {
-                  wx.hideLoading()
-                  util.showToast('封面图片删除出错')
-                } else {
-                  //更新数据库
-                  wx.cloud.callFunction({
-                      name: 'dbUpdate',
-                      data: {
-                        table: 'notices',
-                        _id: notice._id,
-                        formData: params,
-                        set: true
-                      }
-                    })
-                    .then(res => {
-                      wx.hideLoading()
-                      if (res.result.success) {
-                        util.showToast('保存成功', 'success', 1500)
-                        //返回上一页
-                        setTimeout(() => {
-                          wx.navigateBack()
-                        }, 1600);
-                      } else {
-                        util.showToast('数据提交失败', 'error', 1500)
-                      }
-                    })
-                    .catch(e => {
-                      util.showToast('数据提交失败', 'error', 1500)
-                    })
-                }
-              })
-              .catch(res => {
-                wx.hideLoading()
-                util.showToast('图片删除出错')
-              })
-          })
-          .catch(e => {
-            wx.hideLoading()
-            util.showToast('图片上传失败', 'error', 1500)
-          })
-      } else if (that.data.oldImages.length) {
-        let cloudPath2 = '公告图片/'
-        let imgtype2 = '内容'
-        let type = notice.type
-        const images = params.images
-        const cloudPath = []
-        //储存路径：公告图片/地区名/封面/时间戳.图片格式
-        images.forEach(function (_item, i) {
-          cloudPath.push(cloudPath2 + type + '/' + imgtype2 + '/' +
-            new Date().getTime() + '_' + i + images[i].match('.[^.]+?$')[0])
-        })
-        const imagesPath = []
-        var UploadImgs = []
-        let promiseArr = [] //创建一个数组来存储一会的promise操作
-        for (var i = 0; i < params.images.length; i++) {
-          //往数据中push promise操作
-          //一个一个取出图片数组的临时地址
-          let item = params.images[i];
-          if (item[0] == 'c') {
-            continue
-          }
-          promiseArr.push(new Promise((reslove, reject) => {
-            //一个一个取出图片数组的临时地址
-            wx.cloud.uploadFile({
-              cloudPath: cloudPath[i], //上传至云端的路径
-              filePath: item, //小程序临时文件路径
-              success: res => {
-                //执行成功的吧云存储的地址一个一个push进去
-                UploadImgs.push(res.fileID);
-                //如果执行成功，就执行成功的回调函数
-                reslove();
-                wx.hideLoading();
-                wx.showToast({
-                  title: '上传成功',
-                });
-              },
-              fail: res => {
-                wx.hideLoading()
-                wx.showToast({
-                  title: '上传失败',
-                })
-              }
-            })
-          }))
+      util.showLoading('上传中')
+      //若有更换图片则上传新图片，删除原来的云储存图片, 最后修改数据库
 
-        }
-        Promise.all(promiseArr).then(res => { //等promose数组都做完后做then方法
-          var cnt = 0
-          for (var i = 0; i < params.images.length; i++) {
-            let item = params.images[i]
-            if (item[0] == 'c') {
-              continue
-            } else {
-              params.images.splice(i, 1, UploadImgs[cnt])
-              cnt++
-            }
-          }
-          wx.cloud.callFunction({
-              name: 'dbUpdate',
-              data: {
-                table: 'notices',
-                _id: notice._id,
-                formData: params,
-                set: true
-              }
-            })
-            .then(res => {
-              wx.hideLoading()
-              if (res.result.success) {
-                //返回上一页
-                setTimeout(() => {
-                  wx.navigateBack()
-                }, 1600)
-              } else {
-                util.showToast('数据提交失败', 'error', 1500)
-              }
-            })
-            .catch(e => {
-              util.showToast('数据提交失败', 'error', 1500)
-            })
-        })
+      const oldCoverImg = that.data.oldCoverImg
+      const oldImages = that.data.oldImages
+      var proList = []
+      var delFileIDs = []
 
-
-      } else {
-        //否则直接更新数据库
-        wx.cloud.callFunction({
-            name: 'dbUpdate',
-            data: {
-              table: 'notices',
-              _id: notice._id,
-              formData: params,
-              set: true
-            }
+      if (oldCoverImg) { //有更换封面
+        util.showLoading('上传图片中')
+        //上传封面
+        proList.push(
+          wx.cloud.uploadFile({
+            cloudPath: that.getRandomPath(params.coverImg),
+            filePath: params.coverImg
           })
-          .then(res => {
-            wx.hideLoading()
-            if (res.result.success) {
-              util.showToast('保存成功', 'success', 1500)
-              //返回上一页
-              setTimeout(() => {
-                wx.navigateBack()
-              }, 1600);
-            } else {
-              util.showToast('数据提交失败', 'error', 1500)
-
-            }
-          })
-          .catch(e => {
-            util.showToast('数据提交失败', 'error', 1500)
-          })
+        )
+        //旧封面id
+        delFileIDs.push(oldCoverImg)
       }
+
+      var newImagesIndexList = [] //需要保存新url的坐标
+      if (oldImages.length) { //其他图片若有变化
+        //找出需要上传的
+        for (let i = 0; i < notice.images.length; i++) {
+          const img = notice.images[i];
+          if (!oldImages.includes(img)) {
+            proList.push(
+              wx.cloud.uploadFile({
+                cloudPath: that.getRandomPath(img),
+                filePath: img
+              })
+            )
+            // 保存在notice.images的坐标，用于接下来更新url
+            newImagesIndexList.push(i)
+          }
+        }
+        //找出需要删除的
+        for (let i = 0; i < oldImages.length; i++) {
+          const img = oldImages[i];
+          if (!notice.images.includes(img)) {
+            //需要删除的id
+            delFileIDs.push(img)
+          }
+        }
+      }
+
+      // 按需执行删除图片
+      if (delFileIDs.length) {
+        proList.push(
+          wx.cloud.deleteFile({
+            fileList: delFileIDs,
+          })
+        )
+      }
+
+      //等待上传和删除完成
+      Promise.all(proList).then(res => {
+        var resIndex = 0
+
+        //按需修改为新封面url
+        if (oldCoverImg) {
+          notice.coverImg = res[resIndex].fileID
+          resIndex += 1
+        }
+
+        //按需修改为新url
+        if (newImagesIndexList.length) {
+          for (let i = 0; i < newImagesIndexList.length; i++) {
+            const newImagesIndex = newImagesIndexList[i];
+            notice.images[newImagesIndex] = res[resIndex].fileID
+            resIndex += 1
+          }
+        }
+
+        util.showLoading('上传公告中')
+        //更新数据库
+        wx.cloud.callFunction({
+          name: 'dbUpdate',
+          data: {
+            table: 'notices',
+            _id: notice._id,
+            formData: notice,
+            set: true
+          }
+        }).then(res => {
+          wx.hideLoading()
+          if (res.result.success) {
+            util.showToast('保存成功', 'success', 1500)
+            //返回上一页
+            setTimeout(() => {
+              wx.navigateBack()
+            }, 1500);
+          } else {
+            console.error(res.result)
+            util.showToast('保存失败', 'error', 1500)
+          }
+        }).catch(e => {
+          wx.hideLoading()
+          console.error(e)
+          util.showToast('保存失败', 'error', 1500)
+        })
+      }).catch(e => {
+        wx.hideLoading()
+        console.error(e)
+        util.showToast('图片上传失败', 'error', 1500)
+      })
     }
   },
   initValidate() { //表单验证规则和提示语
@@ -321,17 +315,23 @@ Page({
       coverImg: {
         required: true
       },
-      date: {
+      images: {
         required: true
       },
       org: {
         required: true
       },
-      images: {
+      type: {
         required: true
-      }
+      },
     }
     const messages = {
+      type: {
+        required: '请选择发布地区',
+      },
+      org: {
+        required: '请选择公告来源',
+      },
       title: {
         required: '请输入公告标题'
       },
@@ -341,16 +341,10 @@ Page({
       coverImg: {
         required: '请添加公告封面'
       },
-      date: {
-        required: '请添加时间'
-      },
       images: {
         required: '请添加公告图片'
       },
-      org: {
-        required: '请添加发布者'
-      }
     }
     this.WxValidate = new WxValidate(rules, messages)
-  }
+  },
 })

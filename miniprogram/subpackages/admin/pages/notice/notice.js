@@ -176,7 +176,7 @@ Page({
     var notice = that.data.notices[index]
     const identity = app.globalData.identity
 
-    if (identity !== 'superAdmin') {
+    if (identity.type !== 'superAdmin') {
       if (identity.cID !== notice.orgID) {
         util.showToast('您没有该公告的编辑权限')
         return

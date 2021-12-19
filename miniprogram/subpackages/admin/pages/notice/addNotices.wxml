@@ -3,7 +3,7 @@
     <view slot="content">添加公告</view>
   </cu-custom>
   <view class="bg-white margin-lg shadow-warp radius">
-    <form catchsubmit="editNoticesSubmit">
+    <form catchsubmit="addNoticesSubmit">
 
       <view class="cu-form-group">
         <view class="title text-bold">公告标题</view>
@@ -47,9 +47,9 @@
 
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="viewcoverImage" data-url="{{form.coverImg}}">
+          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="viewCoverImage" data-url="{{form.coverImg}}">
             <image src='{{form.coverImg}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="delcoverImg">
+            <view class="cu-tag bg-red" catchtap="delCoverImg">
               <text class="cuIcon-close"></text>
             </view>
           </view>
