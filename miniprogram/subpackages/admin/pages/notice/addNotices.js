@@ -197,7 +197,7 @@ Page({
         proList.push(
           wx.cloud.uploadFile({
             cloudPath: that.getRandomPath(img),
-            filePath: params.coverImg
+            filePath: img
           })
         )
       })

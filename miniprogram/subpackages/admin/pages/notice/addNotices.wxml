@@ -32,12 +32,12 @@
         </picker>
         <view wx:else class="margin-right-sm text-black">{{form.type}}</view>
       </view>
-      <view class="cu-form-group">
+      <view class="my-textarea">
         <view class="title text-bold">公告内容</view>
-        <input name="content" value="{{form.content}}" class="text-right" placeholder="输入内容"></input>
+        <textarea maxlength="300" name="content" value="{{form.content}}" placeholder="输入内容..."></textarea>
       </view>
 
-      <view class="cu-bar bg-white margin-top">
+      <view class="cu-bar bg-white">
         <view class="action text-bold">
           公告封面
         </view>

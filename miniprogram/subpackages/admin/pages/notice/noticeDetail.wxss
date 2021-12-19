@@ -2,3 +2,10 @@
 page {
   background-color: white;
 }
+
+.my-content {
+  color: #444444;
+  font-size: 1rem;
+  text-indent: 1rem;
+  padding: 1rpx
+}

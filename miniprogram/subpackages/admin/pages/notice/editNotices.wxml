@@ -25,7 +25,7 @@
         <input name="org" value="{{notice.org}}" class="text-right" placeholder="输入发布者"></input>
       </view>
 
-      <view class="cu-bar bg-white margin-top">
+      <view class="cu-bar bg-white">
         <view class="action text-bold">
           公告封面
         </view>
