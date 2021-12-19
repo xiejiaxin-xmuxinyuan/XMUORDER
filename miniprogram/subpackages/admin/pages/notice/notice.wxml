@@ -5,8 +5,7 @@
   </cu-custom>
   <scroll-view scroll-x class="bg-white nav">
     <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}"
-        wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
+      <view class="cu-item flex-sub {{item===noticeCurrType?'text-orange cur':''}}" wx:for="{{noticeTypes}}" wx:key="*this" bindtap="noticeTypeSelect" data-name="{{item}}">
         {{item}}
       </view>
     </view>
@@ -16,24 +15,30 @@
   <!-- 公告内容 -->
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
-      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
-        <view class="title">
+      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-index="{{index}}" catchtap="showNoticeDetail">
+        <view class="my-title">
           <view class="text-cut">
             <text class="cuIcon-top" wx:if="{{item.top}}"></text>
             {{item.title}}
-              <text class="cuIcon-close fr" style="font-size: 5vw;" catchtap="delNotices" data-index="{{index}}"></text>
+          </view>
+          <view class="my-btn">
+            <button class="cu-btn">
+              <text class="cuIcon-write" catchtap="editNotices" data-index="{{index}}"></text>
+            </button>
+            <button class="cu-btn">
+              <text class="cuIcon-close" catchtap="delNotice" data-index="{{index}}"></text>
+            </button>
           </view>
         </view>
         <view class="content">
-          <image wx:if="{{item.coverImg}}" src="{{item.coverImg}}" mode="aspectFill" ></image>
-          <view class="desc">
-            <view class="text-content" style="width: 100%;">
+          <image wx:if="{{item.coverImg}}" src="{{item.coverImg}}" mode="aspectFill"></image>
+          <view class="desc" style="margin:0 15rpx">
+            <view class="my-content">
               {{item.content}}
             </view>
-            <view class="margin-top-sm">
+            <view class="flex justify-between" style="margin-top: 15rpx;">
               <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
               <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
-              <text class="cuIcon-repairfill fr" style="position: relative;top: 50%;" catchtap="editNotices" data-index="{{index}}"></text>
             </view>
           </view>
         </view>
@@ -42,10 +47,23 @@
   </view>
 </view>
 
-<view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+<view class="my-bar">
+  <block wx:if="{{noticeTotalPage>1&&notices.length}}">
+    <view class="page-bar">
+      <button catchtap="noticeChangePage" class="cu-btn line-black  round shadow">上一页</button>
+      <text class="text-lg margin-sm">{{noticeCurrPage}} / {{noticeTotalPage}}</text>
+      <button catchtap="noticeChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
+    </view>
+    <view class="add-btn" catchtap="toAddNotices">
+      <text class="cuIcon-edit"></text>
+    </view>
+  </block>
+  <view wx:else class="add-btn"  catchtap="toAddNotices" style="margin-right: 42rpx; margin-left: auto;">
+    <text class="cuIcon-edit"></text>
+  </view>
 </view>
 
-<view style="font-size: 10vw;position: fixed;bottom: 10%;right: 5%;">
-  <text class="cuIcon-edit text-yellow bg-white round padding shadow" catchtap="toAddNotices"></text>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>

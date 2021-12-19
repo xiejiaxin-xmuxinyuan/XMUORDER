@@ -1,127 +1,133 @@
-// subpackages/admin/pages/notice/editNotices.js
 import WxValidate from '../../../../utils/WxValidate.js'
-const app = getApp()
+const util = require('../../../../utils/util.js')
 const db = wx.cloud.database()
+const app = getApp()
 var that
 
 Page({
   data: {
-    isonShow : false,
-    notices: [],
     maxImgnum: 5,
     imageNum: 0,
-    picker: ['公共', '翔安', '思明','海韵'],
-    org_picker: ['公共', '翔安', '思明','海韵', '点餐项目组'],
+    identity: {},
+    typePicker: ['公共', '翔安', '思明', '海韵'],
+    orgPicker: [],
+    typePickerIndex: null,
+    orgPickerIndex: null,
     form: {
       title: '',
       content: '',
       coverImg: '',
-      date:'',
-      org:'',
+      date: '',
+      org: '',
       images: [],
-      type:'',
-      hidden : '',
-      icon : '',
-      top : '',
-      pickerIndex1: null,
-      pickerIndex2: null
+      type: '',
+      hidden: false,
+      top: false,
     }
   },
   onLoad: function (_options) {
     that = this
     that.initValidate()
-    var notices = app.globalData.notices
-    var imageNum = that.data.imageNum
-    that.setData({
-      notices: notices,
-      imageNum: imageNum,
-      'form.hidden' : false,
-      'form.icon' : true,
-      'form.top' : true
-    })
-  },
-  RegionPickerChange : function (e, setIndex = -1) {
-    if (setIndex >= 0) {
-      var index = setIndex
-    } else {
-      var index = e.detail.value
-    }
-    var type = that.data.picker[index]
-    that.setData({
-      ['form.pickerIndex1']: index,
-      'form.type' : type
-    })
+    const identity = app.globalData.identity
+    var canteens = app.globalData.canteen
 
-  },
-  OriginPickerChange : function (e, setIndex = -1) {
-    if (setIndex >= 0) {
-      var index = setIndex
+    //按身份渲染
+    if (identity.type !== 'superAdmin') {
+      const addressToType = {
+        XA: '翔安',
+        SM: '思明',
+        HY: '海韵'
+      }
+      for (let i = 0; i < canteens.length; i++) {
+        const canteen = canteens[i]
+        if (canteen.cID === identity.cID) {
+          that.setData({
+            'form.org': canteen.name,
+            'form.type': addressToType[canteen.address],
+            identity
+          })
+          break
+        }
+      }
     } else {
-      var index = e.detail.value
+      var orgPicker = ['点餐项目组']
+      canteens.forEach(canteen => {
+        orgPicker.push(canteen.name)
+      })
+      that.setData({
+        orgPicker,
+        identity
+      })
     }
-    var org = that.data.org_picker[index]
-    that.setData({
-      ['form.pickerIndex2']: index,
-      'form.org' : org
-    })
-
   },
-  ChoosecoverImage: function (_e) {
+  onSwitchChange: function (e) {
+    that.setData({
+      'form.top': e.detail.value
+    })
+  },
+  typePickerChange: function (e) {
+    var index = e.detail.value
+    var type = that.data.typePicker[index]
+    that.setData({
+      typePickerIndex: index,
+      'form.type': type
+    })
+  },
+  orgPickerChange: function (e) {
+    var index = e.detail.value
+    var org = that.data.orgPicker[index]
+    that.setData({
+      orgPickerIndex: index,
+      'form.org': org
+    })
+  },
+  chooseCoverImage: function (e) {
     wx.chooseImage({
         count: 1, //默认9
         sizeType: 'compressed'
       })
       .then(res => {
-        // TODO: 使用canvas进行压缩
         that.setData({
-          ['form.coverImg']: res.tempFilePaths[0],
+          'form.coverImg': res.tempFilePaths[0],
         })
       })
-      .catch(_res => {
-        wx.showToast({
-          title: '图片选择取消',
-          icon: 'none',
-          duration: 1000
-        })
+      .catch(error => {
+        util.showToast('图片选择取消')
       })
   },
-  ChooseImage(){
+  chooseImage: function (e) {
+    const maxImgnum = that.data.maxImgnum
     var imageNum = that.data.imageNum
     var form = that.data.form
     wx.chooseImage({
-        count: 1, //默认9
+        count: maxImgnum - imageNum, //默认9
         sizeType: 'compressed'
       })
       .then(res => {
-        // TODO: 使用canvas进行压缩
-        if (this.data.form.images.length != 0) {
-          this.setData({
-            'form.images': this.data.form.images.concat(res.tempFilePaths),
-            imageNum: that.data.imageNum
+        if (form.images.length != 0) {
+          that.setData({
+            'form.images': form.images.concat(res.tempFilePaths),
+            imageNum: imageNum + res.tempFilePaths.length
           })
         } else {
-          this.setData({
+          that.setData({
             'form.images': res.tempFilePaths,
-            imageNum: that.data.imageNum
+            imageNum: imageNum + res.tempFilePaths.length
           })
         }
       })
-      .catch(_err => {
-        wx.showToast({
-          title: '图片选择取消',
-          icon: 'none',
-          duration: 1000
-        })
+      .catch(err => {
+        util.showToast('图片选择取消')
       })
   },
-  ViewImage: function (e) {
+  viewImage: function (e) {
     var id = e.currentTarget.dataset.index
     wx.previewImage({
       urls: [that.data.form.images[id]],
     });
   },
-  DelImg: function (e) {
-    var id = e.currentTarget.dataset.index
+  delImg: function (e) {
+    var index = e.currentTarget.dataset.index
     var form = that.data.form
     var imageNum = that.data.imageNum
     wx.showModal({
@@ -131,22 +137,22 @@ Page({
       confirmText: '是',
       success: res => {
         if (res.confirm) {
-          that.data.form.images.splice(id, 1)
-          that.data.imageNum -= 1
+          form.images.splice(index, 1)
+          imageNum -= 1
           that.setData({
-            form: that.data.form,
-            imageNum: that.data.imageNum
+            'form.images': form.images,
+            imageNum: imageNum
           })
         }
       }
     })
   },
-  ViewcoverImage: function (_e) {
+  viewCoverImage: function (e) {
     wx.previewImage({
       urls: [that.data.form.coverImg],
     });
   },
-  DelcoverImg: function (_e) {
+  delCoverImg: function (e) {
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -161,153 +167,92 @@ Page({
       }
     })
   },
-  editNoticesSubmit: function (e) {
+  getRandomPath: (img) => { //储存路径：公告图片/时间戳_4位随机数.图片格式
+    var date = new Date()
+    const randomStr = date.getTime() + '_' + Math.random().toString(36).slice(-4)
+    return '公告图片/' + randomStr + img.match('.[^.]+?$')[0]
+  },
+  addNoticesSubmit: function (e) {
     let form = that.data.form
-    const params = Object.assign(form, e.detail.value)
+    var params = Object.assign(form, e.detail.value)
+
     //表单验证
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
-      wx.showToast({
-        title: error.msg,
-        icon: 'none',
-        duration: 1000
-      })
+      util.showToast(error.msg)
     } else {
-      wx.showLoading({
-        title: '上传中',
-        mask: true
-      })
-      var timestamp = Date.parse(new Date());
-      var date = new Date(timestamp);
-      //获取年份  
-      var year =date.getFullYear();
-      //获取月份  
-      var month = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
-      //获取当日日期 
-      var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(); 
-      var date = year.toString() + '-' + month.toString() + '-' + day.toString()
-      //上传图片
-      let picker = that.data.picker
-      let org_picker = that.data.org_picker
-      let type = picker[params.pickerIndex1]
-      let org = org_picker[params.pickerIndex2]
-      let cloudPath1 = '公告图片/'
-      let imgtype1 = '封面'
-      
-      //储存路径：公告图片/地区名/_/时间戳.图片格式
-      cloudPath1 = cloudPath1 + type + '/' +  imgtype1 + '/'  + 
-        new Date().getTime() + params.coverImg.match('.[^.]+?$')[0]
-        wx.cloud.uploadFile({
-            cloudPath: cloudPath1,
-            filePath: params.coverImg, // 文件路径
-          })
-          .then(res => {
-            const coverImgID = res.fileID
-            let cloudPath2 = '公告图片/'
-            let imgtype2 = '内容'
-            const images = params.images
-            const cloudPath = []
-            //储存路径：公告图片/地区名/内容/时间戳_i.图片格式
-            images.forEach(function( _item, i) {
-              cloudPath.push( cloudPath2 + type + '/' +  imgtype2 + '/'  + 
-              new Date().getTime() + '_'  + i + images[i].match('.[^.]+?$')[0] )
-            })
-            const imagesPath = []
-            var UploadImgs = [];
-            let promiseArr = [];//创建一个数组来存储一会的promise操作
-            for(var i =0; i < images.length ;i++) {
-              //往数据中push promise操作
-              promiseArr.push(new Promise((reslove,reject)=>{
-                //一个一个取出图片数组的临时地址
-                let item = images[i];
-                wx.cloud.uploadFile({
-                  cloudPath: cloudPath[i],//上传至云端的路径
-                  filePath: item,//小程序临时文件路径
-                  success: res =>{
-                    //执行成功的吧云存储的地址一个一个push进去
-                    UploadImgs.push(res.fileID);
-                    //如果执行成功，就执行成功的回调函数
-                    reslove();
-                      wx.hideLoading();
-                      wx.showToast({
-                        title: '上传成功',
-                      });
-                  },
-                  fail: res=>{
-                    wx.hideLoading()
-                    wx.showToast({
-                      title: '上传失败',
-                    })
-                  }
-                  })
-              }))
-            }
-            Promise.all(promiseArr).then(res=> { //等promose数组都做完后做then方法
-              var newForm = {
-                title: params.title,
-                content: params.content,
-                coverImg: coverImgID,
-                date: date,
-                org: org,
-                images: UploadImgs,
-                type: type,
-                hidden : params.hidden,
-                icon: params.icon,
-                top : params.top
-              }
-              db.collection('notices').add({
-                data: newForm
-               })
-               .then(_res => {
-                wx.hideLoading()
-                wx.showToast({
-                  title: '提交成功',
-                  icon: 'success',
-                  duration: 1500
-                })
-                // 返回上一页
-                setTimeout(() => {
-                  wx.navigateBack()
-                }, 1600);
-              })
-              .catch(_error => {
+      //先传图片
+      util.showLoading('图片上传中')
 
-                wx.hideLoading()
-                wx.showToast({
-                  title: '数据提交失败',
-                  icon: 'error',
-                  duration: 2000
-                })
-              })
-            })
+      var proList = []
+      // 封面
+      proList.push(
+        wx.cloud.uploadFile({
+          cloudPath: that.getRandomPath(params.coverImg),
+          filePath: params.coverImg
+        })
+      )
+      //其他图片
+      params.images.forEach(img => {
+        proList.push(
+          wx.cloud.uploadFile({
+            cloudPath: that.getRandomPath(img),
+            filePath: img
           })
-          .catch(_error => {
-            wx.hideLoading()
-            wx.showToast({
-              title: '数据提交失败',
-              icon: 'error',
-              duration: 2000
-            })
-          })
+        )
+      })
+      Promise.all(proList).then(res => {
+        util.showLoading('上传公告中')
+        var images = []
+        for (let i = 1; i < res.length; i++) {
+          const imgRes = res[i];
+          images.push(imgRes.fileID)
+        }
+        //图片上传成功再提交数据
+
+        // 日期
+        let date = new Date()
+        let year = date.getFullYear()
+        let month = (date.getMonth() + 1).toString().padStart(2, '0')
+        let day = date.getDate().toString().padStart(2, '0')
+        const dateStr = year + '-' + month + '-' + day
+
+        //构建表单
+        var newForm = Object.assign(params, {
+          images: images,
+          coverImg: res[0].fileID,
+          date: dateStr,
+        })
+
+        // 权限（cID和orgID相同的才能编辑）
+        const identity = that.data.identity
+        if (identity.type !== 'superAdmin') {
+          newForm.orgID = identity.cID
+        }
+
+        db.collection('notices').add({
+          data: newForm
+        }).then(res => {
+          wx.hideLoading()
+          util.showToast('提交成功', 'success', 1500)
+          // 返回上一页
+          setTimeout(() => {
+            wx.navigateBack()
+          }, 1600);
+        }).catch(error => {
+          console.error(error)
+          wx.hideLoading()
+          util.showToast('公告上传失败', 'error', 2000)
+        })
+      }).catch(error => {
+        console.error(error)
+        wx.hideLoading()
+        util.showToast('图片上传失败', 'error', 2000)
+      })
     }
-  },
-  showT: (title, icon = 'none', duration = 1000) => {
-    wx.showToast({
-      title: title,
-      icon: icon,
-      duration: duration
-    })
   },
   initValidate() { //表单验证规则和提示语
     const rules = {
-      pickerIndex1: {
-        required: true,
-        digits: true
-      },
-      pickerIndex2: {
-        required: true,
-        digits: true
-      },
       title: {
         required: true
       },
@@ -317,19 +262,22 @@ Page({
       coverImg: {
         required: true
       },
-      images:{
+      images: {
         required: true
       },
-
+      org: {
+        required: true
+      },
+      type: {
+        required: true
+      },
     }
     const messages = {
-      pickerIndex1: {
+      type: {
         required: '请选择发布地区',
-        digits: '请选择发布地区'
       },
-      pickerIndex2: {
-        required: '请选择发布来源',
-        digits: '请选择发布来源'
+      org: {
+        required: '请选择公告来源',
       },
       title: {
         required: '请输入公告标题'
@@ -343,7 +291,6 @@ Page({
       images: {
         required: '请添加公告图片'
       },
-
     }
     this.WxValidate = new WxValidate(rules, messages)
   }

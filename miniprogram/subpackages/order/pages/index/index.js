@@ -4,15 +4,6 @@ const db = wx.cloud.database()
 const util = require('../../../../utils/util.js')
 var that
 
-function userNoticesSort(a, b) { //辅助函数 用于sort排序
-  if (a.top !== b.top) {
-    return a.top > b.top ? -1 : 1;
-  } else if (a.date !== b.date) {
-    return a.date > b.date ? -1 : 1;
-  } else {
-    return 1;
-  }
-}
 
 Page({
   /**
@@ -29,7 +20,9 @@ Page({
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
     noticeCurrType: "公共",
-    noticeCurrTypeNum: 0,
+    noticeCurrPage: 1,
+    noticeTotalPage: 0,
+    noticeTotalCount: 0,
     intCurTime: null,
     isLoaded: false
   },
@@ -43,30 +36,14 @@ Page({
       return
     }
 
-    util.showLoading('获取信息中')
-    var p1 = db.collection("canteen").get()
-    var p2 = that.getUserNotices()
+    util.showLoading('加载中')
+    var p0 = db.collection("canteen").get()
+    var p1 = that.getUserNotices()
 
-    Promise.all([p1, p2]).then(res => {
+    Promise.all([p0, p1]).then(res => {
       wx.hideLoading()
-      var notices = res[1]
-      var noticeCurrTypeNum = 0
-      notices.forEach(element => {
-        if (element.type === that.data.noticeCurrType) {
-          noticeCurrTypeNum++
-        }
-      })
-
       var canteens = res[0].data
-      that.setData({
-        notices: notices, //公告数据
-        noticeCurrTypeNum: noticeCurrTypeNum,
-        name: app.globalData.name,
-        nickName: app.globalData.nickName,
-        phone: app.globalData.phone,
-        address: app.globalData.address,
-        identity: app.globalData.identity
-      })
+
 
       //当前时间
       let date = new Date()
@@ -85,10 +62,17 @@ Page({
       })
 
       app.globalData.canteens = canteens //同步到全局变量
+
       that.setData({
         canteens: canteens, //餐厅数据
         intCurTime: intCurTime, //当前int格式时间
-        isLoaded: true // 表示加载完毕
+        isLoaded: true, // 表示加载完毕
+        //用户信息
+        name: app.globalData.name,
+        nickName: app.globalData.nickName,
+        phone: app.globalData.phone,
+        address: app.globalData.address,
+        identity: app.globalData.identity
       })
     })
   },
@@ -109,7 +93,16 @@ Page({
   },
   onNavChange: function (e) {
     const pageCurr = e.currentTarget.dataset.cur
+
     if (pageCurr !== that.data.pageCurr) {
+      //再次切换到info时进行刷新
+      if (pageCurr === 'info') {
+        util.showLoading('加载中')
+        that.getUserNotices().then(() => {
+          wx.hideLoading()
+        })
+      }
+
       that.setData({
         pageCurr
       })
@@ -117,16 +110,13 @@ Page({
   },
   noticeTypeSelect: function (e) {
     const noticeCurrType = e.currentTarget.dataset.name
-    var noticeCurrTypeNum = 0
-    var notices = that.data.notices
-    notices.forEach(element => {
-      if (element.type === noticeCurrType) {
-        noticeCurrTypeNum++
-      }
-    })
     that.setData({
       noticeCurrType: noticeCurrType,
-      noticeCurrTypeNum: noticeCurrTypeNum
+      notices: []
+    })
+    util.showLoading('加载中')
+    that.getUserNotices().then(() => {
+      wx.hideLoading()
     })
   },
   toCanteen: function (e) {
@@ -147,7 +137,7 @@ Page({
         if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
           that.setData({
             intCurTime,
-            ['canteens['+ index +'].inBusiness']: true
+            ['canteens[' + index + '].inBusiness']: true
           })
           wx.navigateTo({
             url: '../canteen/canteen?index=' + index,
@@ -159,7 +149,7 @@ Page({
       util.showToast('不在营业时间', 'error')
       that.setData({
         intCurTime,
-        ['canteens['+ index +'].inBusiness']: false
+        ['canteens[' + index + '].inBusiness']: false
       })
     }
   },
@@ -186,64 +176,84 @@ Page({
     that.startPageX = e.changedTouches[0].pageX;
   },
   infoTouchEnd: function (e) {
-    const moveX = e.changedTouches[0].pageX - that.startPageX;
-    if (Math.abs(moveX) >= 150) {
-      let noticeCurrType = that.data.noticeCurrType
-      let noticeTypes = that.data.noticeTypes
-      let index = -1
-      for (let i = 0; i < noticeTypes.length; i++) {
-        if (noticeTypes[i] === noticeCurrType) {
-          index = i
-          break
-        }
-      }
-      let newIndex = index
-      let maxPage = that.data.noticeTypes.length - 1;
-      if (moveX < 0) {
-        newIndex = index === maxPage ? 0 : index + 1
-      } else {
-        newIndex = index === 0 ? maxPage : index - 1
-      }
-
-      var newType = that.data.noticeTypes[newIndex]
-      var noticeCurrTypeNum = 0
-      var notices = that.data.notices
-      notices.forEach(element => {
-        if (element.type === newType) {
-          noticeCurrTypeNum++
-        }
-      })
-
-      that.setData({
-        noticeCurrType: newType,
-        noticeCurrTypeNum: noticeCurrTypeNum
-      })
-    }
-  },
-  getUserNotices: async function () {
-    const countResult = await db.collection('notices').where({
-      hidden: false
-    }).count()
-
-    const total = countResult.total
-    // 计算需分几次取
-    const MAX_LIMIT = 20
-    const batchTimes = Math.ceil(total / MAX_LIMIT)
-    const tasks = []
-    for (let i = 0; i < batchTimes; i++) {
-      let promise = db.collection('notices').where({
-        hidden: false
-      }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
-      tasks.push(promise)
+    const moveX = e.changedTouches[0].pageX - that.startPageX
+    if (Math.abs(moveX) < 150) { //小于150不触发
+      return
     }
 
-    const res = (await Promise.all(tasks)).reduce((acc, cur) => {
-      return {
-        notices: acc.data.concat(cur.data)
+    //获取滑动后的类型
+    const noticeCurrType = that.data.noticeCurrType
+    const noticeTypes = that.data.noticeTypes
+    var index = -1
+    for (let i = 0; i < noticeTypes.length; i++) {
+      if (noticeTypes[i] === noticeCurrType) {
+        index = i
+        break
       }
+    }
+    var newIndex = index
+    var maxPage = that.data.noticeTypes.length - 1;
+    if (moveX < 0) {
+      newIndex = index === maxPage ? 0 : index + 1
+    } else {
+      newIndex = index === 0 ? maxPage : index - 1
+    }
+    var newType = that.data.noticeTypes[newIndex]
+    that.setData({
+      noticeCurrType: newType,
+      notices: []
     })
-    res.data.sort(userNoticesSort)
-    return res.data //返回排序后数据
+    //加载当前类型的公告
+    util.showLoading('加载中')
+    that.getUserNotices().then(() => {
+      wx.hideLoading()
+    })
+  },
+  getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
+    return new Promise(async (resolve, reject) => {
+      const noticeCurrType = that.data.noticeCurrType
+
+      const countResult = await db.collection('notices').where({
+        type: noticeCurrType,
+        hidden: false
+      }).count()
+
+      const noticeTotalCount = countResult.total
+      const noticeTotalPage = noticeTotalCount === 0 ? 0 : noticeTotalCount <= pageSize ? 1 : Math.ceil(noticeTotalCount / pageSize)
+
+      if (noticeTotalPage === 0) { //如果没有任何记录
+        that.setData({
+          notices: [],
+          noticeCurrPage: 1,
+          noticeTotalPage: 0,
+          noticeTotalCount: 0,
+        })
+        resolve()
+        return
+      }
+
+      if (noticeCurrPage > noticeTotalPage) {
+        noticeCurrPage = noticeTotalPage
+      }
+
+      db.collection('notices').where({
+          type: noticeCurrType,
+          hidden: false
+        })
+        .orderBy('top', 'desc')
+        .orderBy('date', 'desc')
+        .skip((noticeCurrPage - 1) * pageSize).limit(pageSize)
+        .get().then(res => {
+          that.setData({
+            notices: res.data,
+            noticeCurrPage: noticeCurrPage,
+            noticeTotalPage: noticeTotalPage,
+            noticeTotalCount: noticeTotalCount,
+          })
+          resolve()
+          return
+        })
+    })
   },
   toRecord: function (e) {
     wx.navigateTo({
@@ -300,14 +310,38 @@ Page({
         util.showToast('更新信息失败', 'error', 2000)
       })
   },
+  noticeChangePage: function (e) {
+    const currPage = that.data.noticeCurrPage
+    const totalPage = that.data.noticeTotalPage
+
+    if ('add' in e.currentTarget.dataset) { //增加
+      if (currPage <= totalPage - 1) {
+        util.showLoading('加载中')
+        that.getUserNotices(currPage + 1).then(() => {
+          wx.hideLoading()
+        })
+      } else {
+        util.showToast('已经是最后一页啦')
+      }
+    } else { //减少
+      if (currPage > 1) {
+        util.showLoading('加载中')
+        that.getUserNotices(currPage - 1).then(() => {
+          wx.hideLoading()
+        })
+      } else {
+        util.showToast('已经是第一页啦')
+      }
+    }
+  },
   formatDate: function (inputTime) { //该函数用于格式化时间戳
     var date = new Date(inputTime);
-    let year = date.getFullYear()
-    let month = (date.getMonth() + 1).toString().padStart(2, '0')
-    let day = date.getDate().toString().padStart(2, '0')
+    // let year = date.getFullYear()
+    // let month = (date.getMonth() + 1).toString().padStart(2, '0')
+    // let day = date.getDate().toString().padStart(2, '0')
     let hour = date.getHours().toString().padStart(2, '0')
     let min = date.getMinutes().toString().padStart(2, '0')
-    let sec = date.getSeconds().toString().padStart(2, '0')
+    // let sec = date.getSeconds().toString().padStart(2, '0')
     return hour + ':' + min;
   }
 })

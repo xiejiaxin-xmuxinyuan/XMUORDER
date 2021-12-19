@@ -10,7 +10,7 @@
       </view>
     </view>
   </scroll-view>
-  <view wx:if="{{!(noticeCurrTypeNum)}}" class="text-center margin-xl text-gray">本分类暂无公告</view>
+  <view wx:if="{{!(notices.length)}}" class="text-center margin-xl text-gray">本分类暂无公告</view>
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
       <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-notice="{{item}}" catchtap="showNoticeDetail">
@@ -22,17 +22,24 @@
         </view>
         <view class="content">
           <image wx:if="{{ item.coverImg }}" src="{{ item.coverImg }}" mode="aspectFill"></image>
-          <view class="desc">
-            <view class="text-content" style="width: 100%;">
+          <view class="desc" style="margin:0 15rpx">
+            <view class="text-content flex align-center justify-center" style="width: 100%;">
               {{item.content}}
             </view>
-            <view class="margin-top-sm flex justify-between">
+            <view class="flex justify-between" style="margin-top: 15rpx;">
               <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
               <view class="cu-tag bg-olive light lg round">{{item.org}}</view>
             </view>
           </view>
         </view>
       </view>
+    </view>
+  </view>
+  <view style="position: fixed; bottom: 150rpx;width: 100%;">
+    <view wx:if="{{noticeTotalPage>1&&notices.length}}" class="page-bar">
+      <button catchtap="noticeChangePage" class="cu-btn line-black  round shadow">上一页</button>
+      <text class="text-lg margin-sm">{{noticeCurrPage}} / {{noticeTotalPage}}</text>
+      <button catchtap="noticeChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
     </view>
   </view>
 

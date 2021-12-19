@@ -13,7 +13,7 @@
   box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
 }
 
-.update-btn{
+.update-btn {
   position: absolute;
   top: 30rpx;
   left: 30rpx;
@@ -74,4 +74,17 @@
 
 .img-disable {
   filter: grayscale(0.7);
+}
+
+.page-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  padding: 15rpx 50rpx;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 5000rpx;
+  border: 5rpx #eee solid;
+  width: 75%;
 }

@@ -176,7 +176,7 @@
     </view>
     <view>管理</view>
   </view>
-  <block wx:if="{{user.identity.cID}}">
+  <block wx:if="{{user.identity.type!=='superAdmin'}}">
     <view style="color: {{pageCurr === 'order' ? 'rgb(13, 155, 222);' : ';'}}" class="action text" bindtap="onNavChange" data-cur="order">
       <view class='cuIcon-formfill'>
       </view>
