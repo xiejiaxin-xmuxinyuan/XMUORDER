@@ -1,11 +1,11 @@
+<!--subpackages/admin/pages/notice/noticeDetail.wxml-->
 <!--公告详情-->
 <cu-custom bgColor="bg-gradual-blue" isBack="true">
   <view slot="content">公告详情</view>
 </cu-custom>
 
-<view wx:if="{{notice.coverImg}}">
-  <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000"
-    duration="500">
+<view>
+  <swiper class="screen-swiper square-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
     <swiper-item wx:for="{{notice.images}}" wx:key="*this">
       <image src="{{item}}" mode="aspectFill"></image>
     </swiper-item>
@@ -19,10 +19,8 @@
     </view>
     <view class="content">
       <view class="desc">
-        <view style="color: #444444;font-size: 1rem; text-indent:1rem;"> 
-          {{notice.content}}
-        </view>
-        <view>
+        <view wx:for="{{content}}" class="my-content">
+          {{item}}
         </view>
         <view style="margin-left: auto;margin-top: 1em;">
           <view class="cu-tag bg-brown light round">{{notice.date}}</view>
@@ -31,4 +29,8 @@
       </view>
     </view>
   </view>
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>

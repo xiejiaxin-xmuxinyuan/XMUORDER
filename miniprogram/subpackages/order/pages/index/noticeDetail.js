@@ -1,21 +1,22 @@
-// pages/notice_detail/notice_detail.js
+// subpackages/admin/pages/notice/noticeDetail.js
 const app = getApp()
 var that
-const db = wx.cloud.database()
 
 Page({
   data: {
-    notice: {}
+    notice: {},
+    content: []
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
     that = this
+    const notice = JSON.parse(options.notice)
+    var content = notice.content.split('\n')
+
     //读取公告详情
     that.setData({
-      notice: app.globalData.notice
+      notice: notice,
+      content
     })
   }
 })

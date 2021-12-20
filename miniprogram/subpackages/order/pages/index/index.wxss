@@ -88,3 +88,15 @@
   border: 5rpx #eee solid;
   width: 75%;
 }
+
+.content .my-content {
+  font-size: 27rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
+  height: 130rpx;
+  width: 100%;
+  color: #666;
+}
