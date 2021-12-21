@@ -1,0 +1,16 @@
+<cu-custom bgColor="bg-black" isBack="{{true}}">
+  <view slot="content">图片裁剪</view>
+</cu-custom>
+
+<!-- 裁剪框 -->
+<canvas class="cropper" disable-scroll="true" bindtouchstart="cropperTouchStart" bindtouchmove="cropperTouchMove" bindtouchend="cropperTouchEnd" canvas-id="cropper" style="width: {{deviceWidth}}px; height: {{deviceHeight}}px;">
+</canvas>
+
+<!-- 重绘框 -->
+<canvas canvas-id="redraw" style="width: {{canvasW}}px;height: {{canvasH}}px;position: absolute;left: 40rem;"></canvas>
+
+<view class="cropper-btn">
+  <button class="cu-btn bg-gray shadow" bindtap="uploadTap"><text class="cuIcon-picfill"> 更换图片</text></button>
+  <text class="text-white">双指缩放图片</text>
+  <button class="cu-btn bg-gray shadow" bindtap="getCropperImage"><text class="cuIcon-roundcheckfill"> 裁剪保存</text></button>
+</view>
