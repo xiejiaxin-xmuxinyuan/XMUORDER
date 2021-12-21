@@ -182,35 +182,39 @@ Page({
       width = that.data.w
       height = that.data.h
 
+      const func = () => {
+        try {
+          const ctx = wx.createCanvasContext('redraw') // 用旧接口避坑
+          ctx.drawImage(src, imgLeft, imgTop, scaleWidth, scaleHeight)
+          ctx.draw(false, () => {
+            wx.canvasToTempFilePath({
+              canvasId: 'redraw',
+              x,
+              y,
+              width,
+              height,
+              fileType,
+              quality
+            }).then(res => {
+              const tmpPath = res.tempFilePath
+              resolve(tmpPath)
+              return
+            })
+          })
+        } catch (err) {
+          reject(err)
+          return
+        }
+      }
+
       // 保证重绘画布足够大
       that.setData({
-        canvasW: imgLeft + scaleWidth + 100,
-        canvasH: imgTop + scaleHeight + 100,
+        canvasW: Math.round(imgLeft + scaleWidth + 100),
+        canvasH: Math.round(imgTop + scaleHeight + 100),
+      }, () => {
+        //保证画布已重新渲染大小
+        setTimeout(func, 100);
       })
-
-
-      try {
-        const ctx = wx.createCanvasContext('redraw') // 用旧接口避坑
-        ctx.drawImage(src, imgLeft, imgTop, scaleWidth, scaleHeight)
-        ctx.draw(false, () => {
-          wx.canvasToTempFilePath({
-            canvasId: 'redraw',
-            x,
-            y,
-            width,
-            height,
-            fileType,
-            quality
-          }).then(res => {
-            const tmpPath = res.tempFilePath
-            resolve(tmpPath)
-            return
-          })
-        })
-      } catch (err) {
-        reject(err)
-        return
-      }
     })
   }
 })
