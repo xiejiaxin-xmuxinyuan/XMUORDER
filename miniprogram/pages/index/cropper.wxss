@@ -1,0 +1,22 @@
+page {
+  background-color: #333333;
+}
+
+.cropper {
+  background-color: #333333;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.cropper-btn {
+  width: 100%;
+  background-color: #333333;
+  position: absolute;
+  bottom: 0px;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
