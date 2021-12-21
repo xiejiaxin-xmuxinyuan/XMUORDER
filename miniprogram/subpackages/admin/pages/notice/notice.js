@@ -76,6 +76,15 @@ Page({
     var index0 = e.currentTarget.dataset.index
     var notice = that.data.notices[index0]
     var noticeCurrPage = that.data.noticeCurrPage
+
+    const identity = app.globalData.identity
+    if (identity.type !== 'superAdmin') {
+      if (identity.cID !== notice.orgID) {
+        util.showToast('您没有该公告的编辑权限')
+        return
+      }
+    }
+
     wx.showModal({
       title: '提示',
       content: '确认删除吗？',
