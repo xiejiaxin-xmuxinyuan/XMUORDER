@@ -84,11 +84,20 @@ Page({
   chooseCoverImage: function (e) {
     wx.chooseImage({
         count: 1, //默认9
-        sizeType: 'compressed'
+        sizeType: ['compressed']
       })
       .then(res => {
-        that.setData({
-          'form.coverImg': res.tempFilePaths[0],
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=480&h=360'
+        wx.navigateTo({
+          url: url,
+          events: {
+            saveImg: function (data) {
+              that.setData({
+                'form.coverImg': data.img,
+              })
+            }
+          }
         })
       })
       .catch(error => {
@@ -96,25 +105,33 @@ Page({
       })
   },
   chooseImage: function (e) {
-    const maxImgnum = that.data.maxImgnum
     var imageNum = that.data.imageNum
     var form = that.data.form
     wx.chooseImage({
-        count: maxImgnum - imageNum, //默认9
-        sizeType: 'compressed'
+        count: 1,
+        sizeType: ['compressed']
       })
       .then(res => {
-        if (form.images.length != 0) {
-          that.setData({
-            'form.images': form.images.concat(res.tempFilePaths),
-            imageNum: imageNum + res.tempFilePaths.length
-          })
-        } else {
-          that.setData({
-            'form.images': res.tempFilePaths,
-            imageNum: imageNum + res.tempFilePaths.length
-          })
-        }
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=600&h=300'
+        wx.navigateTo({
+          url: url,
+          events: { //回调
+            saveImg: function (data) {
+              if (form.images.length != 0) {
+                that.setData({
+                  'form.images': form.images.concat(data.img),
+                  imageNum: imageNum + 1
+                })
+              } else {
+                that.setData({
+                  'form.images': [data.img],
+                  imageNum: imageNum + 1
+                })
+              }
+            }
+          }
+        })
       })
       .catch(err => {
         util.showToast('图片选择取消')
@@ -292,6 +309,6 @@ Page({
         required: '请添加公告图片'
       },
     }
-    this.WxValidate = new WxValidate(rules, messages)
+    that.WxValidate = new WxValidate(rules, messages)
   }
 })
