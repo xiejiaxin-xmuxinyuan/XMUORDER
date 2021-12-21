@@ -4,9 +4,7 @@ const db = wx.cloud.database()
 
 var that
 
-
 Page({
-
   data: {
     identity: {},
     canteens: [],
@@ -22,11 +20,17 @@ Page({
 
   onLoad: function (option) {
     that = this
-
     var canteens = app.globalData.canteen
     const identity = app.globalData.identity
     var shopPickerList = []
     var intCurTime = getIntCurTime() //当前时间
+
+    //setData数据对象
+    var formData = {
+      intCurTime,
+      shopPickerList,
+      identity
+    }
 
     canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
@@ -36,27 +40,19 @@ Page({
           that.shopPickerChange(null, index)
         }
       }
-      //canteens 营业时间计算
-      let breakfast = canteen.breakfast
-      let beginTime = breakfast.substring(0, breakfast.indexOf('-'))
-      let intBeginTime = parseInt(beginTime.replace(':', ''))
 
-      let dinner = canteen.dinner
-      let endTime = dinner.substring(dinner.indexOf('-') + 1)
-      let intEndTime = parseInt(endTime.replace(':', ''))
-
-      canteens[index].beginTime = beginTime
-      canteens[index].intBeginTime = intBeginTime
-      canteens[index].endTime = endTime
-      canteens[index].intEndTime = intEndTime
+      //canteens 是否营业中
+      for (let i = 0; i < canteen.businessTime.length; i++) {
+        const time = canteen.businessTime[i];
+        if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
+          canteen.inBusiness = true
+        } else {
+          canteen.inBusiness = false
+        }
+      }
     })
-
-    that.setData({
-      canteens: canteens,
-      shopPickerList: shopPickerList,
-      identity: identity,
-      intCurTime: intCurTime, //当前int格式时间
-    })
+    formData.canteens = canteens
+    that.setData(formData)
   },
 
   onShow: function (options) {
@@ -75,7 +71,7 @@ Page({
   },
   shopPickerChange: function (e, setIndex = -1) {
     //若选择项不变
-    if (e!==null){
+    if (e !== null) {
       if (that.data.shopPickerIndex === e.detail.value) {
         return
       }
@@ -207,11 +203,7 @@ Page({
     var index2 = e.currentTarget.dataset.index
 
     //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
-    let intCurTime = that.data.intCurTime
-    let intBeginTime = that.data.canteens[index0].intBeginTime
-    let intEndTime = that.data.canteens[index0].intEndTime
-
-    if (intCurTime < intBeginTime || intCurTime > intEndTime) {
+    if (that.data.canteens[index0].inBusiness) {
       var food = that.data.canteens[index0].foodList[index1].food[index2]
       wx.showModal({
         title: '是否要删除商品？',
@@ -329,7 +321,7 @@ Page({
         canteen.foodList.forEach(element => {
           foodTypePickerList.push(element.name)
         })
-        
+
         let path = 'canteens[' + shopPickerIndex + '].foodList'
         app.globalData.canteen[shopPickerIndex].foodList = canteen.foodList
         that.setData({
