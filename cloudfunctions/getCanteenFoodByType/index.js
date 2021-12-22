@@ -32,6 +32,9 @@ exports.main = async (event, context) => {
   const typeName = event.typeName
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   var currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
+  if (currPage < 1) {
+    currPage = 1
+  }
 
   return new Promise((resolve, reject) => {
     db.collection('food')
@@ -44,13 +47,13 @@ exports.main = async (event, context) => {
         const totalCount = res.total
         const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
 
-        if (totalPage === 0) { //如果没有任何记录
+        if (totalCount === 0) { //如果没有任何记录
           resolve({
             success: true,
             food: [],
-            currPage: currPage,
-            totalPage: totalPage,
-            totalCount: totalCount,
+            currPage: 0,
+            totalPage: 0,
+            totalCount: 0,
           })
         }
 
