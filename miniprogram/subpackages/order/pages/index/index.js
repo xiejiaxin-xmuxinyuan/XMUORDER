@@ -211,6 +211,9 @@ Page({
   },
   getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
+      if (noticeCurrPage < 1) {
+        noticeCurrPage = 1
+      }
       const noticeCurrType = that.data.noticeCurrType
 
       const countResult = await db.collection('notices').where({

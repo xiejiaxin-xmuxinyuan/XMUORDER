@@ -4,9 +4,7 @@ const db = wx.cloud.database()
 
 var that
 
-
 Page({
-
   data: {
     identity: {},
     canteens: [],
@@ -16,75 +14,68 @@ Page({
     foodTypePickerIndex: null,
     intCurTime: 0,
     currPage: 0,
-    totalPage: 1,
-    loaded: false
+    totalPage: 1
   },
 
   onLoad: function (option) {
     that = this
-
     var canteens = app.globalData.canteen
     const identity = app.globalData.identity
     var shopPickerList = []
     var intCurTime = getIntCurTime() //当前时间
+
+    //setData数据对象
+    var formData = {
+      intCurTime,
+      shopPickerList,
+      identity
+    }
 
     canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
       // 身份所属餐厅
       if (identity.type === 'admin' || identity.type === 'member') {
         if (canteen.cID === identity.cID) {
-          that.shopPickerChange(null, index)
+          that.shopPickerChange(index)
         }
       }
-      //canteens 营业时间计算
-      let breakfast = canteen.breakfast
-      let beginTime = breakfast.substring(0, breakfast.indexOf('-'))
-      let intBeginTime = parseInt(beginTime.replace(':', ''))
 
-      let dinner = canteen.dinner
-      let endTime = dinner.substring(dinner.indexOf('-') + 1)
-      let intEndTime = parseInt(endTime.replace(':', ''))
-
-      canteens[index].beginTime = beginTime
-      canteens[index].intBeginTime = intBeginTime
-      canteens[index].endTime = endTime
-      canteens[index].intEndTime = intEndTime
-    })
-
-    that.setData({
-      canteens: canteens,
-      shopPickerList: shopPickerList,
-      identity: identity,
-      intCurTime: intCurTime, //当前int格式时间
-    })
-  },
-
-  onShow: function (options) {
-    that = this
-    if (that.data.loaded) {
-      const shopPickerIndex = that.data.shopPickerIndex
-      const foodTypePickerIndex = that.data.foodTypePickerIndex
-      if (shopPickerIndex === null || foodTypePickerIndex === null) {
-        return
+      //canteens 是否营业中
+      for (let i = 0; i < canteen.businessTime.length; i++) {
+        const time = canteen.businessTime[i];
+        if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
+          canteen.inBusiness = true
+        } else {
+          canteen.inBusiness = false
+        }
       }
-      const cID = that.data.canteens[shopPickerIndex].cID
-      const typeName = that.data.foodTypePickerList[foodTypePickerIndex]
-      const currPage = that.data.currPage
-      that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage)
-    }
+    })
+    formData.canteens = canteens
+    that.setData(formData)
   },
-  shopPickerChange: function (e, setIndex = -1) {
+  refresh: function () {
+    const shopPickerIndex = that.data.shopPickerIndex
+    const foodTypePickerIndex = that.data.foodTypePickerIndex
+    if (shopPickerIndex === null || foodTypePickerIndex === null) {
+      return
+    }
+    const cID = that.data.canteens[shopPickerIndex].cID
+    const typeName = that.data.foodTypePickerList[foodTypePickerIndex]
+    const currPage = that.data.currPage
+    util.showLoading('加载中')
+    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage).then(() => {
+      wx.hideLoading()
+    })
+  },
+  shopPickerChange: function (e) {
     //若选择项不变
-    if (e!==null){
+    if ('detail' in e) {
       if (that.data.shopPickerIndex === e.detail.value) {
         return
       }
-    }
-
-    if (setIndex >= 0) {
-      var index = setIndex
-    } else {
       var index = e.detail.value
+    } else {
+      var index = e
     }
 
     var foodList = app.globalData.canteen[index].foodList
@@ -98,8 +89,6 @@ Page({
       foodTypePickerIndex: null,
       foodTypePickerList: foodTypePickerList
     })
-
-
   },
   foodTypePickerChange: function (e) {
     //选择项不变
@@ -112,8 +101,10 @@ Page({
     const typeName = that.data.foodTypePickerList[foodTypePickerIndex]
 
     //加载第一页的
-    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, 1)
-    // 可以接.then().catch()
+    util.showLoading('加载中')
+    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, 1).then(() => {
+      wx.hideLoading()
+    })
   },
   foodTypePageChange: (shopIndex, foodTypeIndex, food, currPage, totalPage) => {
     let path = 'canteens[' + shopIndex + '].foodList[' + foodTypeIndex + '].food'
@@ -121,13 +112,11 @@ Page({
     that.setData({
       currPage: currPage,
       totalPage: totalPage,
-      [path]: food,
-      loaded: true
+      [path]: food
     })
   },
   loadPage: (shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage = 1, pageSize = 5) => {
     return new Promise((resolve, reject) => {
-      util.showLoading('加载中')
       wx.cloud.callFunction({
           name: 'getCanteenFoodByType',
           data: {
@@ -137,7 +126,6 @@ Page({
             pageSize: pageSize
           }
         }).then(res => {
-          util.hideLoading()
           if (res.result.success) {
             let currPage = res.result.currPage
             let totalPage = res.result.totalPage
@@ -159,7 +147,6 @@ Page({
           }
         })
         .catch(e => {
-          util.hideLoading()
           util.showToast('加载失败', 'error')
           reject(e) //结束
         })
@@ -176,21 +163,38 @@ Page({
 
     if ('add' in dataset) { //增加
       if (currPage <= totalPage - 1) {
-        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage + 1)
+        util.showLoading('加载中')
+        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage + 1).then(() => {
+          wx.hideLoading()
+        })
       } else {
         util.showToast('已经是最后一页啦')
       }
     } else { //减少
       if (currPage > 1) {
-        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage - 1)
+        util.showLoading('加载中')
+        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage - 1).then(() => {
+          wx.hideLoading()
+        })
       } else {
         util.showToast('已经是第一页啦')
       }
     }
   },
   toAddGoods: function (e) {
+    var url = './addGoods'
+    const foodTypePickerIndex = that.data.foodTypePickerIndex
+    if (that.data.foodTypePickerIndex !== null) {
+      const shopPickerIndex = that.data.shopPickerIndex
+      url = url + '?shopPickerIndex=' + shopPickerIndex + '&foodTypePickerIndex=' + foodTypePickerIndex
+    }
     wx.navigateTo({
-      url: './addGoods',
+      url,
+      events: {
+        refresh: function () {
+          that.refresh()
+        }
+      }
     })
   },
   editGoods: function (e) {
@@ -198,7 +202,12 @@ Page({
     var index1 = that.data.foodTypePickerIndex
     var index2 = e.currentTarget.dataset.index
     wx.navigateTo({
-      url: './editGoods?index0=' + index0 + '&index1=' + index1 + '&index2=' + index2
+      url: './editGoods?index0=' + index0 + '&index1=' + index1 + '&index2=' + index2,
+      events: {
+        refresh: function () {
+          that.refresh()
+        }
+      }
     })
   },
   delGoods: function (e) {
@@ -207,11 +216,7 @@ Page({
     var index2 = e.currentTarget.dataset.index
 
     //营业期间禁止删除商品（避免点餐页刷新时商品排序错乱）
-    let intCurTime = that.data.intCurTime
-    let intBeginTime = that.data.canteens[index0].intBeginTime
-    let intEndTime = that.data.canteens[index0].intEndTime
-
-    if (intCurTime < intBeginTime || intCurTime > intEndTime) {
+    if (!that.data.canteens[index0].inBusiness) {
       var food = that.data.canteens[index0].foodList[index1].food[index2]
       wx.showModal({
         title: '是否要删除商品？',
@@ -231,32 +236,27 @@ Page({
               .then(res => {
                 if (res.result.success) {
                   //云函数删除云储存文件
+                  var fileIDs = food.detailImgs
+                  fileIDs.push(food.coverImg)
                   wx.cloud.callFunction({
                       name: 'cloudFilesDelete',
                       data: {
-                        fileIDs: [food.img]
+                        fileIDs
                       }
                     })
                     .then(res => {
-                      util.hideLoading()
-                      if (!(res.result[0].status)) {
-                        util.showToast('删除成功', 'success', 1000)
-                      } else {
-                        util.showToast('图片删除出错')
-                      }
-                      //刷新
                       setTimeout(() => {
-                        that.onShow()
+                        that.refresh()
                       }, 1100)
                     })
                 } else {
                   util.hideLoading()
-                  util.showToast('数据提交失败', 'error', 2000)
+                  util.showToast('删除失败', 'error', 2000)
                 }
               })
               .catch(error => {
                 util.hideLoading()
-                util.showToast('数据提交失败', 'error', 2000)
+                util.showToast('删除失败', 'error', 2000)
               })
           } else if (res.cancel) {
             util.showToast('操作已取消')
@@ -329,7 +329,7 @@ Page({
         canteen.foodList.forEach(element => {
           foodTypePickerList.push(element.name)
         })
-        
+
         let path = 'canteens[' + shopPickerIndex + '].foodList'
         app.globalData.canteen[shopPickerIndex].foodList = canteen.foodList
         that.setData({
