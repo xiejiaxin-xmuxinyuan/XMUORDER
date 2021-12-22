@@ -15,20 +15,11 @@ Page {
   border-radius: 10rpx;
 }
 
-.my-card .image {
-  background-color: transparent;
-}
-
 .my-card .image>.cu-tag {
   position: absolute;
   right: 0;
   border-radius: 10rpx;
-}
-
-.my-card .image>image {
-  width: 100%;
-  border-radius: 10rpx;
-  background-color: white;
+  z-index: 999;
 }
 
 .my-card .info {

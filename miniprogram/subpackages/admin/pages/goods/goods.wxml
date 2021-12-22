@@ -32,7 +32,7 @@
       <block wx:else>
         <view wx:for="{{canteens[shopPickerIndex].foodList[foodTypePickerIndex].food}}" wx:key="_id" wx:for-item="food">
           <view class="my-item">
-            <image src="{{food.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            <image src="{{food.coverImg}}" mode="aspectFill" lazy-load="{{true}}"></image>
             <view class="info">
               <view class="text-black">{{food.name}}</view>
               <view class="text-gray text-sm flex">
@@ -46,7 +46,7 @@
               <view class="text-grey text-xs text-cut">库存: {{food.curNum}}</view>
               <view class="btn-group">
                 <button catchtap="editGoods" data-index="{{index}}" class="cu-btn cuIcon text-xl">
-                  <text class="cuIcon-edit text-black"></text>
+                  <text class="cuIcon-write text-black"></text>
                 </button>
                 <button catchtap="delGoods" data-index="{{index}}" class="cu-btn cuIcon text-xl">
                   <text class="cuIcon-roundclose text-orange"></text>

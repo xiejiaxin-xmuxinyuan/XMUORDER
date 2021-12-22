@@ -1,5 +1,5 @@
 import WxValidate from '../../../../utils/WxValidate.js'
-
+const util = require('../../../../utils/util.js')
 const app = getApp()
 const db = wx.cloud.database()
 var that
@@ -14,7 +14,8 @@ Page({
     form: {
       shopPickerIndex: null,
       foodTypePickerIndex: null,
-      foodImg: '',
+      coverImg: '',
+      detailImgs: [],
       name: '',
       content: '',
       price: '',
@@ -26,31 +27,42 @@ Page({
   onLoad: function (options) {
     that = this
     that.initValidate()
+
     var canteens = app.globalData.canteen
     var shopPickerList = []
     const identity = app.globalData.identity
 
     canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
-      if (identity.type === 'admin' || identity.type === 'member') {
-        if (canteen.cID === identity.cID) {
-          that.shopPickerChange(null, index)
-        }
+      if (identity.type !== 'superAdmin' && canteen.cID === identity.cID && !('foodTypePickerIndex' in options)) {
+        that.shopPickerChange(index)
       }
     })
 
-    that.setData({
-      canteens: canteens,
-      shopPickerList: shopPickerList,
-      identity: identity
-    })
-  },
-  shopPickerChange: function (e, setIndex = -1) {
-    if (setIndex >= 0) {
-      var index = setIndex
-    } else {
-      var index = e.detail.value
+    //构建formData对象
+    var formData = {
+      canteens,
+      shopPickerList,
+      identity
     }
+
+    //根据传参值选择商品类别
+    if ('foodTypePickerIndex' in options) {
+      const foodList = app.globalData.canteen[options.shopPickerIndex].foodList
+      var foodTypePickerList = []
+      foodList.forEach(element => {
+        foodTypePickerList.push(element.name)
+      })
+      formData.foodTypePickerList = foodTypePickerList
+      formData['form.shopPickerIndex'] = options.shopPickerIndex
+      formData['form.foodTypePickerIndex'] = options.foodTypePickerIndex
+    }
+
+    that.setData(formData)
+  },
+  shopPickerChange: function (e) {
+    //触发或调用
+    var index = 'detail' in e ? e.detail.value : e
 
     var foodList = app.globalData.canteen[index].foodList
     var foodTypePickerList = []
@@ -59,14 +71,14 @@ Page({
     })
 
     that.setData({
-      ['form.shopPickerIndex']: index,
-      ['form.foodTypePickerIndex']: null,
+      'form.shopPickerIndex': index,
+      'form.foodTypePickerIndex': null,
       foodTypePickerList: foodTypePickerList
     })
   },
   foodTypePickerChange: function (e) {
     that.setData({
-      ['form.foodTypePickerIndex']: e.detail.value
+      'form.foodTypePickerIndex': e.detail.value
     })
   },
   onPriceInputBlur: function (e) {
@@ -74,40 +86,79 @@ Page({
     var price = parseFloat(e.detail.value)
     if (isNaN(price) || price <= 0) {
       that.setData({
-        ['form.price']: oldPrice
+        'form.price': oldPrice
       })
     } else {
       price = parseFloat(price.toFixed(2)) //至多2位小数
       that.setData({
-        ['form.price']: price
+        'form.price': price
       })
     }
   },
-  ChooseImage: function (e) {
+  chooseCoverImage: function (e) {
     wx.chooseImage({
-        count: 1, //默认9
-        sizeType: 'compressed'
+        count: 1,
+        sizeType: ['compressed']
       })
       .then(res => {
-        // TODO: 使用canvas进行压缩
-        that.setData({
-          ['form.foodImg']: res.tempFilePaths[0]
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=300&h=300'
+        wx.navigateTo({
+          url: url,
+          events: {
+            saveImg: function (data) {
+              that.setData({
+                'form.coverImg': data.img,
+              })
+            }
+          }
         })
       })
-      .catch(res => {
-        wx.showToast({
-          title: '图片选择取消',
-          icon: 'none',
-          duration: 1000
-        })
+      .catch(e => {
+        util.showToast('图片选择取消')
       })
   },
-  ViewImage: function (e) {
+  chooseImages: function (e) {
+    var detailImgs = that.data.form.detailImgs
+    wx.chooseImage({
+        count: 1,
+        sizeType: ['compressed']
+      })
+      .then(res => {
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=600&h=325'
+        wx.navigateTo({
+          url: url,
+          events: { //回调
+            saveImg: function (data) {
+              if (detailImgs.length != 0) {
+                detailImgs.push(data.img)
+              } else {
+                detailImgs = [data.img]
+              }
+              that.setData({
+                'form.detailImgs': detailImgs,
+              })
+            }
+          }
+        })
+      })
+      .catch(err => {
+        util.showToast('图片选择取消')
+      })
+  },
+  viewImage: function (e) {
+    var img
+    if ('index' in e.currentTarget.dataset) {
+      img = that.data.form.detailImgs[e.currentTarget.dataset.index]
+    } else {
+      img = that.data.form.coverImg
+    }
     wx.previewImage({
-      urls: [that.data.form.foodImg],
+      urls: [img],
     });
   },
-  DelImg: function (e) {
+  delImg: function (e) {
     wx.showModal({
       title: '移除图片',
       content: '确定要移除这张图片吗',
@@ -115,101 +166,115 @@ Page({
       confirmText: '是',
       success: res => {
         if (res.confirm) {
-          that.setData({
-            ['form.foodImg']: ''
-          })
+          var form = that.data.form
+          if ('index' in e.currentTarget.dataset) {
+            const index = e.currentTarget.dataset.index
+            form.detailImgs.splice(index, 1)
+            that.setData({
+              'form.detailImgs': form.detailImgs,
+            })
+          } else {
+            that.setData({
+              'form.coverImg': '',
+            })
+          }
         }
       }
     })
   },
+  getRandomPath: (params, img) => { //储存路径：餐厅图片/地区名/餐厅名/food/商品类型名_商品名_时间戳.图片格式
+    const canteens = that.data.canteens
+    const shopPickerList = that.data.shopPickerList
+    const foodTypePickerList = that.data.foodTypePickerList
+
+    const addressToPlaceName = {
+      XA: '翔安',
+      SM: '思明',
+      HY: '海韵'
+    }
+    const placeName = addressToPlaceName[canteens[params.shopPickerIndex].address]
+    const shopName = shopPickerList[params.shopPickerIndex]
+    const typeName = foodTypePickerList[params.foodTypePickerIndex]
+    const foodName = params.name
+    const randomStr = (new Date().getTime()).toString() + Math.random().toString(36).slice(-4)
+
+    var path = '餐厅图片/' + placeName + '/' + shopName + '/商品/'
+    path += typeName + '_' + foodName + '_' + randomStr + img.match('.[^.]+?$')[0]
+    return path
+  },
   addGoodsSubmit: function (e) {
     //表单验证
-    let form = that.data.form
+    var form = that.data.form
     const params = Object.assign(form, e.detail.value)
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
-      wx.showToast({
-        title: error.msg,
-        icon: 'none',
-        duration: 1000
-      })
+      util.showToast(error.msg)
     } else {
-      wx.showLoading({
-        title: '上传中',
-        mask: true
-      })
       //上传图片
-      let canteens = that.data.canteens
-      let shopPickerList = that.data.shopPickerList
-      let foodTypePickerList = that.data.foodTypePickerList
+      util.showLoading('图片上传中')
+      var proList = []
 
-      let cloudPath = '餐厅图片/'
-      let address = canteens[params.shopPickerIndex].address
-      let shopName = shopPickerList[params.shopPickerIndex]
-      let typeName = foodTypePickerList[params.foodTypePickerIndex]
+      //封面
+      proList.push(
+        wx.cloud.uploadFile({
+          cloudPath: that.getRandomPath(params, params.coverImg),
+          filePath: params.coverImg
+        })
+      )
 
-      //储存路径：餐厅图片/地区名/餐厅名/food/商品类型名_商品名_时间戳.图片格式
-      cloudPath = cloudPath + ({
-          XA: '翔安',
-          SM: '思明',
-          HY: '海韵'
-        })[address] + '/' + shopName + '/food/' + typeName + '_' + params.name + '_' +
-        new Date().getTime() + params.foodImg.match('.[^.]+?$')[0]
+      //详情图片
+      params.detailImgs.forEach(img => {
+        proList.push(
+          wx.cloud.uploadFile({
+            cloudPath: that.getRandomPath(params, img),
+            filePath: img
+          })
+        )
+      })
 
-      wx.cloud.uploadFile({
-          cloudPath: cloudPath,
-          filePath: params.foodImg, // 文件路径
-        }).then(res => {
+      const cID = that.data.canteens[params.shopPickerIndex].cID
+      const typeName = that.data.foodTypePickerList[params.foodTypePickerIndex]
+      Promise.all(proList).then(res => {
+          const coverImg = res[0].fileID
+          var detailImgs = []
+          for (let i = 1; i < res.length; i++) {
+            detailImgs.push(res[i].fileID)
+          }
           //上传数据库 food
           var newForm = {
             allNum: parseInt(params.allNum),
             curNum: parseInt(params.allNum),
-            cID: canteens[params.shopPickerIndex].cID,
+            cID,
+            coverImg,
+            detailImgs,
+            typeName,
             content: params.content,
-            img: res.fileID,
             name: params.name,
             price: params.price,
-            typeName: typeName,
             tag: params.tag
           }
           db.collection('food').add({
               data: newForm
             }).then(res => {
               wx.hideLoading()
-              wx.showToast({
-                title: '提交成功',
-                icon: 'success',
-                duration: 1500
-              })
+              util.showToast('提交成功', 'success', 1500)
               // 返回上一页
               setTimeout(() => {
+                const eventChannel = that.getOpenerEventChannel()
+                eventChannel.emit('refresh')
                 wx.navigateBack()
-              }, 1600);
+              }, 1500);
             })
-            .catch(error => {
+            .catch(e => {
               wx.hideLoading()
-              wx.showToast({
-                title: '数据提交失败',
-                icon: 'error',
-                duration: 2000
-              })
+              console.error(e)
+              util.showToast('上传失败', 'error', 2000)
             })
         })
-        .catch(error => {
+        .catch(e => {
           wx.hideLoading()
-          wx.showToast({
-            title: '数据提交失败',
-            icon: 'error',
-            duration: 2000
-          })
-        })
-        .catch(error => {
-          wx.hideLoading()
-          wx.showToast({
-            title: '图片上传失败',
-            icon: 'error',
-            duration: 2000
-          })
+          console.error(e)
+          util.showToast('图片上传失败', 'error', 2000)
         })
     }
   },
@@ -237,7 +302,10 @@ Page({
         required: true,
         digits: true
       },
-      foodImg: {
+      coverImg: {
+        required: true
+      },
+      detailImgs: {
         required: true
       },
       tag: {
@@ -268,13 +336,16 @@ Page({
         required: '请输入库存',
         digits: '请输入非负整数的库存'
       },
-      foodImg: {
-        required: '请添加商品图片'
+      coverImg: {
+        required: '请添加商品封面图片'
+      },
+      detailImgs: {
+        required: '请添加商品详情图片'
       },
       tag: {
         maxlength: '标签最长4个字符'
       }
     }
-    this.WxValidate = new WxValidate(rules, messages)
+    that.WxValidate = new WxValidate(rules, messages)
   }
 })
