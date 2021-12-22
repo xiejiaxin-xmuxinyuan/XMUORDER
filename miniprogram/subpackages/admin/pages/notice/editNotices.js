@@ -121,7 +121,7 @@ Page({
             saveImg: function (data) {
               var images = that.data.notice.images
               var oldImages = that.data.oldImages
-      
+
               //构建setData对象
               var formData = {
                 imageNum: imageNum + 1
@@ -134,7 +134,7 @@ Page({
               } else {
                 formData['notice.images'] = [data.img]
               }
-      
+
               that.setData(formData)
 
             }
@@ -263,8 +263,11 @@ Page({
       // 按需执行删除图片
       if (delFileIDs.length) {
         proList.push(
-          wx.cloud.deleteFile({
-            fileList: delFileIDs,
+          wx.cloud.callFunction({
+            name: 'cloudFilesDelete',
+            data: {
+              fileIDs: delFileIDs
+            }
           })
         )
       }

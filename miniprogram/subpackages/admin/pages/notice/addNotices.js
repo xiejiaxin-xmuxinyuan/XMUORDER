@@ -190,7 +190,7 @@ Page({
     return '公告图片/' + randomStr + img.match('.[^.]+?$')[0]
   },
   addNoticesSubmit: function (e) {
-    let form = that.data.form
+    var form = that.data.form
     var params = Object.assign(form, e.detail.value)
 
     //表单验证
