@@ -85,22 +85,20 @@ Page({
   //页面退出时保存已点购物车
   onUnload() {
     let cID = that.data.canteen.cID
-    let cIndex = that.data.cIndex
-    if (cID in app.globalData.allOrderList) {
-      if ('delete' in app.globalData.allOrderList[cID]) { //如果是完成订单时触发
-        //删除对应全局数据
-        delete app.globalData.allOrderList[cID]
-        var canteen = app.globalData.canteens[cIndex]
-        canteen.foodList.forEach((element, index) => {
-          canteen.foodList[index] = {
-            id: element.id,
-            name: element.name
-          }
-        })
-      } else {
-        app.globalData.allOrderList[cID] = that.data.orderList
+    app.globalData.allOrderList[cID] = that.data.orderList
+  },
+  deleteShoppingCart() { // 页面通信删除购物车
+    //删除对应全局数据
+    const cID = that.data.canteen.cID
+    const cIndex = that.data.cIndex
+    delete app.globalData.allOrderList[cID]
+    var canteen = app.globalData.canteens[cIndex]
+    canteen.foodList.forEach((element, index) => {
+      canteen.foodList[index] = {
+        id: element.id,
+        name: element.name
       }
-    }
+    })
   },
   tabSelect(e) {
     //滚动到底部保证可见
@@ -299,6 +297,11 @@ Page({
       app.globalData.settlement = settlement
       wx.navigateTo({
         url: './settlement',
+        events: {
+          deleteShoppingCart: function () {
+            that.deleteShoppingCart()
+          }
+        }
       })
     } else {
       util.showToast('请选择要购买的商品')

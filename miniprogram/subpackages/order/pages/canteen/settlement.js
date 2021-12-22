@@ -123,7 +123,7 @@ Page({
 
       //填充商品信息中的商品记录 orderInfo.goodsInfo.record
       for (const key in orderList) {
-        if (key === 'length' || key === 'delete') {
+        if (key === 'length') {
           continue
         }
         let food = foodList[orderList[key][1]].food[orderList[key][2]]
@@ -131,7 +131,7 @@ Page({
           food: food.name,
           num: food.orderNum,
           price: food.price,
-          img: food.img,
+          img: food.coverImg,
           _id: food._id
         }
         orderInfo.goodsInfo.record.push(foodRecord)
@@ -161,10 +161,9 @@ Page({
             }
             return
           }
-
-          //下单成功
-          //返回退出canteen页面后会清空当前餐厅购物车
-          app.globalData.allOrderList[canteen.cID].delete = true
+          //下单成功，页面通信删除购物车商品
+          const eventChannel = that.getOpenerEventChannel()
+          eventChannel.emit('deleteShoppingCart')
 
           //发起支付
           util.showLoading('正在支付')
