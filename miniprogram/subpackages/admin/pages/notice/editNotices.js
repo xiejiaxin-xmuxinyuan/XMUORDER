@@ -89,8 +89,17 @@ Page({
         sizeType: ['compressed']
       })
       .then(res => {
-        that.setData({
-          'notice.coverImg': res.tempFilePaths[0],
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=480&h=360'
+        wx.navigateTo({
+          url: url,
+          events: {
+            saveImg: function (data) {
+              that.setData({
+                'notice.coverImg': data.img,
+              })
+            }
+          }
         })
       })
       .catch(error => {
@@ -98,30 +107,39 @@ Page({
       })
   },
   chooseImage: function (e) {
-    const maxImgnum = that.data.maxImgnum
     var imageNum = that.data.imageNum
     var notice = that.data.notice
     wx.chooseImage({
-        count: maxImgnum - imageNum, //默认9
+        count: 1,
         sizeType: ['compressed']
       }).then(res => {
-        var images = that.data.notice.images
-        var oldImages = that.data.oldImages
+        var url = '../../../../pages/index/cropper?src=' + res.tempFilePaths[0]
+        url += '&w=600&h=300'
+        wx.navigateTo({
+          url: url,
+          events: { //回调
+            saveImg: function (data) {
+              var images = that.data.notice.images
+              var oldImages = that.data.oldImages
 
-        //构建setData对象
-        var formData = {
-          imageNum: imageNum + res.tempFilePaths.length
-        }
-        if (!oldImages.length) { //若从未修改过图片数组
-          formData.oldImages = [...images] //复制数组
-        }
-        if (notice.images.length !== 0) {
-          formData['notice.images'] = notice.images.concat(res.tempFilePaths)
-        } else {
-          formData['notice.images'] = res.tempFilePaths
-        }
+              //构建setData对象
+              var formData = {
+                imageNum: imageNum + 1
+              }
+              if (!oldImages.length) { //若从未修改过图片数组
+                formData.oldImages = [...images] //复制数组
+              }
+              if (notice.images.length !== 0) {
+                formData['notice.images'] = notice.images.concat(data.img)
+              } else {
+                formData['notice.images'] = [data.img]
+              }
 
-        that.setData(formData)
+              that.setData(formData)
+
+            }
+          }
+        })
       })
       .catch(err => {
         util.showToast('图片选择取消')
@@ -245,8 +263,11 @@ Page({
       // 按需执行删除图片
       if (delFileIDs.length) {
         proList.push(
-          wx.cloud.deleteFile({
-            fileList: delFileIDs,
+          wx.cloud.callFunction({
+            name: 'cloudFilesDelete',
+            data: {
+              fileIDs: delFileIDs
+            }
           })
         )
       }

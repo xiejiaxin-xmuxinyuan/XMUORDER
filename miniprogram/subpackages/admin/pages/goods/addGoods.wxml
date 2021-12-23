@@ -6,8 +6,7 @@
     <form catchsubmit="addGoodsSubmit">
       <view class="cu-form-group">
         <view class="title text-bold">商店</view>
-        <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange"
-          value="{{form.shopPickerIndex}}" range="{{shopPickerList}}">
+        <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange" value="{{form.shopPickerIndex}}" range="{{shopPickerList}}">
           <view class="picker">
             {{form.shopPickerIndex!==null? shopPickerList[form.shopPickerIndex] : '请选择所在商店'}}
           </view>
@@ -16,8 +15,7 @@
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">商品类别</view>
-        <picker wx:if="{{form.shopPickerIndex !== null}}" bindchange="foodTypePickerChange"
-          value="{{form.foodTypePickerIndex}}" range="{{foodTypePickerList}}">
+        <picker wx:if="{{form.shopPickerIndex !== null}}" bindchange="foodTypePickerChange" value="{{form.foodTypePickerIndex}}" range="{{foodTypePickerList}}">
           <view class="picker">
             {{form.foodTypePickerIndex!==null? foodTypePickerList[form.foodTypePickerIndex] : '请选择商品类型'}}
           </view>
@@ -34,8 +32,7 @@
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">价格</view>
-        <input value="{{form.price}}" type="digit" bindblur="onPriceInputBlur" class="text-right"
-          placeholder="输入价格"></input>
+        <input value="{{form.price}}" type="digit" bindblur="onPriceInputBlur" class="text-right" placeholder="输入价格"></input>
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">库存</view>
@@ -45,30 +42,52 @@
         <view class="title text-bold">标签</view>
         <input name="tag" value="{{form.tag}}" class="text-right" placeholder="（选填）标签"></input>
       </view>
+      <!-- 封面图片 -->
       <view class="cu-bar bg-white">
         <view class="action text-bold">
-          商品图片
+          封面图片
         </view>
         <view class="action">
-          {{form.foodImg? 1 : 0}}/1
+          {{form.coverImg? 1 : 0}}/1
         </view>
       </view>
       <view class="cu-form-group">
         <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:if="{{form.foodImg}}" bindtap="ViewImage" data-url="{{form.foodImg}}">
-            <image src='{{form.foodImg}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="DelImg">
+          <view class="bg-img" wx:if="{{form.coverImg}}" bindtap="viewImage">
+            <image src='{{form.coverImg}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="delImg">
               <text class="cuIcon-close"></text>
             </view>
           </view>
-          <view class="solids" bindtap="ChooseImage" wx:if="{{!form.foodImg}}">
+          <view class="solids" bindtap="chooseCoverImage" wx:if="{{!form.coverImg}}">
+            <text class="cuIcon-cameraadd"></text>
+          </view>
+        </view>
+      </view>
+      <!-- 详情图片 -->
+      <view class="cu-bar bg-white">
+        <view class="action text-bold">
+          详情图片
+        </view>
+        <view class="action">
+          {{form.detailImgs.length}}/5
+        </view>
+      </view>
+      <view class="cu-form-group">
+        <view class="grid col-4 grid-square flex-sub">
+          <view class="bg-img" wx:for="{{form.detailImgs}}" wx:key="*this" data-index="{{index}}" bindtap="viewImage">
+            <image src='{{item}}' mode='aspectFill'></image>
+            <view class="cu-tag bg-red" catchtap="delImg" data-index="{{index}}">
+              <text class="cuIcon-close"></text>
+            </view>
+          </view>
+          <view class="solids" bindtap="chooseImages" wx:if="{{form.detailImgs.length < 5}}">
             <text class="cuIcon-cameraadd"></text>
           </view>
         </view>
       </view>
       <view style="text-align: center;padding: 1rem 0;">
-        <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg"
-          style="padding: 35rpx 120rpx;">提交</button>
+        <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">提交</button>
       </view>
     </form>
   </view>

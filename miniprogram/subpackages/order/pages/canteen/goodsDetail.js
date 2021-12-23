@@ -13,11 +13,13 @@ Page({
   onLoad: function (options) {
     that = this
     var canteen = app.globalData.canteens[options.cIndex]
+
+    // TODO: 加载food信息(评论)
     var food = canteen.foodList[options.index1].food[options.index2]
 
     var favourCount = 0
     var badCount = 0
-    if ('comment' in food){
+    if ('comment' in food) {
       food.comment.forEach(element => {
         if (element.score > 0) {
           favourCount++
@@ -35,9 +37,11 @@ Page({
     })
   },
   preview: event => {
-    let img = event.currentTarget.dataset.img
+    var index = event.currentTarget.dataset.index
+    var imgs = that.data.food.detailImgs
     wx.previewImage({
-      urls: [img]
+      current: imgs[index],
+      urls: imgs
     })
   }
 })

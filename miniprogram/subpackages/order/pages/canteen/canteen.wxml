@@ -2,8 +2,7 @@
   <view slot="content">{{canteen.name}}</view>
 </cu-custom>
 
-<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000"
-  duration="500">
+<swiper class="screen-swiper round-dot" indicator-dots="true" circular="true" autoplay="true" interval="5000" duration="500">
   <swiper-item wx:for="{{canteen.image}}" wx:key="*this">
     <image src="{{item}}" mode='aspectFill'></image>
   </swiper-item>
@@ -12,8 +11,7 @@
 <view class="cu-card article no-card bg-gray light">
   <view class="cu-item solid-bottom" style="padding-bottom: 0;">
     <view class="title" catchtap="toggleInfo">
-      <view>{{ canteen.name }} - {{ canteen.fulAddress }}<text
-          class="cuIcon-{{showInfo? 'fold':'unfold'}} fr text-gray"></text></view>
+      <view>{{ canteen.name }} - {{ canteen.fulAddress }}<text class="cuIcon-{{showInfo? 'fold':'unfold'}} fr text-gray"></text></view>
     </view>
     <view class="content showInfo {{ showInfo? '':'hidden' }}">
       <view class="desc">
@@ -27,17 +25,14 @@
 
 <view class="VerticalBox" style="margin-bottom: 18%;">
   <!-- 侧边Tab -->
-  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}"
-    style="height:calc(100vh - 375rpx)">
-    <view class="cu-item {{index===TabCur?'text-blue cur':''}}" wx:for="{{foodList}}" wx:key="id" bindtap='tabSelect'
-      style=" white-space: nowrap;" data-id="{{index}}">
+  <scroll-view class="VerticalNav nav" scroll-y scroll-with-animation scroll-top="{{VerticalNavTop}}" style="height:calc(100vh - 375rpx)">
+    <view class="cu-item {{index===TabCur?'text-blue cur':''}}" wx:for="{{foodList}}" wx:key="id" bindtap='tabSelect' style=" white-space: nowrap;" data-id="{{index}}">
       <view class="cu-tag badge" wx:if="{{item.tpyeOrderNum}}" style="position: absolute;right: 10%;top: 10%;"></view>
       {{item.name}}
     </view>
   </scroll-view>
   <!-- 主菜单 -->
-  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375rpx)"
-    scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
+  <scroll-view class="VerticalMain" scroll-y scroll-with-animation style="height:calc(100vh - 375rpx)" scroll-into-view="main-{{MainCur}}" bindscroll="VerticalMain">
     <!-- 每一类的菜单 -->
     <view class="padding-top padding-lr" wx:for="{{foodList}}" wx:key="id" id="main-{{index1}}" wx:for-index="index1">
       <view class='cu-bar solid-bottom bg-white'>
@@ -48,9 +43,7 @@
       <view class="cu-list menu-avatar" wx:for="{{item.food}}" wx:for-item="food" wx:for-index="index2" wx:key="_id">
         <!-- 菜品ui模板开始 -->
         <view class="cu-item">
-          <image catchtap="toGoodsDetail" data-index1="{{index1}}" data-index2="{{index2}}"
-            class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.img}}" mode="aspectFill"
-            lazy-load="{{true}}">
+          <image catchtap="toGoodsDetail" data-index1="{{index1}}" data-index2="{{index2}}" class="cu-avatar lg food-img {{food.curNum===0? 'grayscale':''}}" src="{{food.coverImg}}" mode="aspectFill" lazy-load="{{true}}">
             <view class="cu-tag badge bg-grey" wx:if="{{food.curNum===0}}">售罄</view>
             <view class="cu-tag badge" wx:elif="{{food.tag}}">{{food.tag}}</view>
           </image>
@@ -66,11 +59,9 @@
           <view class="action" style="width: 20vw;">
             <view class="text-grey text-xs" style="margin-top: 20%;">库存: {{food.curNum}}</view>
             <view class="cu-form-group food-btn" wx:if="{{food.curNum>0}}">
-              <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="numDecBtn"></text>
+              <text class="cuIcon-move cu-tag" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="numDecBtn"></text>
               <input disabled="true" value="{{food.orderNum}}"></input>
-              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}"
-                catchtap="numAddBtn"></text>
+              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{index1}}" data-index2="{{index2}}" catchtap="numAddBtn"></text>
             </view>
           </view>
         </view>
@@ -89,9 +80,9 @@
       </view>
       购物车
     </view>
-    <view class="action" style="width: 30%;text-align: left;">
-      <text class="text-black" style="font-size:small;margin-left: 5%;">合计:</text>
-      <text style="font-size:large;color: red;margin-left: 7%;">￥{{money}}</text>
+    <view class="action" style="width:{{money>1000? 8:7}}rem;display: flex;flex-direction: row;justify-content: center;align-items: center;">
+      <view class="text-black">合计:</view>
+      <view style="font-size:large;color: red;margin-left: 15rpx;">￥{{money}}</view>
     </view>
     <view catchtap="toSettlement" class="bg-gradual-orange submit">结算</view>
   </view>
@@ -105,8 +96,7 @@
         <view wx:if="{{!orderList.length}}" class="padding">空空如也</view>
         <!-- 购物车商品列表 -->
         <view class="cu-item" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
-          <image class="cu-avatar round lg" src="{{foodList[item[1]].food[item[2]].img}}" mode="aspectFill"
-            lazy-load="{{true}}">
+          <image class="cu-avatar round lg" src="{{foodList[item[1]].food[item[2]].coverImg}}" mode="aspectFill" lazy-load="{{true}}">
           </image>
           <view class="content" style="justify-content: left;width: 50%;">
             <view class="text-black">{{foodList[item[1]].food[item[2]].name}}</view>
@@ -116,16 +106,13 @@
           </view>
           <view class="action" style="width: 25%;">
             <view class="cu-form-group food-btn">
-              <text class="cuIcon-move cu-tag" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
-                catchtap="numDecBtn"></text>
+              <text class="cuIcon-move cu-tag" data-index1="{{item[1]}}" data-index2="{{item[2]}}" catchtap="numDecBtn"></text>
               <input disabled="true" value="{{foodList[item[1]].food[item[2]].orderNum}}"></input>
-              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{item[1]}}" data-index2="{{item[2]}}"
-                catchtap="numAddBtn"></text>
+              <text class="cuIcon-add cu-tag bg-yellow" data-index1="{{item[1]}}" data-index2="{{item[2]}}" catchtap="numAddBtn"></text>
             </view>
           </view>
         </view>
-        <button catchtap="toSettlement" wx:if="{{orderList.length>0}}" style="padding: 40rpx 80rpx;"
-          class="cu-btn bg-gradual-orange round shadow-blur margin">去结算</button>
+        <button catchtap="toSettlement" wx:if="{{orderList.length>0}}" style="padding: 40rpx 80rpx;" class="cu-btn bg-gradual-orange round shadow-blur margin">去结算</button>
       </view>
     </view>
   </view>

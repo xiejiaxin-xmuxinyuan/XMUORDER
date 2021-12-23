@@ -76,6 +76,15 @@ Page({
     var index0 = e.currentTarget.dataset.index
     var notice = that.data.notices[index0]
     var noticeCurrPage = that.data.noticeCurrPage
+
+    const identity = app.globalData.identity
+    if (identity.type !== 'superAdmin') {
+      if (identity.cID !== notice.orgID) {
+        util.showToast('您没有该公告的编辑权限')
+        return
+      }
+    }
+
     wx.showModal({
       title: '提示',
       content: '确认删除吗？',
@@ -91,14 +100,20 @@ Page({
               _id: _id
             }
           })
+
           // 公告图片
           var fileIDs = notice.images
           fileIDs.push(notice.coverImg)
-          var p1 = wx.cloud.deleteFile({
-            fileList: fileIDs,
+          //云函数无视权限删除图片
+          var p1 = wx.cloud.callFunction({
+            name: 'cloudFilesDelete',
+            data: {
+              fileIDs
+            }
           })
 
           Promise.all([p0, p1]).then(res => {
+            // 不考虑图片删除结果
             if (res[0].result.success) {
               that.getUserNotices(noticeCurrPage).then(() => {
                 wx.hideLoading()
@@ -122,6 +137,10 @@ Page({
   },
   getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
+      if (noticeCurrPage < 1) {
+        noticeCurrPage = 1
+      }
+
       const noticeCurrType = that.data.noticeCurrType
 
       const countResult = await db.collection('notices').where({

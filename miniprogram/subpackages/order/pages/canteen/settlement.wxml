@@ -38,9 +38,9 @@
   <view class="padding bg-white">
     <view class="padding-bottom-sm text-center solid-bottom">订单详情</view>
     <!-- ui模板 -->
-    <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length' && index!=='delete'}}" wx:key="*this">
+    <view class="flex margin-top-sm order" wx:for="{{orderList}}" wx:if="{{index!=='length'}}" wx:key="*this">
       <view class="food-img">
-        <image src="{{foodList[item[1]].food[item[2]].img}}" mode="scaleToFill" lazy-load="{{true}}"></image>
+        <image src="{{foodList[item[1]].food[item[2]].coverImg}}" mode="scaleToFill" lazy-load="{{true}}"></image>
       </view>
       <view class="content">
         <view class="text-black text-bold">{{foodList[item[1]].food[item[2]].name}}</view>

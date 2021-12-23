@@ -85,10 +85,10 @@ Page({
     }
   },
   showNoticeDetail: function (event) {
-    //保存当前notice详情到全局
-    app.globalData.notice = event.currentTarget.dataset.notice
+    var index = event.currentTarget.dataset.index
+    var notice = that.data.notices[index]
     wx.navigateTo({
-      url: './noticeDetail'
+      url: './noticeDetail?notice=' + JSON.stringify(notice)
     })
   },
   onNavChange: function (e) {
@@ -211,6 +211,9 @@ Page({
   },
   getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
+      if (noticeCurrPage < 1) {
+        noticeCurrPage = 1
+      }
       const noticeCurrType = that.data.noticeCurrType
 
       const countResult = await db.collection('notices').where({

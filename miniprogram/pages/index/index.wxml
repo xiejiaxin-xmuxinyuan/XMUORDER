@@ -41,8 +41,7 @@
     <text class="text-xl text-bold text-black">欢迎来到XMU智能点餐小程序 ！</text>
   </view>
   <view style="width: 100%;margin-top: 5vh;">
-    <button style="width: 10rem;margin: auto; animation-delay: 0.8s;"
-      class="animation-fade cu-btn block bg-blue lg text-white" catchtap="redictoUser">
+    <button style="width: 10rem;margin: auto; animation-delay: 0.8s;" class="animation-fade cu-btn block bg-blue lg text-white" catchtap="redictoUser">
       <text class="cuIcon-roundcheck"> 进入</text>
     </button>
   </view>
@@ -50,8 +49,6 @@
     <image class="ico" src="ico.jpg" mode="aspectFit"></image>
   </view>
 </view>
-
-
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
