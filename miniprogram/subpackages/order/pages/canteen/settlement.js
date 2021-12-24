@@ -131,7 +131,6 @@ Page({
           food: food.name,
           num: food.orderNum,
           price: food.price,
-          img: food.coverImg,
           _id: food._id
         }
         orderInfo.goodsInfo.record.push(foodRecord)

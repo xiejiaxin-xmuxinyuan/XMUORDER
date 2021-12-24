@@ -1,5 +1,9 @@
 @import "../../../../colorui/animation.wxss";
 
+image {
+  background-color: transparent !important;
+}
+
 .animation-fade{
   animation-delay: 0.5s;
 }

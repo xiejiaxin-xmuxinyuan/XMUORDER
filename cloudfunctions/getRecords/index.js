@@ -23,82 +23,114 @@ cloud.init({
 
 const db = cloud.database()
 const _ = db.command
-const $ = _.aggregate
 
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
-  return new Promise((resolve, reject) => {
-    db.collection('orders')
-      .where({
+
+  try {
+    //计算分页
+    const countRes = await db.collection('orders').where({
+      'userInfo.openid': openid
+    }).count()
+    const totalCount = countRes.total
+    const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
+
+    if (currPage > totalPage) {
+      return {
+        success: true,
+        record: [],
+        currPage: currPage,
+        totalPage: totalPage,
+        totalCount: totalCount,
+      }
+    }
+
+    // 读取订单记录
+    const ordersRes = await db.collection('orders').where({
         'userInfo.openid': openid
-      })
-      .count()
-      .then(res => {
-        const totalCount = res.total
-        const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
+      }).orderBy('orderInfo.timeInfo.createTime', 'desc')
+      .skip((currPage - 1) * pageSize).limit(pageSize).get()
+    var orders = ordersRes.data
 
-        if (currPage > totalPage) {
-          resolve({
-            success: true,
-            record: [],
-            currPage: currPage,
-            totalPage: totalPage,
-            totalCount: totalCount,
-          })
+    //异步读取反馈、订单商品封面
+    var foodIDs = []
+    var outTradeNoList = []
+    for (let index = 0; index < orders.length; index++) {
+      // 反馈outTradeNo整合
+      outTradeNoList.push(orders[index].orderInfo.outTradeNo)
+      // 食物_id整合
+      const record = orders[index].goodsInfo.record
+      record.forEach(food => {
+        foodIDs.push(food._id)
+      })
+    }
+
+    // 反馈状态获取
+    var p0 = db.collection('userFeedbacks').where({
+      _openid: openid,
+      outTradeNo: _.in(outTradeNoList)
+    }).field({
+      _id: false,
+      state: true,
+      outTradeNo: true
+    }).get()
+
+    //封面获取
+    foodIDs = Array.from(new Set(foodIDs)) //_id去重
+    var p1 = db.collection('food').where({
+      _id: _.in(foodIDs)
+    }).field({
+      coverImg: true
+    }).get()
+
+    //等待异步请求
+    const res = await Promise.all([p0, p1])
+
+    //outTradeNo转反馈状态
+    var noToFeedbackState = {}
+    res[0].data.forEach(feedback => {
+      noToFeedbackState[feedback.outTradeNo] = feedback.state
+    })
+
+    //id转图片链接对象
+    var idToImg = {}
+    res[1].data.forEach(food => {
+      idToImg[food._id] = food.coverImg
+    })
+
+    orders.forEach(order => {
+      //填充order中反馈
+      if (order.orderInfo.outTradeNo in noToFeedbackState) {
+        order.feedback = {
+          state: noToFeedbackState[order.orderInfo.outTradeNo]
         }
+      }
+      // 填充order中food对应的封面链接
+      order.goodsInfo.record.forEach(food => {
+        if (food._id in idToImg) {
+          food.img = idToImg[food._id]
+        }else{
+          //默认图片
+          food.img = 'cloud://cloud1-4g4b6j139b4e50e0.636c-cloud1-4g4b6j139b4e50e0-1307666009/noImg.svg'
+        }
+      })
+    })
 
-        db.collection('orders').aggregate()
-          .match({
-            'userInfo.openid': openid
-          })
-          .sort({ //日期字符串从大到小排序
-            'orderInfo.timeInfo.createTime': -1
-          })
-          .skip((currPage - 1) * pageSize)
-          .limit(pageSize)
-          .lookup({ //联表查询订单用户反馈 state
-            let: {
-              outTradeNo: '$orderInfo.outTradeNo'
-            },
-            from: 'userFeedbacks',
-            pipeline: $.pipeline()
-              .match(_.expr($.and([ //匹配openid和rID
-                $.eq(['$_openid', openid]),
-                $.eq(['$outTradeNo', '$$outTradeNo'])
-              ])))
-              .replaceRoot({ //只显示state
-                newRoot: {
-                  state: '$state'
-                }
-              })
-              .done(),
-            as: 'feedback'
-          })
-          .end()
-          .then(res => {
-            resolve({
-              success: true,
-              record: res.list,
-              currPage: currPage,
-              totalPage: totalPage,
-              totalCount: totalCount,
-            })
-          })
-          .catch(e => {
-            console.error(e)
-            reject({
-              success: false
-            })
-          })
-      })
-      .catch(e => {
-        console.error(e)
-        reject({
-          success: false
-        })
-      })
-  })
+
+    return {
+      success: true,
+      record: orders,
+      currPage: currPage,
+      totalPage: totalPage,
+      totalCount: totalCount,
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      success: false
+    }
+  }
 }
