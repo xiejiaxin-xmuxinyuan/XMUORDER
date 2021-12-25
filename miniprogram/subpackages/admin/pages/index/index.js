@@ -182,31 +182,6 @@ Page({
       util.showToast('功能未开放')
     }
   },
-  getUserNotices: async function () {
-    const countResult = await db.collection('notices').where({
-      hidden: false
-    }).count()
-
-    const total = countResult.total
-    // 计算需分几次取
-    const MAX_LIMIT = 20
-    const batchTimes = Math.ceil(total / MAX_LIMIT)
-    const tasks = []
-    for (let i = 0; i < batchTimes; i++) {
-      let promise = db.collection('notices').where({
-        hidden: false
-      }).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get()
-      tasks.push(promise)
-    }
-
-    const res = (await Promise.all(tasks)).reduce((acc, cur) => {
-      return {
-        notices: acc.data.concat(cur.data)
-      }
-    })
-    res.data.sort(userNoticesSort)
-    return res.data //返回排序后数据
-  },
   watchOrder: function (e, flag = null) { //订单监听
     var watchOrderFlag
     if (flag !== null) {
@@ -300,8 +275,10 @@ Page({
           'orderInfo.orderState': 'ACCEPT',
         }).count().then(res => {
           resolve(res.total)
+          return
         }).catch(e => {
           reject(e)
+          return
         })
     })
   },
@@ -324,6 +301,7 @@ Page({
               totalPage: totalPage,
               totalCount: totalCount,
             })
+            return
           }
           // 读取当前页订单
           db.collection('orders')
@@ -343,8 +321,10 @@ Page({
                 totalPage: totalPage,
                 totalCount: totalCount,
               })
+              return
             }).catch(e => {
               reject()
+              return
             })
         })
         .catch(e => {

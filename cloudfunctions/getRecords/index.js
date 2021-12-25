@@ -30,75 +30,101 @@ exports.main = async (event, context) => {
   const openid = wxContext.OPENID
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
   const currPage = "currPage" in event ? event.currPage : 1 //查询的当前页数
-  return new Promise((resolve, reject) => {
-    db.collection('orders')
-      .where({
+
+  try {
+    //计算分页
+    const countRes = await db.collection('orders').where({
+      'userInfo.openid': openid
+    }).count()
+    const totalCount = countRes.total
+    const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
+
+    if (currPage > totalPage) {
+      return {
+        success: true,
+        record: [],
+        currPage: currPage,
+        totalPage: totalPage,
+        totalCount: totalCount,
+      }
+    }
+
+    const ordersRes = await db.collection('orders').aggregate().match({
         'userInfo.openid': openid
-      })
-      .count()
-      .then(res => {
-        const totalCount = res.total
-        const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
-
-        if (currPage > totalPage) {
-          resolve({
-            success: true,
-            record: [],
-            currPage: currPage,
-            totalPage: totalPage,
-            totalCount: totalCount,
-          })
-        }
-
-        db.collection('orders').aggregate()
-          .match({
-            'userInfo.openid': openid
-          })
-          .sort({ //日期字符串从大到小排序
-            'orderInfo.timeInfo.createTime': -1
-          })
-          .skip((currPage - 1) * pageSize)
-          .limit(pageSize)
-          .lookup({ //联表查询订单用户反馈 state
-            let: {
-              outTradeNo: '$orderInfo.outTradeNo'
-            },
-            from: 'userFeedbacks',
-            pipeline: $.pipeline()
-              .match(_.expr($.and([ //匹配openid和rID
-                $.eq(['$_openid', openid]),
-                $.eq(['$outTradeNo', '$$outTradeNo'])
-              ])))
-              .replaceRoot({ //只显示state
-                newRoot: {
-                  state: '$state'
-                }
-              })
-              .done(),
-            as: 'feedback'
-          })
-          .end()
-          .then(res => {
-            resolve({
-              success: true,
-              record: res.list,
-              currPage: currPage,
-              totalPage: totalPage,
-              totalCount: totalCount,
-            })
-          })
-          .catch(e => {
-            console.error(e)
-            reject({
-              success: false
-            })
-          })
-      })
-      .catch(e => {
-        console.error(e)
-        reject({
-          success: false
+      }).sort({
+        'orderInfo.timeInfo.createTime': -1,
+      }).skip((currPage - 1) * pageSize).limit(pageSize)
+      .addFields({ //食物封面
+        foodIDs: $.reduce({
+          input: '$goodsInfo.record',
+          initialValue: [],
+          in: $.concatArrays(['$$value', ['$$this._id']]),
         })
+      }).lookup({
+        let: {
+          foodIDs: '$foodIDs'
+        },
+        from: 'food',
+        pipeline: $.pipeline()
+          .match(_.expr(
+            $.in(['$_id', '$$foodIDs'])
+          )).project({
+            coverImg: 1
+          }).done(),
+        as: 'foodImg'
+      }).lookup({
+        let: {
+          outTradeNo: '$orderInfo.outTradeNo'
+        },
+        from: 'userFeedbacks',
+        pipeline: $.pipeline()
+          .match(_.expr(
+            $.eq(['$outTradeNo', '$$outTradeNo'])
+          )).replaceRoot({
+            newRoot: {
+              state: '$state'
+            }
+          }).done(),
+        as: 'feedback'
       })
-  })
+      .end()
+
+    console.log(ordersRes.list[0])
+    var orders = ordersRes.list
+    orders.forEach(order => {
+      //反馈
+      if (order.feedback.length) {
+        order.feedback = order.feedback[0]
+      } else {
+        delete order.feedback
+      }
+
+      //id转图片链接对象
+      var idToImg = {}
+      order.foodImg.forEach(food => {
+        idToImg[food._id] = food.coverImg
+      })
+      // 填充order中food对应的封面链接
+      order.goodsInfo.record.forEach(food => {
+        if (food._id in idToImg) {
+          food.img = idToImg[food._id]
+        } else {
+          food.img = 'cloud://cloud1-4g4b6j139b4e50e0.636c-cloud1-4g4b6j139b4e50e0-1307666009/noImg.svg'
+        }
+      })
+    })
+
+    return {
+      success: true,
+      record: orders,
+      currPage: currPage,
+      totalPage: totalPage,
+      totalCount: totalCount,
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      success: false
+    }
+  }
 }

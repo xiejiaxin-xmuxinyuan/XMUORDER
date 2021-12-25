@@ -143,9 +143,9 @@ Page({
 
       const noticeCurrType = that.data.noticeCurrType
 
+      //包括隐藏公告
       const countResult = await db.collection('notices').where({
-        type: noticeCurrType,
-        hidden: false
+        type: noticeCurrType
       }).count()
 
       const noticeTotalCount = countResult.total
@@ -166,9 +166,9 @@ Page({
         noticeCurrPage = noticeTotalPage
       }
 
+      //包括隐藏公告
       db.collection('notices').where({
-          type: noticeCurrType,
-          hidden: false
+          type: noticeCurrType
         })
         .orderBy('top', 'desc')
         .orderBy('date', 'desc')

@@ -162,6 +162,13 @@
         <text wx:elif="{{user.identity.type==='superAdmin'}}" class="fr">超级管理员</text>
       </view>
     </view>
+    <view wx:if="{{user.identity.type!=='superAdmin'}}" class="cu-item">
+      <view class="content">
+        <text class="cuIcon-taoxiaopu text-gray"></text>
+        <text>餐厅</text>
+        <text class="fr">{{canteen.name}}</text>
+      </view>
+    </view>
   </view>
 </view>
 

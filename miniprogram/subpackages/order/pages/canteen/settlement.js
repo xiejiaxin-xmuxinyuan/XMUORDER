@@ -131,7 +131,6 @@ Page({
           food: food.name,
           num: food.orderNum,
           price: food.price,
-          img: food.coverImg,
           _id: food._id
         }
         orderInfo.goodsInfo.record.push(foodRecord)
@@ -238,19 +237,23 @@ Page({
             if (resInfo.tradeState === 'SUCCESS') { //结果是支付成功
               util.showToast('支付成功', 'success')
               resolve() //表明进入支付成功页面
+              return
             } else {
               util.showToast('订单未支付')
               reject() //表明进入订单支付详情页面
+              return
             }
           } else {
             util.showToast('订单核实失败')
             reject() //表明进入订单支付详情页面
+            return
           }
         })
         .catch(e => {
           wx.hideLoading()
           util.showToast('订单核实失败')
           reject() //表明进入订单支付详情页面
+          return
         })
     })
   }

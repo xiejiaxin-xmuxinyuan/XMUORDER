@@ -63,8 +63,9 @@ Page({
     })
   },
   onSwitchChange: function (e) {
+    const type = e.currentTarget.dataset.type
     that.setData({
-      'notice.top': e.detail.value
+      ['notice.' + type]: e.detail.value
     })
   },
   typePickerChange: function (e) {

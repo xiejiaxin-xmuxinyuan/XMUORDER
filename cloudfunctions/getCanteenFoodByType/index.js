@@ -55,6 +55,7 @@ exports.main = async (event, context) => {
             totalPage: 0,
             totalCount: 0,
           })
+          return
         }
 
         if (currPage > totalPage) {
@@ -77,12 +78,14 @@ exports.main = async (event, context) => {
               totalPage: totalPage,
               totalCount: totalCount,
             })
+            return
           })
           .catch(e => {
             console.error(e)
             reject({
               success: false
             })
+            return
           })
       })
   })

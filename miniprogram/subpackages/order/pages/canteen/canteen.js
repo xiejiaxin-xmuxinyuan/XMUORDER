@@ -88,6 +88,12 @@ Page({
     app.globalData.allOrderList[cID] = that.data.orderList
   },
   deleteShoppingCart() { // 页面通信删除购物车
+    // 清空本地数据避免退出时误保存
+    that.setData({
+      orderList: {
+        length: 0
+      }
+    })
     //删除对应全局数据
     const cID = that.data.canteen.cID
     const cIndex = that.data.cIndex
