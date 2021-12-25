@@ -1,0 +1,37 @@
+<!--subpackages/admin/pages/staff/addStaff.wxml-->
+<view class="tab-page">
+  <cu-custom bgColor="bg-gradual-blue" isBack="true">
+    <view slot="content">新增员工</view>
+  </cu-custom>
+</view>
+
+
+<view class="cu-bar search bg-white">
+  <view class="search-form round">
+    <text class="cuIcon-search"></text>
+    <input type="text" placeholder="请输入姓名或电话" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="getStaffData" confirm-type="search"></input>
+  </view>
+  <view class="action">
+    <button class="cu-btn bg-blue shadow-blur round" bindtap="searchStaff">搜索</button>
+  </view>
+</view>
+<form catchsubmit="addStaffSubmit">
+  <view wx:if="{{isAdded}}">
+    <view class="cu-form-group">
+      <view class="title text-bold">商店</view>
+      <picker bindchange="shopPickerChange" value="{{shopPickerIndex}}" range="{{shopPickerList}}">
+        <view class="picker">
+          {{shopPickerIndex !== null? shopPickerList[shopPickerIndex] : '请选择员工所在商店'}}
+        </view>
+      </picker>
+    </view>
+    <view style="text-align: center;padding: 1rem 0;">
+      <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">提交</button>
+    </view>
+  </view>
+</form>
+
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>
