@@ -15,6 +15,9 @@ Page({
     shopPickerIndex: null,
     currPage: 0,
     totalPage: 1,
+    staffCurrPage: 1,
+    staffTotalPage: 0,
+    staffTotalCount: 0,
     loaded: false
   },
 
@@ -49,8 +52,6 @@ Page({
           staffList.push(element)
         }
       })
-      console.log(staffList)
-      console.log(canteenStaffNum)
       that.setData({
         users: users, //用户数据
         staffList: staffList,
@@ -66,8 +67,6 @@ Page({
   onShow: function (options) {
     that = this
     if (that.data.loaded) {
-      console.log(2222222)
-      console.log(that.data.loaded)
       const shopPickerIndex = that.data.shopPickerIndex
       if (shopPickerIndex === null ) {
         return
@@ -76,9 +75,6 @@ Page({
       const currPage = that.data.currPage
       that.loadPage(shopPickerIndex, cID, currPage)
     }
-    
-    
-    
   },
   getUsers: async function () {
     const countResult = await db.collection('users').where({
@@ -159,7 +155,6 @@ Page({
             let currPage = res.result.currPage
             let totalPage = res.result.totalPage
             let staff = res.result.staff
-            console.log(staff)
             //修改当前页数据
             that.shopTypePageChange(staff, currPage, totalPage)
             //保存page信息和类型选项
@@ -234,7 +229,7 @@ Page({
               that.setData({
                 staffList : that.data.staffList
               })
-              that.showT('删除成功', 'success', 1500)
+              util.showToast('删除成功', 'success', 2000)
               setTimeout(() => {
                 that.loadPage(shopIndex, cID, currPage)
               }, 1600);
@@ -242,15 +237,15 @@ Page({
             }, 1100)
           } else {
             wx.hideLoading()
-            that.showT('数据提交失败', 'error', 2000)
+            util.showToast('数据提交失败', 'error', 2000)
           }
         })
         .catch(error => {
           wx.hideLoading()
-          that.showT('数据提交失败', 'error', 2000)
+          util.showToast('数据提交失败', 'error', 2000)
         })
      } else if (res.cancel) {
-      that.showT('操作已取消')
+      util.showToast('操作已取消')
     }
   }
    })
@@ -260,15 +255,4 @@ Page({
       url: './addStaff',
     })
   },
-  showT: (title, icon = 'none', duration = 1000) => {
-    wx.showToast({
-      title: title,
-      icon: icon,
-      duration: duration
-    })
-  },
-
-
-
- 
 })
