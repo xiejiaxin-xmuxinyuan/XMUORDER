@@ -56,9 +56,9 @@
           </view>
         </view>
         <view class="page-bar">
-          <text catchtap="changePage" class="cu-btn line-black  round shadow">上一页</text>
+          <button catchtap="changePage" class="cu-btn line-black  round shadow">上一页</button>
           <text class="text-lg margin-sm">{{currPage}} / {{totalPage}}</text>
-          <text catchtap="changePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</text>
+          <button catchtap="changePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
         </view>
       </block>
     </view>
