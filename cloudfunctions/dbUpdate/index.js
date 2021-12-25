@@ -10,8 +10,9 @@
  *        
  *        模式：
  *        (可选)set: any 
- *                    带有该参数时将执行数据库set命令，此时无需path
- *                    替换_id对应记录为formData
+ *                    带有该参数时将执行数据库set命令
+ *                    无path参数时替换_id对应记录为formData
+ *                    有path参数时替换_id对应记录path下的数据为formData
  *        (可选)push: any 
  *                    带有该参数时将执行数据库push命令，
  *                    对path参数连接的数组字段进行push(formData)操作
@@ -44,62 +45,36 @@ exports.main = async (event, context) => {
     // const wxContext = cloud.getWXContext()
     // const openid = wxContext.OPENID
 
+    var pro
     if ('push' in event) {
-      db.collection(table).doc(_id).update({
-          data: {
-            [path]: _.push(formData)
-          }
-        })
-        .then(res => {
-          resolve({
-            success: true,
-            res: res
-          })
-        })
-        .catch(e => {
-          console.error(e)
-          reject({
-            success: false
-          })
-        })
+      pro = db.collection(table).doc(_id).update({
+        data: {
+          [path]: _.push(formData)
+        }
+      })
     } else if ('pull' in event) {
-      db.collection(table).doc(_id).update({
-          data: {
-            [path]: _.pull(formData)
-          }
-        })
-        .then(res => {
-          resolve({
-            success: true,
-            res: res
-          })
-        })
-        .catch(e => {
-          console.error(e)
-          reject({
-            success: false
-          })
-        })
+      pro = db.collection(table).doc(_id).update({
+        data: {
+          [path]: _.pull(formData)
+        }
+      })
     } else if ('set' in event) {
       //保证没有_id
-      delete formData._id
-      db.collection(table).doc(_id).set({
+      if ('_id' in formData) {
+        delete formData._id
+      }
+      if ('path' in event) {
+        pro = db.collection(table).doc(_id).update({
+          data: {
+            [path]: _.set(formData)
+          }
+        })
+      } else {
+        pro = db.collection(table).doc(_id).set({
           data: formData
         })
-        .then(res => {
-          resolve({
-            success: true,
-            res: res
-          })
-        })
-        .catch(e => {
-          console.error(e)
-          reject({
-            success: false
-          })
-        })
+      }
     } else {
-      var pro
       if ('path' in event) {
         pro = db.collection(table).doc(_id).update({
           data: {
@@ -111,18 +86,19 @@ exports.main = async (event, context) => {
           data: formData
         })
       }
-
-      pro.then(res => {
-          resolve({
-            success: true,
-            res: res
-          })
-        }).catch(e => {
-          console.error(e)
-          reject({
-            success: false
-          })
-        })
     }
+
+    pro.then(res => {
+        resolve({
+          success: true,
+          res: res
+        })
+      })
+      .catch(e => {
+        console.error(e)
+        resolve({
+          success: false
+        })
+      })
   })
 }
