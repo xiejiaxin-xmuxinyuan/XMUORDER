@@ -8,7 +8,7 @@ Page({
   data: {
     inputVal: '',
     isAdded: false,
-    Target: {},
+    target: [],
     canteens: [],
     shopPickerList: [],
     canteenID: { },
@@ -46,6 +46,8 @@ Page({
       if (that.data.shopPickerIndex === e.detail.value) {
         return
       }
+
+  
     }
     if (setIndex >= 0) {
       var index = setIndex
@@ -77,35 +79,29 @@ Page({
     let form = that.data.form
     const params = Object.assign(form, e.detail.value)
     //表单验证
-    console.log(params)
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
-      wx.showToast({
-        title: error.msg,
-        icon: 'none',
-        duration: 1000
-      })
+      util.showToast('数据提交失败', 'error', '1000')
     } 
     else 
     {
       util.showLoading('上传中')
       //上传图片
       var canteenID = that.data.canteenID
-      var Target = that.data.Target
+      var target = that.data.target
       let shopPickerList = that.data.shopPickerList
       let canteen = shopPickerList[params.shopPickerIndex]
-      let StaffcID = canteenID[canteen] 
-      console.log(StaffcID)
+      let staffcID = canteenID[canteen] 
       let key = "cID"
-      Target[0].identity["type"] = "staff"
-      Target[0].identity[key] = StaffcID
-      let _id = that.data.Target[0]._id
+      target[0].identity["type"] = "staff"
+      target[0].identity[key] = staffcID
+      let _id = that.data.target[0]._id
         wx.cloud.callFunction({
           name: 'dbUpdate',
           data: {
             table: 'users',
             _id: _id,
-            formData: Target[0],
+            formData: target[0],
            set: true
         }
       })
@@ -119,7 +115,6 @@ Page({
           }, 1600);
         } 
         else {
-
           util.showToast('数据提交失败', 'error', 1500)
         }
       })
@@ -132,7 +127,6 @@ Page({
   searchStaff : function(e) {
     var canteenID = that.data.canteenID
     var val = that.data.inputVal
-    console.log(val)
     wx.showLoading({
       title: '正在搜索中',
     })
@@ -141,11 +135,7 @@ Page({
     }, 500)
     if( !(that.judgeName(val)) && !(that.judgePhone(val)) )
     {
-      console.log(that.judgePhone(val))
-      wx.showToast({
-        title: '请输入正确的\r\n姓名或电话',
-        icon: 'none'
-    })
+      util.showToast('请输入正确的姓名或电话')
       return;
     }
     else
@@ -156,29 +146,25 @@ Page({
         name: val
       }).limit(10).get({
         success: res => {
-          console.log(res)
-          var Target = that.data.Target
-          that.data.Target = res.data
-          Target = res.data
+          var target = that.data.target
+          that.data.target = res.data
+          target = res.data
           that.setData({
-            Target: that.data.Target,
+            target: that.data.target,
           })
-          console.log(Target)
-          if(!(Object.keys(Target).length))
+          if(!(Object.keys(target).length))
           {
             // 再对电话进行查询
             db.collection('users').where({
               phone: val
             }).limit(10).get({
               success: res => {
-                console.log(res)
-                that.data.Target = res.data
-                Target = res.data
+                that.data.target = res.data
+                target = res.data
                 that.setData({
-                  Target: that.data.Target,
+                  target: that.data.target,
                 })
-                console.log(Target)
-                if(!(Object.keys(Target).length))
+                if(!(Object.keys(target).length))
                 {
                   util.showToast('未查询到此用户', 'error')
                   return;
@@ -193,7 +179,7 @@ Page({
                      mask: true
                    })
                    wx.hideLoading()
-                   if(Target[0].identity.type === "staff" )
+                   if(target[0].identity.type === "staff" )
                    {
                      util.showToast('此人已为员工', 'error')
                      return;
@@ -201,49 +187,7 @@ Page({
                    that.setData({
                      isAdded: true
                    })
-                   wx.showModal({
-                    title: '请输入员工所在餐厅',
-                    confirmText: '添加',
-                    editable: true,
-                    placeholderText: '输入员工所在餐厅名称',
-                    success(res) {
-                      if (res.confirm) {
-                         let StaffcID = canteenID[res.content] 
-                         let key = "cID"
-                         Target[0].identity["type"] = "staff"
-                         Target[0].identity[key] = StaffcID
-                         console.log(Target[0].identity)
-                         util.showLoading('上传中')
-                         let _id = that.data.Target[0]._id
-                         wx.cloud.callFunction({
-                            name: 'dbUpdate',
-                            data: {
-                              table: 'users',
-                              _id: _id,
-                              formData: Target[0],
-                              set: true
-                            }
-                          })
-                          .then(res => {
-                              util.hideLoading()
-                              if (res.result.success) {
-                                util.showToast('新增成功', 'success', 1500)
-                                // 返回上一页
-                                setTimeout(() => {
-                                  wx.navigateBack()
-                                }, 1600);
-                              } else {
-                                util.showToast('数据提交失败', 'error', 1500)
-                              }
-                            })
-                            .catch(e => {
-                              util.hideLoading()
-                            })
-                      } else if (res.cancel) {
-                        util.showToast('操作已取消')
-                      }
-                    }
-                  })
+                   
                 }
                 else if (res.cancel) {
                   util.showToast('操作已取消')
@@ -266,7 +210,7 @@ Page({
                    mask: true
                  })
                  wx.hideLoading()
-                 if(Target[0].identity.type === "staff" )
+                 if(target[0].identity.type === "staff" )
                  {
                    util.showToast('此人已为员工', 'error')
                    return;
