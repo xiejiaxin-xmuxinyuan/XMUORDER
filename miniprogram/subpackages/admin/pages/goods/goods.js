@@ -69,13 +69,13 @@ Page({
   },
   shopPickerChange: function (e) {
     //若选择项不变
-    if ('detail' in e) {
+    if (typeof (e) === "number") {
+      var index = e
+    } else {
       if (that.data.shopPickerIndex === e.detail.value) {
         return
       }
       var index = e.detail.value
-    } else {
-      var index = e
     }
 
     var foodList = app.globalData.canteen[index].foodList
