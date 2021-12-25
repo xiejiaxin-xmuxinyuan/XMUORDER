@@ -16,13 +16,13 @@ exports.main = async (event, context) => {
     db.collection('orders').aggregate().match({
         'userInfo.openid': openid,
         'orderInfo.outTradeNo': outTradeNo
-      }).addFields({
+      }).limit(1).addFields({
         foodIDs: $.reduce({
           input: '$goodsInfo.record',
           initialValue: [],
           in: $.concatArrays(['$$value', ['$$this._id']]),
         })
-      })
+      }) //查询食物封面
       .lookup({
         let: {
           foodIDs: '$foodIDs'

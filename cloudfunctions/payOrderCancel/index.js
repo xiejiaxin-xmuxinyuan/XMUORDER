@@ -33,7 +33,7 @@ exports.main = async (event, context) => {
     //读取数据库订单
     var dbRes = await db.collection('orders').where({
       'orderInfo.outTradeNo': outTradeNo
-    }).get()
+    }).limit(1).get()
     const order = dbRes.data[0]
 
     const subMchId = order.goodsInfo.shopInfo.subMchId
