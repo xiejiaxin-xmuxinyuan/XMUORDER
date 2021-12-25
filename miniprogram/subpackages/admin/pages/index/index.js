@@ -183,7 +183,7 @@ Page({
   },
   toStaff: () => {
     const identity = that.data.user.identity
-    if (identity.type !== 'superAdmin' || identity.type !== 'admin') {
+    if (identity.type !== 'superAdmin' && identity.type !== 'admin') {
       util.showToast('非管理员无权限进入')
       return
     }
