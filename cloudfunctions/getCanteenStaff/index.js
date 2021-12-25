@@ -36,7 +36,7 @@ exports.main = async (event, context) => {
     db.collection('users')
       .where({
         identity: {
-          type: "staff",
+          type: "member",
           cID: cID
         }
       })
@@ -61,7 +61,7 @@ exports.main = async (event, context) => {
 
         db.collection('users').where({
             identity: {
-              type: "staff",
+              type: "member",
               cID: cID
             }
           }).skip((currPage - 1) * pageSize).limit(pageSize).get()

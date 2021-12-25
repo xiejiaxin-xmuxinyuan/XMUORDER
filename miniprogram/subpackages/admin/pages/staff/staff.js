@@ -17,14 +17,14 @@ Page({
 
   onLoad: function (options) {
     that = this
-    var canteens = app.globalData.canteen
+    var canteens = app.globalData.canteens
     const identity = app.globalData.identity
     var shopPickerList = [] //餐厅名列表
 
     canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
       // 身份所属餐厅
-      if (identity.type === 'admin' || identity.type === 'member') {
+      if (identity.type !== 'superAdmin') {
         if (canteen.cID === identity.cID) {
           that.shopPickerChange(index)
         }
@@ -52,7 +52,7 @@ Page({
   },
   loadPage: (shopIndex, currPage = 1, pageSize = 5) => {
     util.showLoading('加载中')
-    const cID = app.globalData.canteen[shopIndex].cID
+    const cID = app.globalData.canteens[shopIndex].cID
     wx.cloud.callFunction({
         name: 'getCanteenStaff',
         data: {

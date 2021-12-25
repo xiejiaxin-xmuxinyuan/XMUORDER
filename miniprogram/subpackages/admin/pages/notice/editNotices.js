@@ -35,7 +35,7 @@ Page({
         }
       }
 
-      var canteens = app.globalData.canteen
+      var canteens = app.globalData.canteens
       var orgPicker = ['点餐项目组']
       var orgPickerIndex
       canteens.forEach(canteen => {

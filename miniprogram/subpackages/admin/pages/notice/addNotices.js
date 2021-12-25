@@ -29,7 +29,7 @@ Page({
     that = this
     that.initValidate()
     const identity = app.globalData.identity
-    var canteens = app.globalData.canteen
+    var canteens = app.globalData.canteens
 
     //按身份渲染
     if (identity.type !== 'superAdmin') {

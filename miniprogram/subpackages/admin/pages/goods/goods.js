@@ -19,7 +19,7 @@ Page({
 
   onLoad: function (option) {
     that = this
-    var canteens = app.globalData.canteen
+    var canteens = app.globalData.canteens
     const identity = app.globalData.identity
     var shopPickerList = []
     var intCurTime = getIntCurTime() //当前时间
@@ -34,7 +34,7 @@ Page({
     canteens.forEach((canteen, index) => {
       shopPickerList.push(canteen.name)
       // 身份所属餐厅
-      if (identity.type === 'admin' || identity.type === 'member') {
+      if (identity.type !== 'superAdmin') {
         if (canteen.cID === identity.cID) {
           that.shopPickerChange(index)
         }
@@ -75,7 +75,7 @@ Page({
       var index = e.detail.value
     }
 
-    var foodList = app.globalData.canteen[index].foodList
+    var foodList = app.globalData.canteens[index].foodList
     var foodTypePickerList = []
     foodList.forEach(element => {
       foodTypePickerList.push(element.name)
@@ -102,7 +102,7 @@ Page({
   },
   foodTypePageChange: (shopIndex, foodTypeIndex, food, currPage, totalPage) => {
     let path = 'canteens[' + shopIndex + '].foodList[' + foodTypeIndex + '].food'
-    app.globalData.canteen[shopIndex].foodList[foodTypeIndex].food = food
+    app.globalData.canteens[shopIndex].foodList[foodTypeIndex].food = food
     that.setData({
       currPage: currPage,
       totalPage: totalPage,
@@ -318,7 +318,7 @@ Page({
         })
 
         let path = 'canteens[' + shopPickerIndex + '].foodList'
-        app.globalData.canteen[shopPickerIndex].foodList = canteen.foodList
+        app.globalData.canteens[shopPickerIndex].foodList = canteen.foodList
         that.setData({
           foodTypePickerIndex: null,
           foodTypePickerList: foodTypePickerList,

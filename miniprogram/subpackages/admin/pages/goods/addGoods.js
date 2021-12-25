@@ -28,7 +28,7 @@ Page({
     that = this
     that.initValidate()
 
-    var canteens = app.globalData.canteen
+    var canteens = app.globalData.canteens
     var shopPickerList = []
     const identity = app.globalData.identity
 
@@ -48,7 +48,7 @@ Page({
 
     //根据传参值选择商品类别
     if ('foodTypePickerIndex' in options) {
-      const foodList = app.globalData.canteen[options.shopPickerIndex].foodList
+      const foodList = app.globalData.canteens[options.shopPickerIndex].foodList
       var foodTypePickerList = []
       foodList.forEach(element => {
         foodTypePickerList.push(element.name)
@@ -64,7 +64,7 @@ Page({
     //触发或调用
     var index = 'detail' in e ? e.detail.value : e
 
-    var foodList = app.globalData.canteen[index].foodList
+    var foodList = app.globalData.canteens[index].foodList
     var foodTypePickerList = []
     foodList.forEach(element => {
       foodTypePickerList.push(element.name)
