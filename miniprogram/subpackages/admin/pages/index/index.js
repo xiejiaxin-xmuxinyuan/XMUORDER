@@ -275,8 +275,10 @@ Page({
           'orderInfo.orderState': 'ACCEPT',
         }).count().then(res => {
           resolve(res.total)
+          return
         }).catch(e => {
           reject(e)
+          return
         })
     })
   },
@@ -299,6 +301,7 @@ Page({
               totalPage: totalPage,
               totalCount: totalCount,
             })
+            return
           }
           // 读取当前页订单
           db.collection('orders')
@@ -318,8 +321,10 @@ Page({
                 totalPage: totalPage,
                 totalCount: totalCount,
               })
+              return
             }).catch(e => {
               reject()
+              return
             })
         })
         .catch(e => {
