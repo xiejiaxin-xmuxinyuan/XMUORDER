@@ -1,249 +1,201 @@
 // subpackages/admin/pages/staff/addStaff.js
-import WxValidate from '../../../../utils/WxValidate.js'
 const app = getApp()
-const db = wx.cloud.database()
 var that
 const util = require('../../../../utils/util.js')
+
 Page({
   data: {
-    inputVal: '',
-    isAdded: false,
-    target: [],
-    canteens: [],
-    shopPickerList: [],
-    canteenID: { },
+    searchName: '',
+    searchPhone: '',
+    user: null,
+    identity: {},
     shopPickerIndex: null,
-    form: {
-      shopPickerIndex: null
-    }
+    shopPickerList: [],
   },
   onLoad: function (options) {
     that = this
-    that.initValidate()
-    var isAdded = false
-    var canteens = app.globalData.canteen
-    var shopPickerList = []
-    var canteenID = {}
-    canteens.forEach((canteen, index) => {
-      shopPickerList.push(canteen.name)
-      canteenID[canteen.name] = canteen.cID
-      // 身份所属餐厅
-    })
-    that.setData({
-      isAdded: isAdded, 
-      canteens: canteens,
-      shopPickerList: shopPickerList,
-      canteenID: canteenID
-    })
-  },
-  shopPickerChange: function (e, setIndex = -1) {
-    util.showLoading('加载中')
-    setTimeout(() => {
-      util.hideLoading()
-    }, 450);
-    //若选择项不变
-    if (e!==null){
-      if (that.data.shopPickerIndex === e.detail.value) {
-        return
-      }
+    const identity = app.globalData.identity
+    var canteens = app.globalData.canteens
 
-  
+    // 构建setData对象
+    var data = {
+      identity
     }
-    if (setIndex >= 0) {
-      var index = setIndex
-    } else {
-      var index = e.detail.value
-    }
-    that.setData({
-      shopPickerIndex: index,
-      ['form.shopPickerIndex']: index,
+
+    var shopPickerList = []
+    canteens.forEach((canteen, index) => {
+      if (identity.type !== 'superAdmin' && canteen.cID === identity.cID) {
+        data.shopPickerIndex = index
+      }
+      shopPickerList.push(canteen.name)
     })
+    data.shopPickerList = shopPickerList
+
+    that.setData(data)
   },
-  getStaffData : function(e) {
-    that.data.inputVal = e.detail.value,
-    that.setData({
-      inputVal:  that.data.inputVal
-    })
-   },
-   judgeName: function(e) {
-    if (!(/^[\u4E00-\u9FA5A-Za-z]+$/.test(e))) 
-       return false
-    else return true
-   },
-   judgePhone: function(e){
-    if (!(/^[0-9]*$/.test(e)))
-       return false
-    else return true
-   },
-   addStaffSubmit: function (e) {
-    let form = that.data.form
-    const params = Object.assign(form, e.detail.value)
-    //表单验证
-    if (!that.WxValidate.checkForm(params)) {
-      const error = that.WxValidate.errorList[0]
-      util.showToast('数据提交失败', 'error', '1000')
-    } 
-    else 
-    {
-      util.showLoading('上传中')
-      //上传图片
-      var canteenID = that.data.canteenID
-      var target = that.data.target
-      let shopPickerList = that.data.shopPickerList
-      let canteen = shopPickerList[params.shopPickerIndex]
-      let staffcID = canteenID[canteen] 
-      let key = "cID"
-      target[0].identity["type"] = "staff"
-      target[0].identity[key] = staffcID
-      let _id = that.data.target[0]._id
-        wx.cloud.callFunction({
-          name: 'dbUpdate',
-          data: {
-            table: 'users',
-            _id: _id,
-            formData: target[0],
-           set: true
+  strJudge(str) {
+    return /^[\u4E00-\u9FA5A-Za-z0-9]+$/.test(str)
+  },
+  searchStaff: function (e) {
+    util.showLoading('搜索中')
+    const name = e.detail.value.name
+    const phone = e.detail.value.phone
+
+    if (!that.strJudge(name)) {
+      util.showToast('请输入正确的姓名')
+      return
+    }
+    if (!that.strJudge(phone)) {
+      util.showToast('请输入正确的电话')
+      return
+    }
+
+    util.showLoading('加载中')
+    wx.cloud.callFunction({
+        name: 'searchUser',
+        data: {
+          name,
+          phone
         }
-      })
-      .then(res => {
+      }).then(res => {
         util.hideLoading()
         if (res.result.success) {
-          util.showToast('新增成功', 'success', 1500)
-         // 返回上一页
-         setTimeout(() => {
-          wx.navigateBack()
-          }, 1600);
-        } 
-        else {
-          util.showToast('数据提交失败', 'error', 1500)
+          util.showToast('查询成功', 'success')
+          var user = res.result.user
+        } else {
+          util.showToast('未查询到相关用户')
+          var user = null
         }
+        that.setData({
+          user
+        })
       })
       .catch(e => {
-        util.showToast('数据提交失败', 'error', 1500)
         util.hideLoading()
+        util.showToast('查询失败', 'error')
+        that.setData({
+          user: null
+        })
       })
-    }
   },
-  searchStaff : function(e) {
-    var canteenID = that.data.canteenID
-    var val = that.data.inputVal
-    wx.showLoading({
-      title: '正在搜索中',
+  shopPickerChange: function (e) {
+    //若选择项不变
+    const index = e.detail.value
+    that.setData({
+      shopPickerIndex: index,
     })
-    setTimeout(function () {
-      wx.hideLoading()
-    }, 500)
-    if( !(that.judgeName(val)) && !(that.judgePhone(val)) )
-    {
-      util.showToast('请输入正确的姓名或电话')
-      return;
+  },
+  addStaff: function (e) {
+    const shopPickerIndex = that.data.shopPickerIndex
+    if (shopPickerIndex === null) {
+      util.showToast('请选择要添加到的商店')
+      return
     }
-    else
-    {
-      db.collection('users').where({
-        //使用正则查询，实现对搜索的模糊查询
-        // 先对姓名进行查询
-        name: val
-      }).limit(10).get({
-        success: res => {
-          var target = that.data.target
-          that.data.target = res.data
-          target = res.data
-          that.setData({
-            target: that.data.target,
-          })
-          if(!(Object.keys(target).length))
-          {
-            // 再对电话进行查询
-            db.collection('users').where({
-              phone: val
-            }).limit(10).get({
-              success: res => {
-                that.data.target = res.data
-                target = res.data
-                that.setData({
-                  target: that.data.target,
-                })
-                if(!(Object.keys(target).length))
-                {
-                  util.showToast('未查询到此用户', 'error')
-                  return;
-                }
-                wx.showModal({
-                title: '提示',
-                content: '确认添加为员工吗？',
-                success(res){
-                  if(res.confirm){
-                    wx.showLoading({
-                     title: '正在添加员工',
-                     mask: true
-                   })
-                   wx.hideLoading()
-                   if(target[0].identity.type === "staff" )
-                   {
-                     util.showToast('此人已为员工', 'error')
-                     return;
-                   }
-                   that.setData({
-                     isAdded: true
-                   })
-                   
-                }
-                else if (res.cancel) {
-                  util.showToast('操作已取消')
-                }
-               }
-              })
-              }
-            })
+
+    const user = that.data.user
+    const identity = that.data.identity
+    const type = e.currentTarget.dataset.type
+    const cID = app.globalData.canteens[shopPickerIndex].cID
+
+    if (identity.type === 'superAdmin') { //超管进行设置
+      var cName = '无'
+      //是否原有cID
+      if ('cID' in user.identity) {
+        cName = '不存在餐厅'
+        //检索该cID对应餐厅
+        let canteens = app.globalData.canteens
+        for (let index = 0; index < canteens.length; index++) {
+          if (user.identity.cID === canteens[index].cID) {
+            cName = canteens[index].name
+            break
           }
-          else
-          {
-            wx.showModal({
-              title: '提示',
-              content: '确认添加为员工吗？',
-              success(res){
-                if(res.confirm){
-                  //云函数数据库更新 pull
-                  wx.showLoading({
-                   title: '正在添加员工',
-                   mask: true
-                 })
-                 wx.hideLoading()
-                 if(target[0].identity.type === "staff" )
-                 {
-                   util.showToast('此人已为员工', 'error')
-                   return;
-                 }
-                 that.setData({
-                   isAdded: true
-                 })
-              }
-              else if (res.cancel) {
-                util.showToast('操作已取消')
-              }
-             }
-            })
+        }
+      }
+
+      wx.showModal({
+        title: '设置该用户为' + (type === 'member' ? '员工' : '管理员') + '?',
+        content: '原身份：' + user.identity.type + '，原餐厅：' + cName,
+        success(res) {
+          if (res.confirm) {
+            util.showLoading('添加中')
+            wx.cloud.callFunction({
+                name: 'dbUpdate',
+                data: {
+                  table: 'users',
+                  _id: user._id,
+                  set: true,
+                  path: 'identity',
+                  formData: {
+                    type,
+                    cID
+                  }
+                }
+              }).then(res => {
+                util.hideLoading()
+                if (res.result.success) {
+                  util.showToast('设置成功', 'success', 2000)
+                } else {
+                  util.showToast('设置失败', 'error')
+                }
+                setTimeout(() => {
+                  that.getOpenerEventChannel().emit('refresh')
+                  wx.navigateBack()
+                }, 2000)
+              })
+              .catch(e => {
+                util.hideLoading()
+                util.showToast('加载失败', 'error')
+              })
+          } else {
+            util.showToast('操作已取消')
           }
         }
       })
-    }
-    
-   },
-   initValidate() { //表单验证规则和提示语
-    const rules = {
-      shopPickerIndex: {
-        required: true,
-        digits: true
+    } else {
+      if (user.identity.type !== 'user') { //若查询到的不是普通用户,则不允许修改
+        util.showToast('该用户不可添加为当前商店员工')
+        return
       }
+      wx.showModal({
+        title: '提示',
+        content: '确认添加' + user.name + '为员工吗？',
+        success(res) {
+          if (res.confirm) {
+            util.showLoading('添加中')
+            wx.cloud.callFunction({
+                name: 'dbUpdate',
+                data: {
+                  table: 'users',
+                  _id: user._id,
+                  set: true,
+                  path: 'identity',
+                  formData: {
+                    type: 'member',
+                    cID
+                  }
+                }
+              }).then(res => {
+                util.hideLoading()
+                if (res.result.success) {
+                  util.showToast('添加成功', 'success', 2000)
+                } else {
+                  util.showToast('添加失败', 'error', 2000)
+                }
+                setTimeout(() => {
+                  that.getOpenerEventChannel().emit('refresh')
+                  wx.navigateBack()
+                }, 2000)
+              })
+              .catch(e => {
+                util.hideLoading()
+                util.showToast('加载失败', 'error', 2000)
+              })
+          } else {
+            util.showToast('操作已取消')
+          }
+        }
+      })
+
     }
-    const messages = {
-      shopPickerIndex: {
-        required: '请选择员工所在餐厅',
-        digits: '请选择员工所在餐厅'
-      }
-    }
-    this.WxValidate = new WxValidate(rules, messages)
-  }
-  
+  },
 })
