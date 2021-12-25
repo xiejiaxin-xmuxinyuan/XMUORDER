@@ -55,7 +55,7 @@ Page({
         icon: 'friendfill',
         color: 'grey',
         name: '员工管理',
-        path: ''
+        path: '../staff/staff'
       }, {
         icon: 'taoxiaopu',
         color: 'blue',
@@ -220,7 +220,6 @@ Page({
               setData.watchOrderFlag = true
             } else {
               var newCount = 0 //新增订单数
-              var getAceptFlag = false //是否要刷新未送出订单数
               for (let i = 0; i < snapshot.docChanges.length; i++) {
                 const change = snapshot.docChanges[i];
                 if ('updatedFields' in change && 'orderInfo.orderState' in change.updatedFields) {
