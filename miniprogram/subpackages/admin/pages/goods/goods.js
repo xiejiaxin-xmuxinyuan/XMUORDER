@@ -62,10 +62,7 @@ Page({
     const cID = that.data.canteens[shopPickerIndex].cID
     const typeName = that.data.foodTypePickerList[foodTypePickerIndex]
     const currPage = that.data.currPage
-    util.showLoading('加载中')
-    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage).then(() => {
-      wx.hideLoading()
-    })
+    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage)
   },
   shopPickerChange: function (e) {
     //若选择项不变
@@ -101,10 +98,7 @@ Page({
     const typeName = that.data.foodTypePickerList[foodTypePickerIndex]
 
     //加载第一页的
-    util.showLoading('加载中')
-    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, 1).then(() => {
-      wx.hideLoading()
-    })
+    that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, 1)
   },
   foodTypePageChange: (shopIndex, foodTypeIndex, food, currPage, totalPage) => {
     let path = 'canteens[' + shopIndex + '].foodList[' + foodTypeIndex + '].food'
@@ -116,66 +110,59 @@ Page({
     })
   },
   loadPage: (shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage = 1, pageSize = 5) => {
-    return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({
-          name: 'getCanteenFoodByType',
-          data: {
-            cID: cID,
-            typeName: typeName,
+    util.showLoading('加载中')
+    wx.cloud.callFunction({
+        name: 'getCanteenFoodByType',
+        data: {
+          cID: cID,
+          typeName: typeName,
+          currPage: currPage,
+          pageSize: pageSize
+        }
+      }).then(res => {
+        wx.hideLoading()
+        if (res.result.success) {
+          let currPage = res.result.currPage
+          let totalPage = res.result.totalPage
+          let food = res.result.food
+          //修改当前页数据和当前canteens显示的食物列表
+          that.foodTypePageChange(shopPickerIndex, foodTypePickerIndex, food, currPage, totalPage)
+          //保存page信息和类型选项
+          that.setData({
             currPage: currPage,
-            pageSize: pageSize
-          }
-        }).then(res => {
-          if (res.result.success) {
-            let currPage = res.result.currPage
-            let totalPage = res.result.totalPage
-            let food = res.result.food
-            //修改当前页数据和当前canteens显示的食物列表
-            that.foodTypePageChange(shopPickerIndex, foodTypePickerIndex, food, currPage, totalPage)
-            //保存page信息和类型选项
-            that.setData({
-              currPage: currPage,
-              totalPage: totalPage,
-              foodTypePickerIndex: foodTypePickerIndex
-            })
-            resolve()
-            return
-          } else {
-            util.showToast('加载失败', 'error')
-            reject() //结束
-            return
-          }
-        })
-        .catch(e => {
+            totalPage: totalPage,
+            foodTypePickerIndex: foodTypePickerIndex
+          })
+          return
+        } else {
           util.showToast('加载失败', 'error')
-          reject(e) //结束
-        })
-    })
+          return
+        }
+      })
+      .catch(e => {
+        wx.hideLoading()
+        util.showToast('加载失败', 'error')
+        console.error(e)
+      })
   },
   changePage: function (e) {
     const dataset = e.currentTarget.dataset
-    let currPage = that.data.currPage
-    let totalPage = that.data.totalPage
-    let shopPickerIndex = that.data.shopPickerIndex
-    let foodTypePickerIndex = that.data.foodTypePickerIndex
-    let typeName = that.data.foodTypePickerList[foodTypePickerIndex]
-    let cID = that.data.canteens[shopPickerIndex].cID
+    var currPage = that.data.currPage
+    var totalPage = that.data.totalPage
+    var shopPickerIndex = that.data.shopPickerIndex
+    var foodTypePickerIndex = that.data.foodTypePickerIndex
+    var typeName = that.data.foodTypePickerList[foodTypePickerIndex]
+    const cID = that.data.canteens[shopPickerIndex].cID
 
     if ('add' in dataset) { //增加
       if (currPage <= totalPage - 1) {
-        util.showLoading('加载中')
-        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage + 1).then(() => {
-          wx.hideLoading()
-        })
+        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage + 1)
       } else {
         util.showToast('已经是最后一页啦')
       }
     } else { //减少
       if (currPage > 1) {
-        util.showLoading('加载中')
-        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage - 1).then(() => {
-          wx.hideLoading()
-        })
+        that.loadPage(shopPickerIndex, foodTypePickerIndex, cID, typeName, currPage - 1)
       } else {
         util.showToast('已经是第一页啦')
       }
