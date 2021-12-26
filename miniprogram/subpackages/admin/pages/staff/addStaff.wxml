@@ -55,7 +55,7 @@
       </view>
     </view>
     <view wx:if="{{identity.type==='superAdmin'}}" class="text-center margin-top-lg flex justify-around">
-      <button catchtap="addStaff" data-type="staff" class="cu-btn bg-blue shadow"><text class="cuIcon-friendadd"> 设为员工</text></button>
+      <button catchtap="addStaff" data-type="member" class="cu-btn bg-blue shadow"><text class="cuIcon-friendadd"> 设为员工</text></button>
       <button catchtap="addStaff" data-type="admin" class="cu-btn bg-blue shadow"><text class="cuIcon-friendfamous"> 设为管理</text></button>
     </view>
     <view wx:else class="text-center margin-top-lg">
