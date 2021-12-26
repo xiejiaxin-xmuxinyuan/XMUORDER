@@ -10,7 +10,6 @@ const cloud = require('wx-server-sdk')
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
-
 const db = cloud.database()
 
 // 云函数入口函数
@@ -21,9 +20,14 @@ exports.main = async (event, context) => {
     const userRes = await db.collection('users')
       .where({
         _openid: openid
-      })
-      .limit(1)
-      .get()
+      }).limit(1).field({
+        isActive: true,
+        phone: true,
+        name: true,
+        address: true,
+        identity: true,
+        nickName: true
+      }).get()
 
     if (userRes.data.length) {
       let ret = userRes.data[0]

@@ -22,7 +22,7 @@ exports.main = async (event, context) => {
     db.collection('canteen').aggregate()
       .match({
         cID: cID
-      })
+      }).limit(1)
       .lookup({
         from: 'food',
         pipeline: $.pipeline()

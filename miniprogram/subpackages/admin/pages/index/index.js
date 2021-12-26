@@ -5,15 +5,6 @@ const util = require('../../../../utils/util.js')
 var that
 var watcher //订单监听
 
-function userNoticesSort(a, b) { //辅助函数 用于sort排序
-  if (a.top !== b.top) {
-    return a.top > b.top ? -1 : 1;
-  } else if (a.date !== b.date) {
-    return a.date > b.date ? -1 : 1;
-  } else {
-    return 1;
-  }
-}
 
 function newOrdersSort(a, b) {
   return a.orderInfo.timeInfo.createTime > b.orderInfo.timeInfo.createTime ? 1 : -1;
@@ -55,7 +46,7 @@ Page({
         icon: 'friendfill',
         color: 'grey',
         name: '员工管理',
-        path: ''
+        path: 'toStaff'
       }, {
         icon: 'taoxiaopu',
         color: 'blue',
@@ -96,18 +87,22 @@ Page({
     let m = date.getMinutes().toString().padStart(2, '0')
     var intCurTime = parseInt(h + m)
 
-    that.setData({
+    //先保存一部分信息
+    var data = {
       user: {
+        identity,
         name: app.globalData.name,
         phone: app.globalData.phone,
         address: app.globalData.address,
-        identity,
         intCurTime
       }
-    })
+    }
+    if (identity.type !== 'superAdmin') {
+      data.pageCurr = 'order'
+    }
+    that.setData(data)
 
     var proList = []
-
     // 餐厅信息
     if (identity.type !== 'superAdmin') {
       proList.push(
@@ -133,7 +128,7 @@ Page({
 
       //放入全局变量
       var canteens = res[0].data //餐厅数据
-      app.globalData.canteen = canteens
+      app.globalData.canteens = canteens
 
       if (identity.type !== 'superAdmin') {
         var canteen = canteens[0]
@@ -149,7 +144,6 @@ Page({
         that.setData({
           intCurTime,
           canteen,
-          pageCurr: 'order',
           'orders.acceptedOrdersCount': res[1],
           'orders.newOrders': res[2].record,
           'orders.currPage': res[2].currPage,
@@ -174,13 +168,28 @@ Page({
     })
   },
   toPage: function (e) {
-    if (e.currentTarget.dataset.path) {
-      wx.navigateTo({
-        url: e.currentTarget.dataset.path,
-      })
+    const path = e.currentTarget.dataset.path
+    if (path) {
+      if (path === 'toStaff') {
+        that.toStaff()
+      } else {
+        wx.navigateTo({
+          url: e.currentTarget.dataset.path,
+        })
+      }
     } else {
       util.showToast('功能未开放')
     }
+  },
+  toStaff: () => {
+    const identity = that.data.user.identity
+    if (identity.type !== 'superAdmin' && identity.type !== 'admin') {
+      util.showToast('非管理员无权限进入')
+      return
+    }
+    wx.navigateTo({
+      url: '../staff/staff',
+    })
   },
   watchOrder: function (e, flag = null) { //订单监听
     var watchOrderFlag
@@ -220,7 +229,6 @@ Page({
               setData.watchOrderFlag = true
             } else {
               var newCount = 0 //新增订单数
-              var getAceptFlag = false //是否要刷新未送出订单数
               for (let i = 0; i < snapshot.docChanges.length; i++) {
                 const change = snapshot.docChanges[i];
                 if ('updatedFields' in change && 'orderInfo.orderState' in change.updatedFields) {

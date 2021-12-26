@@ -13,14 +13,14 @@
     </picker>
     <view class="margin-right-sm text-black" wx:else> {{shopPickerList[shopPickerIndex]}}</view>
   </view>
-  <!-- 该商店员工列表 -->
+  <!-- 商店员工列表 -->
   <view class="my-list" wx:if="{{shopPickerIndex!==null}}">
-    <view wx:if="{{!(canteenStaffNum[canteenID[shopPickerList[shopPickerIndex]]])}}" class="text-center text-gray margin-lg">
+    <view wx:if="{{!(staffList.length)}}" class="text-center text-gray margin-lg">
       该商店暂无员工
     </view>
     <block wx:else>
-      <view wx:for="{{staffList}}"  wx:key="_id"  wx:for-item="staff">
-        <view class="flex my-item align-center" wx:if="{{staff.identity.cID === canteenID[shopPickerList[shopPickerIndex]]}}">
+      <view wx:for="{{staffList}}" wx:key="_id" wx:for-item="staff">
+        <view class="flex my-item align-center">
           <image src="{{staff.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
           <view class="info margin-right-xs">
             <view class="flex align-center" style="margin-top:10rpx;">
@@ -33,21 +33,19 @@
           <view class="other">
             <view class="btn-group ">
               <button catchtap="delStaff" data-index="{{index}}" class="cu-btn cuIcon text-xl">
-                <text class="cuIcon-roundclose text-orange" ></text>
+                <text class="cuIcon-roundclose text-orange"></text>
               </button>
             </view>
           </view>
         </view>
       </view>
       <view class="page-bar">
-        <text catchtap="changePage" class="cu-btn line-black  round shadow">上一页</text>
+        <button catchtap="changePage" class="cu-btn line-black  round shadow">上一页</button>
         <text class="text-lg margin-sm">{{currPage}} / {{totalPage}}</text>
-        <text catchtap="changePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</text>
+        <button catchtap="changePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
       </view>
     </block>
   </view>
-
-
 </view>
 
 <view class="footer">

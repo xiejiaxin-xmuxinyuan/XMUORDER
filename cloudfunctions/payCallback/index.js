@@ -57,7 +57,7 @@ exports.main = async (event, context) => {
     //读取数据库订单
     var dbRes = await db.collection('orders').where({
       'orderInfo.outTradeNo': out_trade_no
-    }).get()
+    }).limit(1).get()
     var order = dbRes.data[0]
 
     //校验返回的订单金额是否与商户侧的订单金额一致

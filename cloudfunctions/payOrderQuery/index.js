@@ -49,7 +49,7 @@ exports.main = async (event, context) => {
       const db = cloud.database()
       var dbRes = await db.collection('orders').where({
         'orderInfo.outTradeNo': out_trade_no
-      }).get()
+      }).limit(1).get()
 
       var order = dbRes.data[0]
 
