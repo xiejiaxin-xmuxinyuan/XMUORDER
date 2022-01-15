@@ -23,6 +23,7 @@ exports.main = async (event, context) => {
       data: {
         _openid: openid,
         feedback: feedback,
+        canteenFeedback: '暂无',
         outTradeNo: outTradeNo,
         date: date,
         refund: refund,
