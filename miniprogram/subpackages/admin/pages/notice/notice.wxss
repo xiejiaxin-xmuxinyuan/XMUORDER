@@ -39,9 +39,9 @@
   background-color: white;
   height: 110rpx;
   width: 110rpx;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 5rpx #eee solid;
   color: orange;
 }
@@ -53,15 +53,15 @@
   align-items: center;
 }
 
-.my-title .text-cut{
-	font-size: 30rpx;
-	font-weight: 900;
-	line-height: 100rpx;
+.my-title .text-cut {
+  font-size: 30rpx;
+  font-weight: 900;
+  line-height: 100rpx;
   padding: 0 30rpx;
   color: #333333;
 }
 
-.my-title .my-btn{
+.my-title .my-btn {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -69,7 +69,7 @@
   margin-right: 15rpx;
 }
 
-.my-title .my-btn > button{
+.my-title .my-btn>button {
   background: none;
   font-size: 32rpx;
   font-weight: bold;
@@ -90,4 +90,8 @@ page {
   height: 130rpx;
   width: 100%;
   color: #666;
+}
+
+.notice-hidden {
+  background-color: #f0f0f0 !important;
 }

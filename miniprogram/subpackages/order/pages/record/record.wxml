@@ -56,7 +56,7 @@
             <button wx:elif="{{!(item.feedback)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
               <text class="cuIcon-message text-bold"> 反馈</text>
             </button>
-            <view wx:elif="{{item.feedback[0].state}}" class="cu-btn bg-green round shadow">
+            <view wx:elif="{{item.feedback.state}}" class="cu-btn bg-green round shadow">
               <text class="text-bold">已处理</text>
             </view>
             <view wx:else class="cu-btn bg-red round shadow">

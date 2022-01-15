@@ -11,7 +11,11 @@
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">公告置顶</view>
-        <switch bindchange="onSwitchChange" checked="{{notice.top}}"></switch>
+        <switch bindchange="onSwitchChange" data-type="top" checked="{{notice.top}}"></switch>
+      </view>
+      <view class="cu-form-group">
+        <view class="title text-bold">公告隐藏</view>
+        <switch bindchange="onSwitchChange" data-type="hidden" checked="{{notice.hidden}}"></switch>
       </view>
       <view class="cu-form-group">
         <view class="title text-bold">公告来源</view>

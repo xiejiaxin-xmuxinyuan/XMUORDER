@@ -12,7 +12,7 @@
       <view class="text-gray text-center margin-lg" wx:if="{{orders.length === 0}}">
         暂无未送出订单
       </view>
-      <view class="item" wx:for="{{orders}}">
+      <view wx:key="_id" class="item" wx:for="{{orders}}">
         <view class="header">
           <view>
             <view class="title"># <text>{{currPage*5+index-4}}</text></view>
@@ -33,7 +33,7 @@
         <view class="goods">
           <view class="text-xl text-bold">{{item.goodsInfo.record.length}} 件商品</view>
           <view class="goods-content">
-            <view class="good-item" wx:for="{{item.goodsInfo.record}}" wx:for-item="food">
+            <view class="good-item" wx:key="_id" wx:for="{{item.goodsInfo.record}}" wx:for-item="food">
               <view class="flex-treble">{{food.food}}</view>
               <view class="flex-sub">{{food.num}}份</view>
               <view class="flex-sub text-right">￥{{food.price}}</view>

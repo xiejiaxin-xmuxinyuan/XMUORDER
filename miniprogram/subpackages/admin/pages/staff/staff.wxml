@@ -1,0 +1,57 @@
+<!--subpackages/admin/pages/staff/staff.wxml-->
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="content">员工管理</view>
+</cu-custom>
+
+<view class="main shadow-warp">
+  <view class="cu-form-group">
+    <view class="title text-bold">商店</view>
+    <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange" value="{{shopPickerIndex}}" range="{{shopPickerList}}">
+      <view class="picker">
+        {{shopPickerIndex !== null? shopPickerList[shopPickerIndex] : '请选择所在商店'}}
+      </view>
+    </picker>
+    <view class="margin-right-sm text-black" wx:else> {{shopPickerList[shopPickerIndex]}}</view>
+  </view>
+  <!-- 商店员工列表 -->
+  <view class="my-list" wx:if="{{shopPickerIndex!==null}}">
+    <view wx:if="{{!(staffList.length)}}" class="text-center text-gray margin-lg">
+      该商店暂无员工
+    </view>
+    <block wx:else>
+      <view wx:for="{{staffList}}" wx:key="_id" wx:for-item="staff">
+        <view class="flex my-item align-center">
+          <image src="{{staff.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+          <view class="info margin-right-xs">
+            <view class="flex align-center" style="margin-top:10rpx;">
+              <view class="text-black">姓名：{{staff.name}}</view>
+            </view>
+            <view class="flex align-center" style="margin-top: 10rpx;">
+              <view class="text-black">电话：{{staff.phone}}</view>
+            </view>
+          </view>
+          <view class="other">
+            <view class="btn-group ">
+              <button catchtap="delStaff" data-index="{{index}}" class="cu-btn cuIcon text-xl">
+                <text class="cuIcon-roundclose text-orange"></text>
+              </button>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="page-bar">
+        <button catchtap="changePage" class="cu-btn line-black  round shadow">上一页</button>
+        <text class="text-lg margin-sm">{{currPage}} / {{totalPage}}</text>
+        <button catchtap="changePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
+      </view>
+    </block>
+  </view>
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>
+
+<view style="font-size: 10vw;position: fixed;bottom: 10%;right: 5%;">
+  <text class="cuIcon-friendadd text-gray bg-white round padding shadow" catchtap="toAddStaff"></text>
+</view>

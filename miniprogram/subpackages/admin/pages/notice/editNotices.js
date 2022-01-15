@@ -35,7 +35,7 @@ Page({
         }
       }
 
-      var canteens = app.globalData.canteen
+      var canteens = app.globalData.canteens
       var orgPicker = ['点餐项目组']
       var orgPickerIndex
       canteens.forEach(canteen => {
@@ -63,8 +63,9 @@ Page({
     })
   },
   onSwitchChange: function (e) {
+    const type = e.currentTarget.dataset.type
     that.setData({
-      'notice.top': e.detail.value
+      ['notice.' + type]: e.detail.value
     })
   },
   typePickerChange: function (e) {

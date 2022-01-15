@@ -1,0 +1,78 @@
+/* subpackages/admin/pages/staff/staff.wxss */
+
+.tab-page {
+  min-height: 70vh;
+}
+
+.footer {
+  margin-bottom: 15%;
+}
+
+.page-bar{
+  margin: 30rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.fixedBtn {
+  font-size: 5vw;
+  position: fixed;
+  bottom: 20rpx;
+}
+
+.fixedBtn>view {
+  padding: 20rpx 40rpx;
+}
+.btn-group{
+  margin-bottom: 10rpx;
+}
+
+.main {
+  margin: 40rpx;
+  margin-bottom: 10%;
+  background-color: white;
+}
+
+.my-list {
+  display: flex;
+  margin: 30rpx 30rpx;
+  flex-direction: column;
+}
+
+.my-item {
+  margin: 20rpx 10rpx;
+  display: flex;
+  flex-direction: row;
+}
+
+.my-item>image {
+  height: 100rpx;
+  width: 100rpx;
+  border-radius: 8rpx;
+}
+
+.my-item .info {
+  margin-left: 20rpx;
+  width: 45vw;
+}
+
+.my-item .other {
+  margin-left: 20rpx;
+  margin-top: 20rpx;
+  width: 15vw;
+}
+
+.my-item .other .btn-group {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20rpx;
+}
+
+.my-item .other .btn-group button {
+  padding: 0;
+  height: auto;
+  width: auto;
+  margin-right: auto;
+  background-color: transparent;
+}

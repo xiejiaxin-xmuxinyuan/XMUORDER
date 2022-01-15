@@ -1,0 +1,74 @@
+<!--subpackages/admin/pages/staff/addStaff.wxml-->
+<view class="tab-page">
+  <cu-custom bgColor="bg-gradual-blue" isBack="true">
+    <view slot="content">设置员工</view>
+  </cu-custom>
+</view>
+
+<form bindsubmit="searchStaff">
+  <view class="search-box shadow-warp">
+    <view class="text-lg text-black text-bold text-center">用户查询</view>
+    <view class="cu-bar search">
+      <view class="search-form round">
+        <text class="cuIcon-my"></text>
+        <input name="name" placeholder="请输入姓名" value="{{searchName}}"></input>
+      </view>
+    </view>
+    <view class="cu-bar search">
+      <view class="search-form round">
+        <text class="cuIcon-phone"></text>
+        <input name="phone" placeholder="请输入电话" value="{{searchPhone}}"></input>
+      </view>
+    </view>
+    <view style="text-align: center;margin: 45rpx 0">
+      <button form-type="submit" class="cu-btn bg-blue shadow"><text class="cuIcon-search"> 查询</text></button>
+    </view>
+    <view class="text-center">
+      <text class="text-sm text-gray">输入正确姓名和电话查询用户后\n可将查询到的用户设为员工</text>
+    </view>
+  </view>
+</form>
+<view class="staff-block shadow-warp">
+  <block wx:if="{{user}}">
+    <view class="cu-form-group">
+      <view class="title text-bold">添加到商店：</view>
+      <picker wx:if="{{identity.type==='superAdmin'}}" bindchange="shopPickerChange" value="{{shopPickerIndex}}" range="{{shopPickerList}}">
+        <view class="picker">
+          {{shopPickerIndex !== null? shopPickerList[shopPickerIndex] : '请选择要添加到的商店'}}
+        </view>
+      </picker>
+      <view wx:else class="margin-right-sm text-black">{{shopPickerList[shopPickerIndex]}}</view>
+    </view>
+    <view class="text-center text-bold text-lg margin-top">查询结果</view>
+    <view class="user shadow-warp">
+      <view class="info">
+        <view class="cuIcon-my"> 姓名</view>
+        <view>{{user.name}}</view>
+      </view>
+      <view class="info">
+        <view class="cuIcon-emoji"> 昵称</view>
+        <view>{{user.nickName}}</view>
+      </view>
+      <view class="info">
+        <view class="cuIcon-phone"> 电话</view>
+        <view>{{user.phone}}</view>
+      </view>
+    </view>
+    <view wx:if="{{identity.type==='superAdmin'}}" class="text-center margin-top-lg flex justify-around">
+      <button catchtap="addStaff" data-type="member" class="cu-btn bg-blue shadow"><text class="cuIcon-friendadd"> 设为员工</text></button>
+      <button catchtap="addStaff" data-type="admin" class="cu-btn bg-blue shadow"><text class="cuIcon-friendfamous"> 设为管理</text></button>
+    </view>
+    <view wx:else class="text-center margin-top-lg">
+      <button catchtap="addStaff" data-type="staff" class="cu-btn bg-blue shadow"><text class="cuIcon-friendadd"> 添加</text></button>
+    </view>
+  </block>
+  <view wx:else class="text-center text-gray margin-xl">
+    <view class="cuIcon-friendadd" style="font-size: 60rpx;"></view>
+    <view class="margin">不存在相关用户...</view>
+  </view>
+</view>
+
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>

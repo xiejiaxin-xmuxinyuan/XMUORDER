@@ -47,7 +47,7 @@ Page({
       formatedTime: order.orderInfo.timeInfo.formatedTime,
       feeInfo: order.payInfo.feeInfo,
       outTradeNo: order.orderInfo.outTradeNo
-    } 
+    }
     info = JSON.stringify(info)
     wx.navigateTo({
       url: '../feedback/feedback?info=' + info,
@@ -65,13 +65,14 @@ Page({
           util.hideLoading()
           if (res.result.success) {
             resolve(res.result)
+            return
           } else {
             util.showToast('加载失败', 'error')
             setTimeout(() => {
               wx.navigateBack({
                 delta: 1,
               })
-            }, 1000);
+            }, 1000)
           }
         })
         .catch(e => {
@@ -91,13 +92,12 @@ Page({
     var formatTime = '$1/$2/$3 $4:$5:$6';
     return strDate.replace(regExp, formatTime)
   },
-  toRecoredDetail: function(e){
-    var record = that.data.record[e.currentTarget.dataset.index]
-    //传递参数 TODO
+  toRecoredDetail: function (e) {
+    const index = e.currentTarget.dataset.index
+    var order = that.data.record[index]
+    const outTradeNo = order.orderInfo.outTradeNo
     wx.navigateTo({
-      url: './recordDetail?data=' + JSON.stringify({
-        outTradeNo: record.orderInfo.outTradeNo
-      })
+      url: './recordDetail?outTradeNo=' + outTradeNo
     })
   }
 })

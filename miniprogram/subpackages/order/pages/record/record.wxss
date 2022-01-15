@@ -1,4 +1,6 @@
-/* subpackages/order/pages/record/record.wxss */
+image {
+  background-color: transparent !important;
+}
 
 .no-record {
   margin: 50% 100rpx;

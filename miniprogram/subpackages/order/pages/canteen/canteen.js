@@ -7,6 +7,7 @@ Page({
    */
   data: {
     canteen: {},
+    formatBsTime: [],
     TabCur: 0,
     MainCur: 0,
     VerticalNavTop: 0,
@@ -35,11 +36,21 @@ Page({
       app.globalData.allOrderList = {}
     }
 
+    var formatBsTime = []
+    canteen.businessTime.forEach(timeBlock => {
+      let timeMatch1 = timeBlock[0].match(/(.{2})(.{2})/)
+      let timeMatch2 = timeBlock[1].match(/(.{2})(.{2})/)
+      let timeStr1 = timeMatch1[1] + ':' + timeMatch1[2]
+      let timeStr2 = timeMatch2[1] + ':' + timeMatch2[2]
+      formatBsTime.push(timeStr1 + '-' + timeStr2)
+    })
+
     that.setData({
-      cIndex: cIndex,
-      foodList: foodList,
+      cIndex,
+      foodList,
+      canteen,
+      formatBsTime,
       foodListCur: foodList[0],
-      canteen: canteen,
       allOrderList: app.globalData.allOrderList
     })
     that.canteenRefresh()
@@ -88,6 +99,12 @@ Page({
     app.globalData.allOrderList[cID] = that.data.orderList
   },
   deleteShoppingCart() { // 页面通信删除购物车
+    // 清空本地数据避免退出时误保存
+    that.setData({
+      orderList: {
+        length: 0
+      }
+    })
     //删除对应全局数据
     const cID = that.data.canteen.cID
     const cIndex = that.data.cIndex

@@ -15,7 +15,7 @@
   <!-- 公告内容 -->
   <view wx:for="{{notices}}" wx:key="_id">
     <view class="cu-card article" wx:if="{{item.type == noticeCurrType}}">
-      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp" data-index="{{index}}" catchtap="showNoticeDetail">
+      <view style="margin-bottom: 5rpx;" class="cu-item shadow-warp {{item.hidden? 'notice-hidden': ''}}" data-index="{{index}}" catchtap="showNoticeDetail">
         <view class="my-title">
           <view class="text-cut">
             <text class="cuIcon-top" wx:if="{{item.top}}"></text>
@@ -58,7 +58,7 @@
       <text class="cuIcon-edit"></text>
     </view>
   </block>
-  <view wx:else class="add-btn"  catchtap="toAddNotices" style="margin-right: 42rpx; margin-left: auto;">
+  <view wx:else class="add-btn" catchtap="toAddNotices" style="margin-right: 42rpx; margin-left: auto;">
     <text class="cuIcon-edit"></text>
   </view>
 </view>

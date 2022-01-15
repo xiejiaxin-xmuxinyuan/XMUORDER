@@ -27,8 +27,7 @@ Page({
 
   onLoad: function (options) {
     that = this
-    var data = JSON.parse(options.data)
-    const outTradeNo = data.outTradeNo
+    const outTradeNo = options.outTradeNo
     that.getOrder(outTradeNo)
   },
   strDateFormat: strDate => { //14位日期转yyyy-MM-dd hh:mm:ss
@@ -95,26 +94,23 @@ Page({
     wx.cloud.callFunction({
         name: 'getOrder',
         data: {
-          outTradeNo: outTradeNo
+          outTradeNo
         }
       }).then(res => {
         wx.hideLoading()
         if (res.result.success) {
-          let order = res.result.order
+          var order = res.result.order
           if ('payTime' in order.orderInfo.timeInfo) {
-            order.orderInfo.timeInfo.formatedPayTime =
-              that.strDateFormat(order.orderInfo.timeInfo.payTime)
+            order.orderInfo.timeInfo.formatedPayTime = that.strDateFormat(order.orderInfo.timeInfo.payTime)
           }
           if ('confirmTime' in order.orderInfo.timeInfo) {
-            order.orderInfo.timeInfo.formatedConfirmTime =
-              that.strDateFormat(order.orderInfo.timeInfo.confirmTime)
+            order.orderInfo.timeInfo.formatedConfirmTime = that.strDateFormat(order.orderInfo.timeInfo.confirmTime)
           }
           if ('endTime' in order.orderInfo.timeInfo) {
-            order.orderInfo.timeInfo.formatedEndTime =
-              that.strDateFormat(order.orderInfo.timeInfo.endTime)
+            order.orderInfo.timeInfo.formatedEndTime = that.strDateFormat(order.orderInfo.timeInfo.endTime)
           }
           that.setData({
-            order: order
+            order
           })
         } else {
           util.showToast('加载失败', 'error')
