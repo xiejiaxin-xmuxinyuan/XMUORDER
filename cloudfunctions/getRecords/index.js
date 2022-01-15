@@ -82,7 +82,9 @@ exports.main = async (event, context) => {
             $.eq(['$outTradeNo', '$$outTradeNo'])
           )).replaceRoot({
             newRoot: {
-              state: '$state'
+              state: '$state',
+              feedback: '$feedback',
+              canteenFeedback: '$canteenFeedback'
             }
           }).done(),
         as: 'feedback'
