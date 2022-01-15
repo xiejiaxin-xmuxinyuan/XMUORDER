@@ -14,10 +14,10 @@
       <view>{{ canteen.name }} - {{ canteen.fulAddress }}<text class="cuIcon-{{showInfo? 'fold':'unfold'}} fr text-gray"></text></view>
     </view>
     <view class="content showInfo {{ showInfo? '':'hidden' }}">
-      <view class="desc">
-        <view class="text-content padding-left-sm">
-          <text>早餐：{{canteen.breakfast}}\n午餐：{{canteen.lunch}}\n晚餐：{{canteen.dinner}}\n</text>
-        </view>
+      <view class="my-info">
+        <view class="text-lg">{{canteen.info}}</view>
+        <view style="margin-top: 20rpx;">营业时间：</view>
+        <view wx:for="{{formatBsTime}}" wx:key="*this">{{item}}</view>
       </view>
     </view>
   </view>

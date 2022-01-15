@@ -42,7 +42,16 @@
 /* 餐厅信息折叠效果 */
 .showInfo {
   transition: all .3s;
-  height: 5rem;
+  height: 8rem;
+}
+
+.showInfo .my-info{
+  padding: 0 30rpx;
+  font-size: 25rpx;
+}
+
+.showInfo .my-info > view {
+  margin: 5rpx 0;
 }
 
 .hidden {
