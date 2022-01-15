@@ -38,9 +38,14 @@ function getNonceStr() {
 
 exports.main = async (event, context) => {
   try {
+
+    var limitTime = new Date()
+    limitTime.setTime(limitTime.setMinutes(limitTime.getMinutes() - 10)) //距当前10分钟内
+
     var res = await db.collection('orders').where({
       'orderInfo.pollingTimes': _.lte(10), //实现每个订单最多被轮询查单11次（大约5分钟后支付超时）
-      'orderInfo.orderState': 'NOTPAY'
+      'orderInfo.orderState': 'NOTPAY',
+      'orderInfo.timeInfo.createTime': _.gt(getStrDate(limitTime))
     }).get()
 
     var orders = res.data
