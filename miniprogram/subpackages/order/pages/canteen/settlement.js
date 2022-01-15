@@ -213,7 +213,9 @@ Page({
         delta: 2,
       }).then(res => {
         wx.navigateTo({
-          url: '../record/recordDetail?outTradeNo=' + outTradeNo
+          url: '../record/recordDetail?data=' + JSON.stringify({
+            outTradeNo: outTradeNo
+          })
         })
       })
     }, 1000)
