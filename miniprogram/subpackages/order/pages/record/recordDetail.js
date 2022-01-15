@@ -149,5 +149,46 @@ Page({
         util.hideLoading()
         util.showToast('订单取消失败', 'error')
       })
-  }
+  },
+  confirmOrder: function (e) {
+    util.showLoading('确认取餐中')
+    const order = that.data.order
+
+    wx.cloud.callFunction({
+        name: 'dbUpdate',
+        data: {
+          table: 'orders',
+          _id: order._id,
+          formData:{
+            'orderInfo.orderState': 'SUCCESS',
+            'orderInfo.orderStateMsg': '已完成',
+            'getFoodInfo.getState': 'SUCCESS',
+            'orderInfo.timeInfo.endTime': that.getStrDate(new Date())
+          }
+        }
+      }).then(res => {
+        util.hideLoading()
+        if (res.result.success) {
+          util.showToast('确认取餐成功', 'success')
+        } else {
+          util.showToast('确认取餐失败', 'error')
+        }
+        setTimeout(() => {
+          that.refreshOrder()
+        }, 1000);
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('确认取餐失败', 'error')
+      })
+  },
+  getStrDate:(date)=> {
+  let year = date.getFullYear()
+  let month = (date.getMonth() + 1).toString().padStart(2, '0')
+  let day = date.getDate().toString().padStart(2, '0')
+  let hour = date.getHours().toString().padStart(2, '0')
+  let min = date.getMinutes().toString().padStart(2, '0')
+  let sec = date.getSeconds().toString().padStart(2, '0')
+  return year + month + day + hour + min + sec
+}
 })

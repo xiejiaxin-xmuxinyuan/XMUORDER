@@ -30,7 +30,6 @@
         "pages/shop/shop",
         "pages/order/accept",
         "pages/order/notGet",
-        "pages/order/timeout",
         "pages/order/success"
       ]
     }

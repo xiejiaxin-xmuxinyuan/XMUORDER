@@ -55,10 +55,6 @@
             <text class="my-ico cuIcon-send"></text>
             <view>待取订单</view>
           </view>
-          <view catchtap="toTimeout">
-            <text class="my-ico cuIcon-time"></text>
-            <view>超时订单</view>
-          </view>
           <view catchtap="toSuccess">
             <text class="my-ico cuIcon-roundcheck"></text>
             <view>成功订单</view>

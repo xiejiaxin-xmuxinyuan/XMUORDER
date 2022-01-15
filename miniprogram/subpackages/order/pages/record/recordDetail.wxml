@@ -94,7 +94,17 @@
         <view>刷新订单</view>
       </view>
     </view>
-    <view wx:elif="{{order.orderInfo.orderState!=='NOTACCEPT'&&order.orderInfo.orderState!=='CLOSED'}}" class="btn-group">
+    <view wx:elif="{{order.orderInfo.orderState==='NOTGET'}}" class="btn-group">
+      <view catchtap="confirmOrder" class="text-green">
+        <text class="my-ico cuIcon-roundcheck"></text>
+        <view>确认取餐</view>
+      </view>
+      <view catchtap="refreshOrder" class="text-green">
+        <text class="my-ico cuIcon-refresh"></text>
+        <view>刷新订单</view>
+      </view>
+    </view>
+    <view wx:elif="{{order.orderInfo.orderState!=='NOTACCEPT'&&order.orderInfo.orderState!=='CLOSED'&&order.orderInfo.orderState!=='SUCCESS'}}" class="btn-group">
       <view catchtap="refreshOrder" class="text-green">
         <text class="my-ico cuIcon-refresh"></text>
         <view>刷新订单</view>

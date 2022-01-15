@@ -1,1 +1,113 @@
-/* subpackages/admin/pages/order/success.wxss */
+page {
+  background-color: white;
+}
+
+.main {
+  background-color: white;
+  padding: 30rpx 50rpx;
+  padding-bottom: 160rpx;
+  border-radius: 15rpx;
+}
+
+.page-bar {
+  position: fixed;
+  z-index: 999;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+}
+
+.page-bar>view {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  width: 75%;
+  padding: 30rpx 15rpx;
+}
+
+.order .top-info {
+  padding: 30rpx 0;
+  border-bottom: 2rpx #eee solid;
+}
+
+.order .top-info>view:nth-child(2) {
+  font-size: 25rpx;
+  margin-top: 15rpx;
+  margin-left: 15rpx;
+}
+
+.order .top-info .title {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.order .content .item>view{
+  margin-bottom: 15rpx;
+  padding-bottom: 15rpx;
+}
+
+.order .content .item {
+  margin: 30rpx 0;
+  padding: 15rpx 30rpx;
+  border: 5rpx #aaa solid;
+  border-radius: 15rpx;
+}
+
+.order .content .item .header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order .content .item .header .title>text {
+  font-weight: bold;
+  font-size: 64rpx;
+}
+
+.order .content .item .header .time {
+  font-size: 25rpx;
+  color: #666;
+}
+
+.order .content .item .user .info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15rpx 0;
+}
+
+.order .content .item .user .line {
+  font-size: small;
+  color: #666;
+  margin: 15rpx 0;
+}
+
+.goods .goods-content {
+  display: flex;
+  flex-direction: column;
+  margin: 15rpx 15rpx;
+  font-size: small;
+  color: #666;
+}
+
+.goods .goods-content .good-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.goods .goods-content .fee {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.goods .goods-content .price {
+  margin-top: 20rpx;
+  color: #e54d42;
+  text-align: right;
+}

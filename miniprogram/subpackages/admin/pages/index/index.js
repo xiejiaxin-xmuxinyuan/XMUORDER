@@ -466,11 +466,6 @@ Page({
       url: '../order/notGet',
     })
   },
-  toTimeout: function () {
-    wx.navigateTo({
-      url: '../order/timeout',
-    })
-  },
   toSuccess: function () {
     wx.navigateTo({
       url: '../order/success',

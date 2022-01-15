@@ -1,3 +1,74 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
   <view slot="content">未取餐订单</view>
 </cu-custom>
+
+<view class="main">
+  <view class="order">
+    <view class="top-info">
+      <view class="title cuIcon-titles">未取餐订单：<text class="text-orange">{{totalCount}}</text></view>
+      <view class="text-gray">提示：请引导买家在取餐点取餐，并提醒其确认订单完成</view>
+    </view>
+    <view class="content">
+      <view class="text-gray text-center margin-lg" wx:if="{{orders.length === 0}}">
+        暂无未取餐订单
+      </view>
+      <view wx:key="_id" class="item" wx:for="{{orders}}">
+        <view class="header">
+          <view>
+            <view class="title"># <text>{{currPage*5+index-4}}</text></view>
+            <view class="time">取餐时间：<text class="text-black text-bold">{{item.getFoodInfo.time}}</text>
+            </view>
+          </view>
+          <view class="text-black text-bold">等待买家取餐</view>
+        </view>
+        <view class="user">
+          <view class="info">
+            <view class="text-lg text-bold">{{item.userInfo.name}}</view>
+            <view class="text-sm">尾号{{item.userInfo.phoneEnd}}</view>
+          </view>
+          <view class="line">订单号：<text>{{item.orderInfo.outTradeNo}}</text></view>
+          <view class="line">取餐地点：<text>{{item.getFoodInfo.place}}</text></view>
+          <view class="line">下单时间：<text>{{item.orderInfo.timeInfo.formatedTime}}</text></view>
+        </view>
+        <view class="goods">
+          <view class="text-xl text-bold">{{item.goodsInfo.record.length}} 件商品</view>
+          <view class="goods-content">
+            <view class="good-item" wx:key="_id" wx:for="{{item.goodsInfo.record}}" wx:for-item="food">
+              <view class="flex-treble">{{food.food}}</view>
+              <view class="flex-sub">{{food.num}}份</view>
+              <view class="flex-sub text-right">￥{{food.price}}</view>
+            </view>
+            <view class="fee margin-bottom-sm margin-top-sm text-gray">
+              <view>小计</view>
+              <view>￥{{item.payInfo.feeInfo.goodsPrice/100}}</view>
+            </view>
+            <view class="fee">
+              <view>其他费用</view>
+              <view>￥{{item.payInfo.feeInfo.otherFee/100}}</view>
+            </view>
+            <view class="fee">
+              <view>优惠券</view>
+              <view>-￥{{item.payInfo.feeInfo.discount/100}}</view>
+            </view>
+            <view class="fee">
+              <view>平台服务费</view>
+              <view>-￥{{item.payInfo.feeInfo.serviceFee/100}}</view>
+            </view>
+            <view class="fee text-orange text-bold margin-top-sm">
+              <view>合计收入</view>
+              <view>￥{{(item.payInfo.feeInfo.cashFee - item.payInfo.feeInfo.serviceFee)/100}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="page-bar shadow">
+  <view>
+    <button catchtap="changePage" class="cu-btn line-black round shadow">上一页</button>
+    <text class="text-lg margin-sm">{{currPage}} / {{totalPage}}</text>
+    <button catchtap="changePage" data-add="{{true}}" class="cu-btn line-black round shadow">下一页</button>
+  </view>
+</view>
