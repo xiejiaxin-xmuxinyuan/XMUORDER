@@ -54,6 +54,13 @@
               <text class="text-bold">去支付</text>
             </button>
             <button wx:elif="{{!(item.feedback)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
+        <view wx:if="{{item.orderInfo.orderState==='SUCCESS'||item.orderInfo.orderState==='NOTPAY'}}" class="text-right">
+          <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toRecoredDetail">
+            <text class="text-bold">去支付</text>
+          </button>
+          <block wx:else>
+            <button wx:if="{{!(item.feedback)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
+
               <text class="cuIcon-message text-bold"> 反馈</text>
             </button>
             <view wx:elif="{{item.feedback.state}}" class="cu-btn bg-green round shadow">
