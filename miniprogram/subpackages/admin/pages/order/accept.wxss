@@ -1,8 +1,7 @@
 .main {
-  margin: 30rpx 30rpx;
-  margin-bottom: 160rpx;
   background-color: white;
-  padding: 15rpx 30rpx;
+  padding: 30rpx 50rpx;
+  padding-bottom: 160rpx;
   border-radius: 15rpx;
 }
 

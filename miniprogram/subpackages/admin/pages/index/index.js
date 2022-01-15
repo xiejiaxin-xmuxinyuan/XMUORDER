@@ -460,5 +460,20 @@ Page({
     wx.navigateTo({
       url: '../order/accept',
     })
+  },
+  toNotGet: function () {
+    wx.navigateTo({
+      url: '../order/notGet',
+    })
+  },
+  toTimeout: function () {
+    wx.navigateTo({
+      url: '../order/timeout',
+    })
+  },
+  toSuccess: function () {
+    wx.navigateTo({
+      url: '../order/success',
+    })
   }
 })
