@@ -41,6 +41,7 @@ Page({
   },
   feedback: function (e) {
     var order = that.data.record[e.currentTarget.dataset.index]
+    console.log(order.feedback)
     var info = {
       goods: order.goodsInfo.record,
       formatedTime: order.orderInfo.timeInfo.formatedTime,
@@ -83,6 +84,7 @@ Page({
           }, 1000);
         })
     })
+    
   },
   strDateFormat: strDate => { //14位日期转yyyy-MM-dd hh:mm:ss
     var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;

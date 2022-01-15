@@ -53,7 +53,7 @@
             <button wx:if="{{item.orderInfo.orderState==='NOTPAY'}}" class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="toRecoredDetail">
               <text class="text-bold">去支付</text>
             </button>
-            <button wx:elif="{{!(item.feedback.length)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
+            <button wx:elif="{{!(item.feedback)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
               <text class="cuIcon-message text-bold"> 反馈</text>
             </button>
             <view wx:elif="{{item.feedback[0].state}}" class="cu-btn bg-green round shadow">
@@ -64,6 +64,10 @@
             </view>
           </view>
         </block>
+        <view wx:if="{{item.feedback}}">
+          <text>{{item.feedback.userFeedback}}</text>
+          <text>{{item.feedback.canteenFeedback}}</text>
+        </view>
       </view>
     </view>
   </view>
