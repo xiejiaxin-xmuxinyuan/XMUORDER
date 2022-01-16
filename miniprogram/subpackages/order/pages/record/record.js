@@ -85,7 +85,6 @@ Page({
           }, 1000);
         })
     })
-    
   },
   strDateFormat: strDate => { //14位日期转yyyy-MM-dd hh:mm:ss
     var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;
