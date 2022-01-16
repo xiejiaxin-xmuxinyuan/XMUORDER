@@ -37,35 +37,12 @@ Page({
     }
 
     util.showLoading('加载中')
-    var p0 = db.collection("canteen").get()
+    var p0 = that.getCanteens()
     var p1 = that.getUserNotices()
 
     Promise.all([p0, p1]).then(res => {
       wx.hideLoading()
-      var canteens = res[0].data
-
-
-      //当前时间
-      let date = new Date()
-      let h = date.getHours().toString().padStart(2, '0')
-      let m = date.getMinutes().toString().padStart(2, '0')
-      let intCurTime = parseInt(h + m)
-
-      canteens.forEach(canteen => {
-        for (let i = 0; i < canteen.businessTime.length; i++) {
-          const time = canteen.businessTime[i];
-          if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
-            canteen.inBusiness = true
-            break
-          }
-        }
-      })
-
-      app.globalData.canteens = canteens //同步到全局变量
-
       that.setData({
-        canteens: canteens, //餐厅数据
-        intCurTime: intCurTime, //当前int格式时间
         isLoaded: true, // 表示加载完毕
         //用户信息
         name: app.globalData.name,
@@ -79,9 +56,7 @@ Page({
 
   onShow: () => {
     if (that.data.isLoaded) { //再次显示主页时触发
-      that.setData({
-        canteens: app.globalData.canteens, //餐厅数据
-      })
+      that.canteenInBusiness(app.globalData.canteens)
     }
   },
   showNoticeDetail: function (event) {
@@ -207,6 +182,53 @@ Page({
     util.showLoading('加载中')
     that.getUserNotices().then(() => {
       wx.hideLoading()
+    })
+  },
+  canteenInBusiness: function (canteens) { // 为canteen加上inBusiness字段，并保存本地和全局
+    //当前时间
+    let date = new Date()
+    let h = date.getHours().toString().padStart(2, '0')
+    let m = date.getMinutes().toString().padStart(2, '0')
+    var intCurTime = parseInt(h + m)
+
+    canteens.forEach(canteen => {
+      for (let i = 0; i < canteen.businessTime.length; i++) {
+        const time = canteen.businessTime[i];
+        if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
+          canteen.inBusiness = true
+          break
+        }
+      }
+    })
+    app.globalData.canteens = canteens //同步到全局变量
+
+    that.setData({
+      canteens, //餐厅数据
+      intCurTime, //当前int格式时间
+    })
+  },
+  getCanteens: function (pageSize = 20) { //获取所有餐厅
+    return new Promise(async (resolve, reject) => {
+      const countRes = await db.collection("canteen").count()
+      const totalCount = countRes.total
+      const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
+
+      var proList = []
+      for (let currPage = 1; currPage <= totalPage; currPage++) {
+        proList.push(
+          db.collection("canteen")
+          .skip((currPage - 1) * pageSize).limit(pageSize).get()
+        )
+      }
+      
+      Promise.all(proList).then(res=>{
+        var canteens = []
+        res.forEach(r => {
+          canteens.push(...r.data)
+        });
+        that.canteenInBusiness(canteens)
+        resolve()
+      })
     })
   },
   getUserNotices: function (noticeCurrPage = 1, pageSize = 5) {
@@ -336,15 +358,5 @@ Page({
         util.showToast('已经是第一页啦')
       }
     }
-  },
-  formatDate: function (inputTime) { //该函数用于格式化时间戳
-    var date = new Date(inputTime);
-    // let year = date.getFullYear()
-    // let month = (date.getMonth() + 1).toString().padStart(2, '0')
-    // let day = date.getDate().toString().padStart(2, '0')
-    let hour = date.getHours().toString().padStart(2, '0')
-    let min = date.getMinutes().toString().padStart(2, '0')
-    // let sec = date.getSeconds().toString().padStart(2, '0')
-    return hour + ':' + min;
   }
 })
