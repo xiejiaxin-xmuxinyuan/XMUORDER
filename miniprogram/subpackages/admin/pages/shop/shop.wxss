@@ -1,1 +1,107 @@
 /* subpackages/admin/pages/shop/shop.wxss */
+
+
+.tab-page {
+  min-height: 75vh;
+  margin-bottom: 5vh;
+}
+
+.footer {
+  margin-bottom: 10vh;
+}
+
+.canteen {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  margin: 40rpx 30rpx;
+  padding: 30rpx 30rpx;
+  border-radius: 5%;
+}
+
+.canteen .mycontent {
+  display: flex;
+  flex-direction: row;
+}
+
+.canteen .mycontent .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 50% !important;
+}
+
+.canteen .mycontent .mytag {
+  position: absolute;
+  width: auto;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+
+.canteen .mycontent .info>view {
+  display: flex;
+  flex-direction: row;
+}
+
+.canteen .mycontent .image {
+  width: 7rem;
+  height: 7rem;
+  margin-right: 30rpx;
+  border-radius: 10%;
+  border: 5rpx solid #ddd;
+}
+
+.img-disable {
+  filter: grayscale(0.7);
+}
+
+.content .my-content {
+  font-size: 27rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: center;
+  height: 130rpx;
+  width: 100%;
+  color: #666;
+}
+
+
+.my-bar {
+  position: fixed;
+  bottom: 20rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-bar .page-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 50rpx;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 5rpx #eee solid;
+  border-radius: 5000rpx;
+  width: 70%;
+}
+
+.my-bar .add-btn {
+  margin-left: 30rpx;
+  font-size: 45rpx;
+  border-radius: 5000rpx;
+  background-color: white;
+  height: 110rpx;
+  width: 110rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 5rpx #eee solid;
+  color: orange;
+}
