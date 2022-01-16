@@ -169,3 +169,28 @@
   justify-content: space-between;
   padding: 15rpx 30rpx;
 }
+
+
+.btn-group {
+  margin-top: 35rpx;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.btn-group>view {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.btn-group>view>view {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.btn-group .my-ico {
+  font-size: 50rpx;
+  text-align: center;
+}

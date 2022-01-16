@@ -28,9 +28,13 @@ const _ = db.command
 
 exports.main = async (event, context) => {
   try {
+    var limitTime = new Date()
+    limitTime.setTime(limitTime.setMinutes(limitTime.getMinutes() - 30)) //距当前15分钟内
+
     var res = await db.collection('orders').where({
       'orderInfo.confirmPollingTimes': _.lte(20), //实现每个订单最多被轮询查单21次（大约10分钟后超时）
-      'orderInfo.orderState': 'NOTCONFIRM'
+      'orderInfo.orderState': 'NOTCONFIRM',
+      'orderInfo.timeInfo.payTime': _.gt(getStrDate(limitTime))
     }).get()
 
     var orders = res.data

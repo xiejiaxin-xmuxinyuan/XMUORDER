@@ -2,7 +2,6 @@ var that
 const app = getApp()
 const util = require('../../../../utils/util.js')
 const db = wx.cloud.database()
-const _ = db.command
 
 Page({
   data: {
@@ -25,7 +24,7 @@ Page({
       const cID = that.data.cID
       var countRes = await db.collection('orders').where({
         'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-        'orderInfo.orderState': 'ACCEPT' // 仅监听未确认状态的订单
+        'orderInfo.orderState': 'SUCCESS' //成功状态的订单
       }).count()
 
       const totalCount = countRes.total
@@ -47,12 +46,13 @@ Page({
 
       var orderRes = await db.collection('orders').where({
         'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-        'orderInfo.orderState': 'ACCEPT' // 仅监听未确认状态的订单
+        'orderInfo.orderState': 'SUCCESS' // 成功状态的订单
       }).skip((currPage - 1) * pageSize).limit(pageSize).get()
 
       wx.hideLoading()
       orderRes.data.forEach(order => {
         order.userInfo.phoneEnd = order.userInfo.phone.slice(-4)
+        order.orderInfo.timeInfo.formatedEndTime = that.strDateFormat(order.orderInfo.timeInfo.endTime)
       })
 
       that.setData({
@@ -71,41 +71,6 @@ Page({
         })
       }, 1000);
     }
-  },
-  finishOrder: function (e) {
-    const index = e.currentTarget.dataset.index
-    const order = that.data.orders[index]
-    const currPage = that.data.currPage
-
-    util.showLoading('请求中')
-    wx.cloud.callFunction({
-        name: 'dbUpdate',
-        data: {
-          table: 'orders',
-          _id: order._id,
-          formData: {
-            'orderInfo.orderState': 'NOTGET',
-            'orderInfo.orderStateMsg': '待取餐'
-          }
-        }
-      }).then(res => {
-        util.hideLoading()
-        if (res.result.success && res.result.res.stats.updated === 1) {
-          util.showToast('请求成功', 'success')
-        } else {
-          util.showToast('请求失败', 'error')
-        }
-        setTimeout(() => {
-          that.getOrderByPage(currPage)
-        }, 1000);
-      })
-      .catch(e => {
-        util.hideLoading()
-        util.showToast('请求失败', 'error')
-        setTimeout(() => {
-          that.getOrderByPage(currPage)
-        }, 1000);
-      })
   },
   changePage: function (e) {
     const dataset = e.currentTarget.dataset
@@ -126,4 +91,9 @@ Page({
       }
     }
   },
+  strDateFormat: strDate => { //14位日期转yyyy-MM-dd hh:mm:ss
+    var regExp = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/;
+    var formatTime = '$1-$2-$3 $4:$5:$6';
+    return strDate.replace(regExp, formatTime)
+  }
 })

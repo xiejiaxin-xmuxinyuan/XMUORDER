@@ -2,7 +2,6 @@ var that
 const app = getApp()
 const util = require('../../../../utils/util.js')
 const db = wx.cloud.database()
-const _ = db.command
 
 Page({
   data: {
@@ -25,7 +24,7 @@ Page({
       const cID = that.data.cID
       var countRes = await db.collection('orders').where({
         'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-        'orderInfo.orderState': 'ACCEPT' // 仅监听未确认状态的订单
+        'orderInfo.orderState': 'NOTGET' //未取餐状态的订单
       }).count()
 
       const totalCount = countRes.total
@@ -47,7 +46,7 @@ Page({
 
       var orderRes = await db.collection('orders').where({
         'goodsInfo.shopInfo.cID': cID, //所属餐厅（同时是数据库安全权限内容）
-        'orderInfo.orderState': 'ACCEPT' // 仅监听未确认状态的订单
+        'orderInfo.orderState': 'NOTGET' // 未取餐状态的订单
       }).skip((currPage - 1) * pageSize).limit(pageSize).get()
 
       wx.hideLoading()
@@ -71,41 +70,6 @@ Page({
         })
       }, 1000);
     }
-  },
-  finishOrder: function (e) {
-    const index = e.currentTarget.dataset.index
-    const order = that.data.orders[index]
-    const currPage = that.data.currPage
-
-    util.showLoading('请求中')
-    wx.cloud.callFunction({
-        name: 'dbUpdate',
-        data: {
-          table: 'orders',
-          _id: order._id,
-          formData: {
-            'orderInfo.orderState': 'NOTGET',
-            'orderInfo.orderStateMsg': '待取餐'
-          }
-        }
-      }).then(res => {
-        util.hideLoading()
-        if (res.result.success && res.result.res.stats.updated === 1) {
-          util.showToast('请求成功', 'success')
-        } else {
-          util.showToast('请求失败', 'error')
-        }
-        setTimeout(() => {
-          that.getOrderByPage(currPage)
-        }, 1000);
-      })
-      .catch(e => {
-        util.hideLoading()
-        util.showToast('请求失败', 'error')
-        setTimeout(() => {
-          that.getOrderByPage(currPage)
-        }, 1000);
-      })
   },
   changePage: function (e) {
     const dataset = e.currentTarget.dataset

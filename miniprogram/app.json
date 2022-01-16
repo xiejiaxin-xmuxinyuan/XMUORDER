@@ -28,7 +28,9 @@
         "pages/goods/editGoods",
         "pages/feedback/feedback",
         "pages/shop/shop",
-        "pages/order/accept"
+        "pages/order/accept",
+        "pages/order/notGet",
+        "pages/order/success"
       ]
     }
   ],

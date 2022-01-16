@@ -50,8 +50,19 @@
           </view>
           <text class="cuIcon-right"></text>
         </view>
+        <view class="btn-group">
+          <view catchtap="toNotGet">
+            <text class="my-ico cuIcon-send"></text>
+            <view>待取订单</view>
+          </view>
+          <view catchtap="toSuccess">
+            <text class="my-ico cuIcon-roundcheck"></text>
+            <view>成功订单</view>
+          </view>
+        </view>
       </view>
     </view>
+
     <view class="new-order my-block">
       <view class="text-bold cuIcon-titles">未处理订单</view>
       <view wx:if="{{orders.newOrders.length===0}}" class="tip">暂无未处理订单</view>

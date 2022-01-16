@@ -43,10 +43,9 @@ page {
   font-weight: bold;
 }
 
-.order .content .item>view:not(.bottom) {
+.order .content .item>view{
   margin-bottom: 15rpx;
   padding-bottom: 15rpx;
-  border-bottom: 5rpx #ccc dotted;
 }
 
 .order .content .item {
@@ -111,13 +110,4 @@ page {
   margin-top: 20rpx;
   color: #e54d42;
   text-align: right;
-}
-
-.order .content .item .bottom {
-  text-align: center;
-  padding: 25rpx 30rpx;
-}
-
-.order .content .item .bottom > button >text{
-  padding: 60rpx;
 }
