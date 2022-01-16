@@ -47,9 +47,13 @@
         <view class="text-sm text-gray">{{order.getFoodInfo.place}}</view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='SUCCESS'}}">
-        <view>
+        <view wx:if="{{order.getFoodInfo.getState==='SUCCESS'}}">
           <text class="text-xl text-orange"> {{order.goodsInfo.shopInfo.name}}</text>
           <text>，期待您的再次光临~</text>
+        </view>
+        <view wx:elif="{{order.getFoodInfo.getState==='TIMEOUT'}}">
+          <text class="text-xl text-orange"> 取餐超时</text>
+          <text>，订单已自动完成</text>
         </view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
