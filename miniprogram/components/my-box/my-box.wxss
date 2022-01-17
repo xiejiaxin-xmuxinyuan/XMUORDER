@@ -15,7 +15,7 @@
   animation-timing-function: linear
 }
 
-.my-box>view {
+.my-box .main {
   background-color: white;
   padding: 50rpx 50rpx;
   padding-top: 0;
