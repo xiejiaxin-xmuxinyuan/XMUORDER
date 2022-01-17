@@ -27,8 +27,9 @@
 .canteen .mycontent .info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  margin: 0 auto;
+  justify-content: space-around;
+  margin: 0 0;
+  margin-right: auto;
   width: 50% !important;
 }
 
@@ -43,6 +44,22 @@
 .canteen .mycontent .info>view {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.canteen .mycontent .info .comment>view {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items:flex-end;
+  margin: 0 15rpx;
+}
+
+.canteen .mycontent .info .comment>view>view:nth-child(2){
+  margin-left: 10rpx;
+  font-size: 30rpx;
+  color: #666;
 }
 
 .canteen .mycontent .image {

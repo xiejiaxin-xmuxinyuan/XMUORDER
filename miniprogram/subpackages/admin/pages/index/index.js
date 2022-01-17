@@ -50,7 +50,7 @@ Page({
       }, {
         icon: 'taoxiaopu',
         color: 'blue',
-        name: '商店信息',
+        name: '商店管理',
         path: '../shop/shop'
       }, {
         icon: 'goodsnewfill',
