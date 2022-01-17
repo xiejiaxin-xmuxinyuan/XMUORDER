@@ -1,0 +1,60 @@
+/* subpackages/admin/pages/shop/addShop.wxss */
+.tab-page {
+  min-height: 75vh;
+  margin-bottom: 5vh;
+}
+
+.footer {
+  margin-bottom: 0;
+}
+
+.my-textarea {
+  display: flex;
+  flex-direction: column;
+  padding: 15rpx 30rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.my-textarea>.title {
+  padding-right: 30rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  line-height: 60rpx;
+}
+
+.my-textarea>textarea {
+  padding: 15rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.my-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.my-title .my-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-right: 15rpx;
+  margin-left: 387rpx;
+}
+
+.my-title .my-btn>button {
+  background: none;
+  font-size: 33rpx;
+  font-weight: bold;
+  padding: 0 15rpx;
+}
+
+.my-time {
+  border-top: 1rpx solid #eee;
+}
+
+
+
+
