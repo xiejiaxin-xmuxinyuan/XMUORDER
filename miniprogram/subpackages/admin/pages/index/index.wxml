@@ -207,3 +207,21 @@
     <view>我的</view>
   </view>
 </view>
+
+<!-- 自定义模态框 -->
+<my-box wx:if="{{user.identity.type!=='superAdmin'}}" style="position: fixed;" show="{{!!showPicker}}" bind:hideBox="showHidePicker" title="#{{rejectOrderIndex+1}} 订单，拒单理由？">
+  <view class="my-box-content">
+    <view class="my-picker">
+      <picker bindchange="pickerIndexChange" value="{{pickerListIndex}}" range="{{pickerList}}">
+        <view class="{{pickerListIndex!==null? 'text-black':'text-grey'}}">
+          {{pickerListIndex!==null? pickerList[pickerListIndex] : '请选择拒单理由'}}
+        </view>
+      </picker>
+      <view class="cuIcon-unfold"></view>
+    </view>
+    <view class="my-btn-group">
+      <button class="cu-btn bg-grey shadow" catchtap="showHidePicker" data-hide="{{true}}">取消</button>
+      <button class="cu-btn bg-red shadow" catchtap="rejectOrderBtn">拒单</button>
+    </view>
+  </view>
+</my-box>
