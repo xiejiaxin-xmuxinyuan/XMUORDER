@@ -26,7 +26,6 @@ Page({
       util.showToast('请输入意见内容')
       return
     }
-
     util.showLoading('提交中')
     wx.cloud.callFunction({
         name: 'submitFeedback',

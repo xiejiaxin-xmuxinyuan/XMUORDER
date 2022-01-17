@@ -84,7 +84,6 @@ Page({
                   var identity = feedbacks[index]._id
                   var canteenFeedback = feedbacks[index].canteenFeedback
                   var state = feedbacks[index].state
-                  console.log(state)
                   wx.cloud.callFunction({
                     name: 'dealFeedback',
                     data: {
