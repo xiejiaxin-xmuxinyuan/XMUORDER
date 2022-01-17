@@ -33,14 +33,6 @@
   width: 50% !important;
 }
 
-.canteen .mycontent .mytag {
-  position: absolute;
-  width: auto;
-  right: 0;
-  top: 0;
-  z-index: 999;
-}
-
 .canteen .mycontent .info>view {
   display: flex;
   flex-direction: row;

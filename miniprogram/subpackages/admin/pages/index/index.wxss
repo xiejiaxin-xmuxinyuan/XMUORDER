@@ -194,3 +194,31 @@
   font-size: 50rpx;
   text-align: center;
 }
+
+
+my-box .my-box-content {
+  display: flex;
+  flex-direction: column;
+}
+
+my-box .my-box-content .my-btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+my-box .my-picker {
+  padding: 50rpx 0;
+  color: #333;
+  font-size: 30rpx;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}
+
+my-box .my-picker > view{
+  margin-left: 15rpx;
+  margin-top: 5rpx;
+}

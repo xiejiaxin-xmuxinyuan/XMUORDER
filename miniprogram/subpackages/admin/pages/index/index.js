@@ -25,6 +25,14 @@ Page({
   data: {
     pageCurr: "admin",
     watchOrderFlag: false,
+    showPicker: false,
+    rejectOrderIndex: null,
+    pickerListIndex: null,
+    pickerList: [
+      '当前菜品不足',
+      '订单内容不合要求',
+      '订单无法完成',
+    ],
     user: {},
     intCurTime: 0,
     orders: {
@@ -167,8 +175,8 @@ Page({
           .skip((currPage - 1) * pageSize).limit(pageSize).get()
         )
       }
-      
-      Promise.all(proList).then(res=>{
+
+      Promise.all(proList).then(res => {
         var canteens = []
         res.forEach(r => {
           canteens.push(...r.data)
@@ -399,36 +407,46 @@ Page({
       })
       return
     }
-    wx.showModal({
-      title: '提示',
-      content: '确定拒单？'
-    }).then(res => {
-      if (res.confirm) {
-
-        const index = e.currentTarget.dataset.index
-        const outTradeNo = that.data.orders.newOrders[index].orderInfo.outTradeNo
-
-        util.showLoading('拒单请求中')
-        wx.cloud.callFunction({
-            name: 'payOrderCancel',
-            data: {
-              outTradeNo: outTradeNo,
-              rejectOrder: true
-            }
-          }).then(res => {
-            util.hideLoading()
-            if (res.result.success) {
-              util.showToast('拒单成功', 'success')
-            } else {
-              util.showToast('拒单失败', 'error')
-            }
-          })
-          .catch(e => {
-            util.hideLoading()
-            util.showToast('拒单失败', 'error')
-          })
-      }
+    that.setData({
+      rejectOrderIndex: e.currentTarget.dataset.index,
+      showPicker: true
     })
+  },
+  rejectOrderBtn: function (e) {
+    const pickerListIndex = that.data.pickerListIndex
+    if (pickerListIndex === null) {
+      util.showToast('请选择拒单理由！')
+      return
+    }
+
+    that.setData({
+      pickerListIndex: null,
+      showPicker: false
+    })
+
+    const rejectReason = that.data.pickerList[pickerListIndex]
+    const index = that.data.rejectOrderIndex
+    const outTradeNo = that.data.orders.newOrders[index].orderInfo.outTradeNo
+    util.showLoading('拒单请求中')
+    wx.cloud.callFunction({
+        name: 'payOrderCancel',
+        data: {
+          outTradeNo,
+          rejectOrder: true,
+          rejectReason
+        }
+      }).then(res => {
+        util.hideLoading()
+        if (res.result.success) {
+          util.showToast('拒单成功', 'success')
+        } else {
+          util.showToast('拒单失败', 'error')
+        }
+      })
+      .catch(e => {
+        util.hideLoading()
+        util.showToast('拒单失败', 'error')
+      })
   },
   acceptOrder: function (e) {
     if (!that.data.watchOrderFlag) {
@@ -493,5 +511,21 @@ Page({
     wx.navigateTo({
       url: '../order/success',
     })
-  }
+  },
+  pickerIndexChange: function (e) {
+    that.setData({
+      pickerListIndex: e.detail.value
+    })
+  },
+  showHidePicker: function (e) {
+    if (e.type === 'hideBox') {
+      that.setData({
+        showPicker: false
+      })
+    } else {
+      that.setData({
+        showPicker: 'hide' in e.currentTarget.dataset ? false : true
+      })
+    }
+  },
 })

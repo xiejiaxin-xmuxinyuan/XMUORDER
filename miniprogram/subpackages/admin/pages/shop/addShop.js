@@ -79,26 +79,32 @@ Page({
     timePeriodNum += 1
     if (timePeriodNum > 3) {
       util.showToast('时间段数量已满', 'error')
+      that.setData({
+        show: false
+      })
       return
     }
-    util.showLoading('上传中')
-    setTimeout(() => {
-      var show = false
-      var beginTime = that.data.beginTime
-      var endTime = that.data.endTime
-      var businessTime = that.data.form.businessTime
-      businessTime.push([
-        beginTime.substring(0, 2) + beginTime.substring(3, 5), endTime.substring(0, 2) + endTime.substring(3, 5)
-      ])
-      that.timeExchange()
-      that.setData({
-        show: show,
-        'form.businessTime': businessTime,
-        timePeriodNum: timePeriodNum
-      })
-      util.hideLoading()
-    }, 1600);
+    var show = false
+    var beginTime = that.data.beginTime
+    var endTime = that.data.endTime
 
+    var bIimeStr = beginTime.substring(0, 2) + beginTime.substring(3, 5)
+    var eTimeStr = endTime.substring(0, 2) + endTime.substring(3, 5)
+
+    if (parseInt(eTimeStr) <= parseInt(bIimeStr)) {
+      util.showToast('开始时间不得超过结束时间')
+      return
+    }
+    var businessTime = that.data.form.businessTime
+    businessTime.push([
+      bIimeStr, eTimeStr
+    ])
+    that.timeExchange()
+    that.setData({
+      show: show,
+      'form.businessTime': businessTime,
+      timePeriodNum: timePeriodNum
+    })
   },
   timeExchange(e) {
     var business = []
@@ -127,12 +133,12 @@ Page({
     })
   },
   beginTimeChange(e) {
-    this.setData({
+    that.setData({
       beginTime: e.detail.value
     })
   },
   endTimeChange(e) {
-    this.setData({
+    that.setData({
       endTime: e.detail.value
     })
   },
@@ -156,19 +162,13 @@ Page({
           if (flag) {
             util.showToast('商品类别名称重复')
           } else {
-            util.showLoading('上传中')
-            setTimeout(() => {
-              foodList.push({
-                name: newTypeName
-              })
-              that.setData({
-                'form.foodList': foodList
-              })
-              util.hideLoading()
-            }, 1600);
+            foodList.push({
+              name: newTypeName
+            })
+            that.setData({
+              'form.foodList': foodList
+            })
           }
-        } else if (res.cancel) {
-          util.showToast('操作已取消')
         }
       }
     })
@@ -371,7 +371,8 @@ Page({
         required: true
       },
       info: {
-        required: true
+        required: true,
+        maxlength: 50
       },
       thumb: {
         required: true
@@ -397,7 +398,8 @@ Page({
         required: '请输入餐厅名称'
       },
       info: {
-        required: '请输入餐厅介绍'
+        required: '请输入餐厅介绍',
+        maxlength: '请输入50字符内的餐厅简介'
       },
       thumb: {
         required: '请添加餐厅封面'
