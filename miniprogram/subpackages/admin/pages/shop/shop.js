@@ -17,11 +17,10 @@ Page({
   },
   onShow: () => {
     util.showLoading('加载中')
-    var p0 = db.collection("canteen").get()
-    var p1 = that.getCanteens()
-    Promise.all([p0, p1]).then(res => {
+    var p = that.getCanteens()
+    Promise.all([p]).then(res => {
       wx.hideLoading()
-      var canteens = res[0].data
+      var canteens = res.data
       that.setData({
         canteens: canteens, //餐厅数据
         isLoaded: true, // 表示加载完毕
@@ -30,14 +29,14 @@ Page({
     })
     wx.hideLoading()
   },
-  delShop(e){
+  delShop(e) {
     var index0 = e.currentTarget.dataset.index
     var canteen = that.data.canteens[index0]
     var canteenCurrPage = that.data.canteenCurrPage
     const identity = app.globalData.identity
     if (identity.type !== 'superAdmin') {
-        util.showToast('您没有该餐厅的删除权限')
-        return
+      util.showToast('您没有该餐厅的删除权限')
+      return
     }
     wx.showModal({
       title: '提示',
@@ -103,7 +102,7 @@ Page({
       }
     }
   },
-  getCanteens: function ( canteenCurrPage = 1, pageSize = 5 ) {
+  getCanteens: function (canteenCurrPage = 1, pageSize = 5) {
     return new Promise(async (resolve, reject) => {
       if (canteenCurrPage < 1) {
         canteenCurrPage = 1
@@ -155,8 +154,8 @@ Page({
   toAddShop: function (e) {
     const identity = app.globalData.identity
     if (identity.type !== 'superAdmin') {
-        util.showToast('您没有该餐厅的删除权限')
-        return
+      util.showToast('您没有该餐厅的删除权限')
+      return
     }
     wx.navigateTo({
       url: './addShop',
