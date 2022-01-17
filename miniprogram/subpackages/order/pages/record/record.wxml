@@ -63,6 +63,10 @@
             </view>
           </block>
         </view>
+        <view wx:if="{{item.orderInfo.orderState==='SUCCESS' && item.feedback.userFeedback}}">
+            <text>我的反馈：{{item.feedback.userFeedback}}</text>
+            <view wx:if="{{item.feedback.canteenFeedback}}"><text>餐厅答复：{{item.feedback.canteenFeedback}}</text></view>
+          </view>
       </view>
     </view>
   </view>

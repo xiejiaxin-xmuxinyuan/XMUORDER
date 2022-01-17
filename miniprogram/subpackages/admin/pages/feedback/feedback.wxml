@@ -1,3 +1,60 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-    <view slot="content">反馈</view>
-  </cu-custom>
+  <view slot="content">反馈</view>
+</cu-custom>
+
+<view wx:if="{{feedbacks.length > 0}}">
+  <view wx:for="{{feedbacks}}" wx:key="_id">
+    <view class="cu-card article ">
+      <view class="cu-item shadow-warp myorder">
+        <view class="mycontent" data-index="{{index}}" catchtap="toRecoredDetail">
+          <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
+            <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            <view class="info">
+              <view>
+                <view class="text-cut text-bold">{{i.food}}</view>
+                <view class="text-bold">￥{{i.price}}</view>
+              </view>
+              <view class="text-gray">
+                <view>{{i.num}}件</view>
+                <view>×{{i.num}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="my-bottom">
+          <view class="info">
+            <view class="cu-tag bg-brown light lg round">{{'反馈时间：' + item.date}}</view>
+            <view class="text-bold text-black text-right">
+              合计：<text class="text-red"> ￥{{i.num*i.price}}</text>
+            </view>
+          </view>
+        </view>
+        <view>
+          <text>用户反馈：{{item.feedback}}</text>
+        </view>
+        <view>
+          <view wx:if="{{item.refund}}" class="cu-btn bg-red round shadow">
+            <text class="text-bold">申请退款</text>
+          </view>
+          <view wx:else class="cu-btn bg-green round shadow">
+            <text class="text-bold">未申请退款</text>
+          </view>
+          <view class="cu-btn bg-yellow round shadow" catchtap="dealFeedback" data-index="{{index}}" wx:if="{{item.state === 0}}">
+            <text class="text-bold">处理</text>
+          </view>
+          <view class="cu-btn bg-blue round shadow"  wx:if="{{item.state === 1}}">
+            <text class="text-bold">已处理</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view class="no-record text-gray" wx:else>
+  <view class="cuIcon-form"></view>
+  暂无反馈
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>

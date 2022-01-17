@@ -41,12 +41,13 @@ Page({
   },
   feedback: function (e) {
     var order = that.data.record[e.currentTarget.dataset.index]
-    console.log(order.feedback)
     var info = {
       goods: order.goodsInfo.record,
       formatedTime: order.orderInfo.timeInfo.formatedTime,
       feeInfo: order.payInfo.feeInfo,
-      outTradeNo: order.orderInfo.outTradeNo
+      outTradeNo: order.orderInfo.outTradeNo,
+      shopInfo: order.goodsInfo.shopInfo,
+      record: order.goodsInfo.record
     }
     info = JSON.stringify(info)
     wx.navigateTo({

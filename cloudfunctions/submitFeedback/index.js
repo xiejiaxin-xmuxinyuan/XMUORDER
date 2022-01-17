@@ -17,6 +17,8 @@ exports.main = async (event, context) => {
   const outTradeNo = event.outTradeNo
   const date = event.date
   const refund = event.refund
+  const cID = event.cID
+  const record = event.record
   try {
     const openid = wxContext.OPENID
     await db.collection('userFeedbacks').add({
@@ -27,7 +29,9 @@ exports.main = async (event, context) => {
         outTradeNo: outTradeNo,
         date: date,
         refund: refund,
-        state: 0
+        state: 0,
+        cID: cID,
+        record: record
       }
     })
     return {

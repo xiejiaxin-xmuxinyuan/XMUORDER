@@ -34,7 +34,9 @@ Page({
           outTradeNo: info.outTradeNo,
           date: info.formatedTime,
           feedback: feedback,
-          refund: that.data.refund
+          refund: that.data.refund,
+          cID: info.shopInfo.cID,
+          record: info.record
         }
       }).then(res => {
         wx.hideLoading()
