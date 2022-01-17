@@ -1,3 +1,53 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-    <view slot="content">商店信息</view>
-  </cu-custom>
+  <view slot="content">商店信息</view>
+</cu-custom>
+
+<view class="tab-page">
+  <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
+    <view class="mycontent animation-fade" data-index="{{index}}">
+      <image src="{{item.thumb}}" mode="aspectFill" class="image {{!item.inBusiness ? 'img-disable':''}}">
+      </image>
+      <view class="info">
+        <view class="text-xl margin-bottom-sm">
+          <view class="text-bold text-cut">{{item.name}}</view>
+        </view>
+        <view>
+          <text class="cuIcon-locationfill text-red text-cut">
+            <text class="text-black"> {{item.fulAddress}}</text>
+          </text>
+        </view>
+        <view>
+          <text class="cuIcon-timefill text-olive">
+            <text class="text-black"> {{item.beginTime}}-{{item.endTime}}</text>
+          </text>
+        </view>
+        <view class="text-grey" catchtap="editShop" data-index="{{index}}">
+          <text class="cuIcon-write margin-right-lg text-orange" style="font-size: 4vw">
+          </text>
+        </view>
+      </view>
+      <view class="cuIcon-roundclose" style="font-size: 5vw" catchtap="delShop" data-index="{{index}}"></view>
+    </view>
+  </view>
+</view>
+
+<view class="my-bar">
+  <block wx:if="{{canteenTotalPage > 1 && canteens.length}}">
+    <view class="page-bar">
+      <button catchtap="canteenChangePage" class="cu-btn line-black  round shadow">上一页</button>
+      <text class="text-lg margin-sm">{{canteenCurrPage}} / {{canteenTotalPage}}</text>
+      <button catchtap="canteenChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
+    </view>
+    <view class="add-btn" catchtap="toAddShop">
+      <text class="cuIcon-edit"></text>
+    </view>
+  </block>
+  <view wx:else class="add-btn" catchtap="toAddShop" style="margin-right: 42rpx; margin-left: auto;">
+    <text class="cuIcon-edit"></text>
+  </view>
+</view>
+
+<view class="footer">
+  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+</view>
+
