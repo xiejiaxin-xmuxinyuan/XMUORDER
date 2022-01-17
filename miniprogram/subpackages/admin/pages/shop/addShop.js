@@ -8,7 +8,7 @@ Page({
   data: {
     maxImgnum: 5,
     imageNum: 0,
-    timePeriodNum: 1,   // 时间段
+    timePeriodNum: 1, // 时间段
     identity: {},
     typePickerIndex: null,
     show: false,
@@ -63,6 +63,7 @@ Page({
     form.foodList.push({
       name: "单品"
     })
+    that.cIDChange()
     form.businessTime.push(["0600", "2000"])
     that.timeExchange()
     that.setData({
@@ -70,39 +71,57 @@ Page({
       form
     })
   },
-  onShow: function () {
-
+  getStrDate(date) {
+    let year = date.getFullYear()
+    let month = (date.getMonth() + 1).toString().padStart(2, '0')
+    let day = date.getDate().toString().padStart(2, '0')
+    let hour = date.getHours().toString().padStart(2, '0')
+    let min = date.getMinutes().toString().padStart(2, '0')
+    let sec = date.getSeconds().toString().padStart(2, '0')
+    return year + month + day + hour + min + sec
+  },
+  // 返回长度为4位的随机字母字符串
+  getRandomStr() {
+    return Math.random().toString(36).slice(-4)
+  },
+  cIDChange(e) { 
+    var canteenTocID = that.data.canteenTocID
+    var date = new Date()
+    for( var i in canteenTocID )
+    {
+      var tmp = that.getStrDate(date) + that.getRandomStr()
+      canteenTocID[i] = tmp  
+    }
+    that.setData({
+      canteenTocID
+    })
   },
   addBussinessTime(e) {
-    var show = that.data.show
-    show = true
     that.setData({
-      show: show
+      show: true
     })
   },
   addTimePeriods(e) {
     var timePeriodNum = that.data.timePeriodNum
     timePeriodNum += 1
-    if( timePeriodNum > 3 )
-    {
+    if (timePeriodNum > 3) {
       util.showToast('时间段数量已满', 'error')
       return
     }
     util.showLoading('上传中')
     setTimeout(() => {
-      var show = that.data.show
-      show = false
+      var show = false
       var beginTime = that.data.beginTime
       var endTime = that.data.endTime
       var businessTime = that.data.form.businessTime
       businessTime.push([
-        beginTime.substring(0, 2) + beginTime.substring(3, 5), endTime.substring(0,2) + endTime.substring(3, 5)
+        beginTime.substring(0, 2) + beginTime.substring(3, 5), endTime.substring(0, 2) + endTime.substring(3, 5)
       ])
       that.timeExchange()
       that.setData({
-        show : show,
+        show: show,
         'form.businessTime': businessTime,
-        timePeriodNum : timePeriodNum
+        timePeriodNum: timePeriodNum
       })
       util.hideLoading()
     }, 1600);
@@ -121,7 +140,7 @@ Page({
       business
     })
   },
-  delTime(e){
+  delTime(e) {
     var business = that.data.business
     var businessTime = that.data.form.businessTime
     var timePeriodNum = that.data.timePeriodNum
@@ -130,8 +149,8 @@ Page({
     timePeriodNum -= 1
     that.setData({
       business: business,
-      'form.businessTime' : businessTime,
-      timePeriodNum : timePeriodNum
+      'form.businessTime': businessTime,
+      timePeriodNum: timePeriodNum
     })
   },
   beginTimeChange(e) {
@@ -155,10 +174,8 @@ Page({
           var newTypeName = res.content
           var foodList = that.data.form.foodList
           var flag = false
-          for(var i = 0; i < foodList.length; i++ )
-          {
-            if(foodList[i].name.indexOf(newTypeName) >= 0 )
-            {
+          for (var i = 0; i < foodList.length; i++) {
+            if (foodList[i].name.indexOf(newTypeName) >= 0) {
               flag = true
               break
             }
@@ -168,9 +185,11 @@ Page({
           } else {
             util.showLoading('上传中')
             setTimeout(() => {
-              foodList.push({name: newTypeName})
+              foodList.push({
+                name: newTypeName
+              })
               that.setData({
-                'form.foodList' : foodList
+                'form.foodList': foodList
               })
               util.hideLoading()
             }, 1600);
@@ -181,11 +200,11 @@ Page({
       }
     })
   },
-  delFoodType: function(e){
+  delFoodType: function (e) {
     var foodList = that.data.form.foodList
     foodList.pop()
     that.setData({
-      'form.foodList' : foodList
+      'form.foodList': foodList
     })
   },
   typePickerChange: function (e) {
@@ -304,7 +323,7 @@ Page({
     var date = new Date()
     var type = that.data.addressToType[address]
     const randomStr = date.getTime() + '_' + Math.random().toString(36).slice(-4)
-    return '餐厅图片/' + type + '/'  + randomStr + img.match('.[^.]+?$')[0]
+    return '餐厅图片/' + type + '/' + randomStr + img.match('.[^.]+?$')[0]
   },
   addNoticesSubmit: function (e) {
     var form = that.data.form
@@ -343,11 +362,12 @@ Page({
         }
         //图片上传成功再提交数据
         //构建表单
-         var cID = canteenTocID[params.name]
-         var newForm = Object.assign(params, {
+        var date = new Date()
+        var cID = that.getStrDate(date) + that.getRandomStr()
+        var newForm = Object.assign(params, {
           image: image,
           thumb: res[0].fileID,
-          cID : cID
+          cID: cID
         })
         db.collection('canteen').add({
           data: newForm
