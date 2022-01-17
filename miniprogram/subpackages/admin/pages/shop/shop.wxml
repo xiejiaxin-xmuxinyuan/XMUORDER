@@ -3,7 +3,7 @@
 </cu-custom>
 
 <view class="tab-page">
-  <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
+  <view class="canteen shadow-warp radius" catchtap="editShop" data-index="{{index}}" wx:for="{{canteens}}" wx:key="_id">
     <view class="mycontent animation-fade" data-index="{{index}}">
       <image src="{{item.thumb}}" mode="aspectFill" class="image">
       </image>
@@ -28,7 +28,6 @@
         </view>
         <view class="cuIcon-right" style="position: absolute; top: 45%;right: 5rpx;font-size: 40rpx;"></view>
       </view>
-      <view class="cuIcon-roundclose" style="font-size: 5vw" catchtap="delShop" data-index="{{index}}"></view>
     </view>
   </view>
 </view>

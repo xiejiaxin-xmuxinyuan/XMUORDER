@@ -1,143 +1,131 @@
 <!--subpackages/admin/pages/shop/addShop.wxml-->
-<view class="tab-page">
-  <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-    <view slot="content">新增商店</view>
-  </cu-custom>
-  <view class="bg-white margin-lg shadow-warp radius">
-    <form catchsubmit="addNoticesSubmit">
-      <view class="cu-form-group">
-        <view class="title text-bold">餐厅名称</view>
-        <input name="name" value="{{form.name}}" class="text-right" placeholder="输入餐厅名称"></input>
-      </view>
-      <view class="cu-form-group">
-        <view class="title text-bold">所在地区</view>
-        <picker wx:if="{{identity.type ==='superAdmin'}}" bindchange="typePickerChange" value="{{typePickerIndex}}" range="{{typePicker}}">
-          <view class="picker">
-            {{typePickerIndex !== null ? typePicker[typePickerIndex]: '请选择餐厅所在地区'}}
-          </view>
-        </picker>
-        <view wx:else class="margin-right-sm text-black">{{form.address}}</view>
-      </view>
-      <view class="cu-form-group">
-        <view class="title text-bold">餐厅地址</view>
-        <input name="fulAddress" value="{{form.fulAddress}}" class="text-right" placeholder="输入餐厅地址"></input>
-      </view>
-      <view class="my-textarea">
-        <view class="title text-bold">餐厅介绍</view>
-        <textarea maxlength="50" name="info" value="{{form.info}}" placeholder="输入内容..."></textarea>
-      </view>
-      <view class="my-food">
-        <view class="my-title">
-          <view class="title text-bold" style="margin-left: 32rpx; font-size: 32rpx;">商品类别</view>
-          <view class="my-btn">
-            <button class="cu-btn">
-              <text class="cuIcon-add" catchtap="addFoodType"></text>
-            </button>
-          </view>
+<cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
+  <view slot="content">新增商店</view>
+</cu-custom>
+<view class="main">
+  <form catchsubmit="addNoticesSubmit">
+    <view class="cu-form-group">
+      <view class="title text-bold">餐厅名称</view>
+      <input name="name" value="{{form.name}}" class="text-right" placeholder="输入餐厅名称"></input>
+    </view>
+    <view class="cu-form-group">
+      <view class="title text-bold">所在地区</view>
+      <picker wx:if="{{identity.type ==='superAdmin'}}" bindchange="typePickerChange" value="{{typePickerIndex}}" range="{{typePicker}}">
+        <view class="picker {{typePickerIndex !== null? '':'text-grey'}}">
+          {{typePickerIndex !== null ? typePicker[typePickerIndex]: '请选择餐厅所在地区'}}
         </view>
-        <view class="my-title" wx:for="{{form.foodList}}" wx:key="*this">
-          <text class="title text-bold" style="margin-left: 32rpx; font-size: 28rpx;">{{item.name}}</text>
-          <view class="my-btn">
-            <button class="cu-btn">
-              <text class="cuIcon-close" catchtap="delFoodType" style="margin-right: 2rpx; font-size: 30rpx;"></text>
-            </button>
-          </view>
+      </picker>
+      <view wx:else class="margin-right-sm text-black">{{form.address}}</view>
+    </view>
+    <view class="cu-form-group">
+      <view class="title text-bold">餐厅地址</view>
+      <input name="fulAddress" value="{{form.fulAddress}}" class="text-right" placeholder="输入餐厅地址"></input>
+    </view>
+    <view class="my-textarea">
+      <view class="title text-bold">餐厅简介</view>
+      <textarea maxlength="50" name="info" value="{{form.info}}" placeholder="输入50字内餐厅简介.."></textarea>
+    </view>
+    <view style="padding: 10rpx 20rpx;">
+      <view class="my-title-group">
+        <view class="my-title">商品类别</view>
+        <view class="my-btn">
+          <button catchtap="addFoodType" class="cu-btn cuIcon-add"></button>
+        </view>
+      </view>
+      <!-- 类别列表 -->
+      <view class="my-item-group" wx:for="{{form.foodList}}" wx:key="*this">
+        <text class="my-title cuIcon-title"> {{item.name}}</text>
+        <view class="my-btn">
+          <button catchtap="delFoodType" class="cu-btn cuIcon-close text-grey"></button>
+        </view>
+      </view>
+    </view>
+
+    <view class="my-time">
+      <view class="my-title-group my-top-border">
+        <view class="my-title">营业时间</view>
+        <view class="my-btn">
+          <button catchtap="addBussinessTime" class="cu-btn cuIcon-add"></button>
+        </view>
+      </view>
+      <!-- 时间段列表 -->
+      <view class="my-item-group" wx:for="{{business}}" wx:key="*this">
+        <text class="my-title cuIcon-title"> {{item[0]}}:{{item[1]}}-{{item[2]}}:{{item[3]}}</text>
+        <view class="my-btn">
+          <button catchtap="delTime" class="cu-btn cuIcon-close text-grey"></button>
         </view>
       </view>
 
-      <view class="my-time">
-        <view class="my-title">
-          <view class="title text-bold" style="margin-left: 32rpx; font-size: 32rpx;">营业时间</view>
-          <view class="my-btn">
-            <button class="cu-btn">
-              <text class="cuIcon-right" catchtap="addBussinessTime"></text>
-            </button>
-          </view>
-        </view>
-        <view class="my-title" wx:for="{{business}}" wx:key="*this">
-          <text class="title text-bold" style="margin-left: 32rpx; font-size: 28rpx;">{{item[0]}}:{{item[1]}}-{{item[2]}}:{{item[3]}}</text>
-          <view class="my-btn">
-            <button class="cu-btn">
-              <text class="cuIcon-close" catchtap="delTime" style="margin-right: 2rpx; font-size: 30rpx;"></text>
-            </button>
-          </view>
-        </view>
-        <view class="time-choose" wx:if="{{show}}">
-          <view class="cu-form-group">
-            <view class="title text-bold">开始营业时间：</view>
-            <picker mode="time" value="{{beginTime}}" start="06:00" end="22:00" bindchange="beginTimeChange">
-              <view class="picker">
-                {{beginTime}}
-              </view>
-            </picker>
-          </view>
-          <view class="cu-form-group">
-            <view class="title text-bold">结束营业时间：</view>
-            <picker mode="time" value="{{endTime}}" start="06:00" end="22:00" bindchange="endTimeChange">
-              <view class="picker">
-                {{endTime}}
-              </view>
-            </picker>
-          </view>
-          <view class="margin-tb-sm text-center" catchtap="addTimePeriods">
-            <button class="cu-btn round bg-blue shadow">确认时间</button>
-          </view>
-        </view>
-      </view>
-      <view class="cu-bar bg-white">
-        <view class="action text-bold">
-          餐厅封面
-        </view>
-        <view class="action">
-          {{form.thumb ? 1 : 0}} / 1
-        </view>
-      </view>
-
-      <view class="cu-form-group">
-        <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:if="{{form.thumb}}" bindtap="viewThumb" data-url="{{form.thumb}}">
-            <image src='{{form.thumb}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="delThumb">
-              <text class="cuIcon-close"></text>
+      <view class="time-choose" wx:if="{{show}}">
+        <view class="cu-form-group">
+          <view class="title text-bold">开始营业时间：</view>
+          <picker mode="time" value="{{beginTime}}" start="06:00" end="22:00" bindchange="beginTimeChange">
+            <view class="picker">
+              {{beginTime}}
             </view>
-          </view>
-          <view class="solids" bindtap="chooseThumb" wx:if="{{!form.thumb}}">
-            <text class="cuIcon-cameraadd"></text>
-          </view>
+          </picker>
         </view>
-      </view>
-
-      <view class="cu-bar bg-white margin-top">
-        <view class="action text-bold">
-          餐厅图片
-        </view>
-        <view class="action">
-          {{form.image.length}} / {{maxImgnum}}
-        </view>
-      </view>
-      <view class="cu-form-group">
-        <view class="grid col-4 grid-square flex-sub">
-          <view class="bg-img" wx:for="{{form.image}}" wx:key="*this" data-index="{{index}}" bindtap="viewImage">
-            <image src='{{item}}' mode='aspectFill'></image>
-            <view class="cu-tag bg-red" catchtap="delImg" data-index="{{index}}">
-              <text class="cuIcon-close"></text>
+        <view class="cu-form-group">
+          <view class="title text-bold">结束营业时间：</view>
+          <picker mode="time" value="{{endTime}}" start="06:00" end="22:00" bindchange="endTimeChange">
+            <view class="picker">
+              {{endTime}}
             </view>
-          </view>
-          <view class="solids" bindtap="chooseImage" wx:if="{{imageNum < maxImgnum}}">
-            <text class="cuIcon-cameraadd"></text>
-          </view>
+          </picker>
+        </view>
+        <view class="margin-tb-sm text-center" catchtap="addTimePeriods">
+          <button class="cu-btn round bg-blue shadow">确认时间</button>
         </view>
       </view>
-
-      <view style="text-align: center;padding: 1rem 0;">
-        <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">提交</button>
+    </view>
+    
+    <view class="cu-bar bg-white my-top-border">
+      <view class="action text-bold">
+        餐厅封面
       </view>
-    </form>
-  </view>
-</view>
+      <view class="action">
+        {{form.thumb ? 1 : 0}} / 1
+      </view>
+    </view>
 
+    <view class="cu-form-group">
+      <view class="grid col-4 grid-square flex-sub">
+        <view class="bg-img" wx:if="{{form.thumb}}" bindtap="viewThumb" data-url="{{form.thumb}}">
+          <image src='{{form.thumb}}' mode='aspectFill'></image>
+          <view class="cu-tag bg-red" catchtap="delThumb">
+            <text class="cuIcon-close"></text>
+          </view>
+        </view>
+        <view class="solids" bindtap="chooseThumb" wx:if="{{!form.thumb}}">
+          <text class="cuIcon-cameraadd"></text>
+        </view>
+      </view>
+    </view>
 
+    <view class="cu-bar bg-white margin-top">
+      <view class="action text-bold">
+        餐厅图片
+      </view>
+      <view class="action">
+        {{form.image.length}} / {{maxImgnum}}
+      </view>
+    </view>
+    <view class="cu-form-group">
+      <view class="grid col-4 grid-square flex-sub">
+        <view class="bg-img" wx:for="{{form.image}}" wx:key="*this" data-index="{{index}}" bindtap="viewImage">
+          <image src='{{item}}' mode='aspectFill'></image>
+          <view class="cu-tag bg-red" catchtap="delImg" data-index="{{index}}">
+            <text class="cuIcon-close"></text>
+          </view>
+        </view>
+        <view class="solids" bindtap="chooseImage" wx:if="{{imageNum < maxImgnum}}">
+          <text class="cuIcon-cameraadd"></text>
+        </view>
+      </view>
+    </view>
 
-<view class="footer">
-  <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
+    <view style="text-align: center;padding: 1rem 0;">
+      <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">提交</button>
+    </view>
+  </form>
 </view>
