@@ -13,14 +13,16 @@
  *                    带有该参数时将执行数据库set命令
  *                    无path参数时替换_id对应记录为formData
  *                    有path参数时替换_id对应记录path下的数据为formData
- *        (可选)push: any 
- *                    带有该参数时将执行数据库push命令，
- *                    对path参数连接的数组字段进行push(formData)操作
- *                    相当于 foodList.1.food.push(formData)
- *        (可选)pull: any 
+ *        (可选)pull: any  (删除数组元素)
  *                    带有该参数时将执行数据库pull命令
- *                    移除path参数连接的字段
- *                    相当于 foodList.pull(formData)
+ *                    删除path参数连接的数组的某(些)项
+ *                    formData为项匹配条件
+ *                    相当于 [path]: _.pull(formData)
+ *        (可选)remove: any 
+ *                    带有该参数时将执行数据库remove命令，
+ *                    对path参数连接的数组字段进行remove操作
+ *                    相当于 [path]: _.remove()
+ *      
  *                    
  * 返回： object 
  *        成功：{success: ture, res: 数据库操作的返回值}
@@ -74,6 +76,12 @@ exports.main = async (event, context) => {
           data: formData
         })
       }
+    } else if ('remove' in event) {
+      pro = db.collection(table).doc(_id).update({
+        data: {
+          [path]: _.remove()
+        }
+      })
     } else {
       if ('path' in event) {
         pro = db.collection(table).doc(_id).update({
