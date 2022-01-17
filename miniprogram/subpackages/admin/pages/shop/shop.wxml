@@ -1,11 +1,11 @@
 <cu-custom bgColor="bg-gradual-blue" isBack="{{true}}">
-  <view slot="content">商店信息</view>
+  <view slot="content">商店管理</view>
 </cu-custom>
 
 <view class="tab-page">
   <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
     <view class="mycontent animation-fade" data-index="{{index}}">
-      <image src="{{item.thumb}}" mode="aspectFill" class="image {{!item.inBusiness ? 'img-disable':''}}">
+      <image src="{{item.thumb}}" mode="aspectFill" class="image">
       </image>
       <view class="info">
         <view class="text-xl margin-bottom-sm">
@@ -16,15 +16,17 @@
             <text class="text-black"> {{item.fulAddress}}</text>
           </text>
         </view>
-        <view>
-          <text class="cuIcon-timefill text-olive">
-            <text class="text-black"> {{item.beginTime}}-{{item.endTime}}</text>
-          </text>
+        <view class="text-grey comment">
+          <view>
+            <view>👍</view>
+            <view>{{item.favor}}</view>
+          </view>
+          <view>
+            <view>👎</view>
+            <view>{{item.bad}}</view>
+          </view>
         </view>
-        <view class="text-grey" catchtap="editShop" data-index="{{index}}">
-          <text class="cuIcon-write margin-right-lg text-orange" style="font-size: 4vw">
-          </text>
-        </view>
+        <view class="cuIcon-right" style="position: absolute; top: 45%;right: 5rpx;font-size: 40rpx;"></view>
       </view>
       <view class="cuIcon-roundclose" style="font-size: 5vw" catchtap="delShop" data-index="{{index}}"></view>
     </view>

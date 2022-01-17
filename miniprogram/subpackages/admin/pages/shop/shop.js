@@ -5,12 +5,11 @@ const util = require('../../../../utils/util.js')
 var that
 Page({
   data: {
-    identity: '',
+    identity: {},
     canteens: [],
     canteenCurrPage: 1,
     canteenTotalPage: 0,
     canteenTotalCount: 0,
-    isLoaded: false
   },
   onLoad: function (options) {
     that = this
@@ -21,7 +20,6 @@ Page({
     that.getCanteens().then(() => {
       util.hideLoading()
       that.setData({
-        isLoaded: true, // 表示加载完毕
         identity: app.globalData.identity
       })
     })
@@ -144,15 +142,14 @@ Page({
         return
       }
     }
-    console.log(123)
     wx.navigateTo({
       url: './editShop?canteen=' + JSON.stringify(canteen)
     })
   },
   toAddShop: function (e) {
-    const identity = app.globalData.identity
+    const identity = that.data.identity
     if (identity.type !== 'superAdmin') {
-      util.showToast('您没有该餐厅的删除权限')
+      util.showToast('您没有新增餐厅的权限')
       return
     }
     wx.navigateTo({
