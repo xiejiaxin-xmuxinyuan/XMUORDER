@@ -1,11 +1,9 @@
-/* subpackages/admin/pages/shop/addShop.wxss */
-.tab-page {
-  min-height: 75vh;
-  margin-bottom: 5vh;
-}
-
-.footer {
-  margin-bottom: 0;
+.main {
+  background-color: white;
+  margin: 30rpx 40rpx;
+  padding: 20rpx 30rpx;
+  border-radius: 15rpx;
+  box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .my-textarea {
@@ -13,6 +11,7 @@
   flex-direction: column;
   padding: 15rpx 30rpx;
   border-top: 1rpx solid #eee;
+  height: 250rpx !important;
 }
 
 .my-textarea>.title {
@@ -27,34 +26,38 @@
   border-bottom: 1rpx solid #eee;
 }
 
-.my-title {
+.my-item-group,
+.my-title-group {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding: 5rpx 0;
 }
 
-
-.my-title .my-btn {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  margin-right: 15rpx;
-  margin-left: 387rpx;
+.my-title-group .my-title {
+  font-weight: bold;
+  font-size: 30rpx;
 }
 
-.my-title .my-btn>button {
+.my-item-group .my-title{
+  font-weight: 500;
+  font-size: 28rpx;
+  color: #666
+}
+
+.my-item-group .my-btn>button,
+.my-title-group .my-btn>button {
   background: none;
-  font-size: 33rpx;
+  font-size: 35rpx;
   font-weight: bold;
   padding: 0 15rpx;
 }
 
-.my-time {
+.my-top-border{
   border-top: 1rpx solid #eee;
 }
 
-
-
-
+.my-time{
+  padding: 10rpx 20rpx;
+}
