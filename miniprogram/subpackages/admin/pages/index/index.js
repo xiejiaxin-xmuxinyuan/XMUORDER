@@ -126,7 +126,7 @@ Page({
 
     Promise.all(proList).then(res => {
       //同步全局变量(无需保存本地)
-      var canteens = res[0].data //餐厅数据
+      var canteens = identity.type !== 'superAdmin' ? res[0].data : res[0] //餐厅数据
       app.globalData.canteens = canteens
 
       // 非超管，canteens中只有一个元素(此时显示order界面)
@@ -167,8 +167,8 @@ Page({
           .skip((currPage - 1) * pageSize).limit(pageSize).get()
         )
       }
-      
-      Promise.all(proList).then(res=>{
+
+      Promise.all(proList).then(res => {
         var canteens = []
         res.forEach(r => {
           canteens.push(...r.data)
