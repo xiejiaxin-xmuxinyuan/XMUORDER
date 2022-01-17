@@ -52,6 +52,16 @@
           <text class="text-xl text-orange"> {{order.goodsInfo.shopInfo.name}}</text>
           <text>，期待您的再次光临~</text>
         </view>
+        <view wx:elif="{{order.payInfo.tradeState==='REFUND'}}">
+          <text>订单已全额退款，</text>
+          <text class="text-orange">具体到账时间与支付方式有关</text>
+          <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
+            零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
+        </view>
+        <view wx:elif="{{order.payInfo.tradeState==='REFUNDERROR'}}">
+          <text>订单退款异常，</text>
+          <text class="text-orange">具体请咨询客服</text>
+        </view>
         <view wx:elif="{{order.getFoodInfo.getState==='TIMEOUT'}}">
           <text class="text-xl text-orange"> 取餐超时</text>
           <text>，订单已自动完成</text>

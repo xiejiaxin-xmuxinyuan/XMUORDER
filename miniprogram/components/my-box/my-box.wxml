@@ -1,5 +1,5 @@
 <view wx:if="{{show}}" class="my-box fade" catchtap="_hideBox">
-  <view catchtap="_none">
+  <view class="main" catchtap="_none">
     <view class="title">{{title}}</view>
     <slot></slot>
   </view>
