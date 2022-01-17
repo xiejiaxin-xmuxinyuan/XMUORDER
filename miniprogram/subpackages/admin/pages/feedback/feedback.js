@@ -19,6 +19,8 @@ Page({
     db.collection('userFeedbacks').where({
         cID: cID
       })
+      .orderBy('state','desc')
+      .orderBy('date','asc')
       .get()
       .then(res => {
         that.setData({
