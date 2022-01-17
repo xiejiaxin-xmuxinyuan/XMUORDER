@@ -61,6 +61,7 @@ exports.main = async (event, context) => {
       if ('rejectOrder' in event) { // 卖家拒单
         formData['orderInfo.orderState'] = 'NOTACCEPT'
         formData['orderInfo.orderStateMsg'] = '被拒'
+        formData['orderInfo.notAcceptReason'] = 'rejectReason' in event? event.rejectReason: '其他原因'
       }
 
       if (refundRes.resultCode === 'SUCCESS' && refundRes.returnCode === 'SUCCESS') {

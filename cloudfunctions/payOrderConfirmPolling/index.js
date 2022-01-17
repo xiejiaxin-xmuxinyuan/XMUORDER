@@ -60,6 +60,7 @@ exports.main = async (event, context) => {
           console.log(index, '超时自动拒单')
           formData['orderInfo.orderState'] = 'NOTACCEPT'
           formData['orderInfo.orderStateMsg'] = '被拒'
+          formData['orderInfo.notAcceptReason'] = '买家未及时接单'
           formData['orderInfo.timeInfo.endTime'] = getStrDate(new Date())
           // 退款
           var refundRes = await cloud.cloudPay.refund({

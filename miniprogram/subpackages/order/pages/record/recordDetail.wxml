@@ -29,7 +29,8 @@
       </block>
       <view wx:elif="{{order.orderInfo.orderState==='NOTACCEPT'}}">
         <block wx:if="{{order.payInfo.tradeState==='REFUND'}}">
-          <text class="text-orange">订单已全额退款</text>
+          <view style="margin-bottom: 15rpx;color: #333;">拒单理由：{{order.orderInfo.notAcceptReason}}</view>
+          <view class="text-orange">订单已全额退款</view>
           <view style="margin-top: 15rpx;font-size: smaller;font-weight: normal;color: #aaa;">
             零钱支付稍后到账，银行卡支付0-3工作日内到账</view>
         </block>
