@@ -7,6 +7,12 @@ Page({
    */
   data: {
     record: [],
+    showFbDetail: false,
+    feedbackDetail: {
+      canteenFeedback: '',
+      userFeedback: '',
+      state: 0
+    },
     currPage: 0,
     totalPage: 1
   },
@@ -37,6 +43,20 @@ Page({
             totalPage: res.totalPage,
           })
         })
+    }
+  },
+  showHideFeedback: function (e) {
+    if (e.type === 'hideBox') {
+      that.setData({
+        showFbDetail: false
+      })
+    } else {
+      const index = e.currentTarget.dataset.index
+      const order = that.data.record[index]
+      that.setData({
+        showFbDetail: true,
+        feedbackDetail: order.feedback
+      })
     }
   },
   feedback: function (e) {

@@ -55,18 +55,16 @@
             <button wx:if="{{!(item.feedback)}}" class="cu-btn bg-yellow round shadow" data-index="{{index}}" catchtap="feedback">
               <text class="cuIcon-message text-bold"> 反馈</text>
             </button>
-            <view wx:elif="{{item.feedback.state}}" class="cu-btn bg-green round shadow">
-              <text class="text-bold">已处理</text>
-            </view>
-            <view wx:else class="cu-btn bg-red round shadow">
-              <text class="text-bold">待处理</text>
+            <view wx:else class="flex justify-between text-bold">
+              <button class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="showHideFeedback">
+                反馈详情
+              </button>
+              <view class="cu-btn bg-{{item.feedback.state? 'green': 'red'}} round shadow">
+                {{item.feedback.state? '已处理': '未处理'}}
+              </view>
             </view>
           </block>
         </view>
-        <view wx:if="{{item.orderInfo.orderState==='SUCCESS' && item.feedback.userFeedback}}">
-            <text>我的反馈：{{item.feedback.userFeedback}}</text>
-            <view wx:if="{{item.feedback.canteenFeedback}}"><text>餐厅答复：{{item.feedback.canteenFeedback}}</text></view>
-          </view>
       </view>
     </view>
   </view>
@@ -83,3 +81,19 @@
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
+
+<!-- 自定义模态框 -->
+<my-box style="position: fixed;" show="{{!!showFbDetail}}" bind:hideBox="showHideFeedback" title="反馈详情">
+  <view class="feedback-group">
+    <view class="cuIcon-titles">我的反馈：</view>
+    <view class="content">
+      {{feedbackDetail.userFeedback}}
+    </view>
+  </view>
+  <view class="feedback-group">
+    <view class="cuIcon-titles">餐厅回复：</view>
+    <view class="content">
+      {{feedbackDetail.canteenFeedback? feedbackDetail.canteenFeedback: '暂无回复'}}
+    </view>
+  </view>
+</my-box>
