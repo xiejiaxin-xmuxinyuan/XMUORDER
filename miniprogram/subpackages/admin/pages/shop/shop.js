@@ -15,19 +15,51 @@ Page({
   onLoad: function (options) {
     that = this
   },
-  onShow: () => {
+  onShow(){
+    that = this
     util.showLoading('加载中')
-    var p = that.getCanteens()
-    Promise.all([p]).then(res => {
-      wx.hideLoading()
-      var canteens = res.data
+    that.getCanteens().then(() => {
+      util.hideLoading()
       that.setData({
-        canteens: canteens, //餐厅数据
         isLoaded: true, // 表示加载完毕
         identity: app.globalData.identity
       })
     })
-    wx.hideLoading()
+  },
+  getCanteens: function (canteenCurrPage = 1, pageSize = 5) {
+    return new Promise(async (resolve, reject) => {
+      if (canteenCurrPage < 1) {
+        canteenCurrPage = 1
+      }
+      const countResult = await db.collection('canteen').count()
+      const canteenTotalCount = countResult.total
+      const canteenTotalPage = canteenTotalCount === 0 ? 0 : canteenTotalCount <= pageSize ? 1 : Math.ceil(canteenTotalCount / pageSize)
+      if (canteenTotalCount === 0) { //如果没有任何记录
+        that.setData({
+          canteens: [],
+          canteenCurrPage: 1,
+          canteenTotalPage: 0,
+          canteenTotalCount: 0,
+        })
+        resolve()
+        return
+      }
+      if (canteenCurrPage > canteenTotalPage) {
+        canteenCurrPage = canteenTotalPage
+      }
+      db.collection('canteen')
+        .skip((canteenCurrPage - 1) * pageSize).limit(pageSize)
+        .get().then(res => {
+          that.setData({
+            canteens: res.data,
+            canteenCurrPage: canteenCurrPage,
+            canteenTotalPage: canteenTotalPage,
+            canteenTotalCount: canteenTotalCount,
+          })
+          resolve()
+          return
+        })
+    })
   },
   delShop(e) {
     var index0 = e.currentTarget.dataset.index
@@ -102,53 +134,19 @@ Page({
       }
     }
   },
-  getCanteens: function (canteenCurrPage = 1, pageSize = 5) {
-    return new Promise(async (resolve, reject) => {
-      if (canteenCurrPage < 1) {
-        canteenCurrPage = 1
-      }
-      const countResult = await db.collection('canteen').count()
-      const canteenTotalCount = countResult.total
-      const canteenTotalPage = canteenTotalCount === 0 ? 0 : canteenTotalCount <= pageSize ? 1 : Math.ceil(canteenTotalCount / pageSize)
-      if (canteenTotalCount === 0) { //如果没有任何记录
-        that.setData({
-          canteens: [],
-          canteenCurrPage: 1,
-          canteenTotalPage: 0,
-          canteenTotalCount: 0,
-        })
-        resolve()
-        return
-      }
-      if (canteenCurrPage > canteenTotalPage) {
-        canteenCurrPage = canteenTotalPage
-      }
-      db.collection('canteen')
-        .skip((canteenCurrPage - 1) * pageSize).limit(pageSize)
-        .get().then(res => {
-          that.setData({
-            canteens: res.data,
-            canteenCurrPage: canteenCurrPage,
-            canteenTotalPage: canteenTotalPage,
-            canteenTotalCount: canteenTotalCount,
-          })
-          resolve()
-          return
-        })
-    })
-  },
   editShop: function (e) {
     var index = e.currentTarget.dataset.index
     var canteen = that.data.canteens[index]
-    const identity = app.globalData.identity
+    const identity = that.data.identity
     if (identity.type !== 'superAdmin') {
       if (identity.cID !== canteen.cID) {
         util.showToast('您没有该商店的编辑权限')
         return
       }
     }
+    console.log(123)
     wx.navigateTo({
-      url: './editShop ? canteen=' + JSON.stringify(canteen)
+      url: './editShop?canteen=' + JSON.stringify(canteen)
     })
   },
   toAddShop: function (e) {

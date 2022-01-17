@@ -23,20 +23,6 @@ Page({
       HY: '海韵'
     },
     typePicker: ['翔安', '思明', '海韵'],
-    canteenTocID: {
-      勤业餐厅: 'QYCT',
-      公寓一期餐厅: 'GYYQCT',
-      风味餐厅: 'FWCT',
-      思明芙蓉餐厅: 'SMFRCT',
-      东苑一楼餐厅: 'DYYLCT',
-      公寓二期餐厅: 'GYEQCT',
-      南光餐厅: 'NGCT',
-      海滨餐厅: 'HBCT',
-      海韵园餐厅: 'HYYCT',
-      翔安芙蓉餐厅: 'XAFRCT',
-      竞丰餐厅: 'JFCT',
-      丰庭餐厅: 'FTCT',
-    },
     business: [], // 存储form.businessTime中字符串转化的时间
     beginTime: '06:00',
     endTime: '20:00',
@@ -63,7 +49,6 @@ Page({
     form.foodList.push({
       name: "单品"
     })
-    that.cIDChange()
     form.businessTime.push(["0600", "2000"])
     that.timeExchange()
     that.setData({
@@ -83,18 +68,6 @@ Page({
   // 返回长度为4位的随机字母字符串
   getRandomStr() {
     return Math.random().toString(36).slice(-4)
-  },
-  cIDChange(e) { 
-    var canteenTocID = that.data.canteenTocID
-    var date = new Date()
-    for( var i in canteenTocID )
-    {
-      var tmp = that.getStrDate(date) + that.getRandomStr()
-      canteenTocID[i] = tmp  
-    }
-    that.setData({
-      canteenTocID
-    })
   },
   addBussinessTime(e) {
     that.setData({
@@ -328,7 +301,6 @@ Page({
   addNoticesSubmit: function (e) {
     var form = that.data.form
     var params = Object.assign(form, e.detail.value)
-    var canteenTocID = that.data.canteenTocID
     //表单验证
     if (!that.WxValidate.checkForm(params)) {
       const error = that.WxValidate.errorList[0]
