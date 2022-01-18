@@ -91,7 +91,19 @@
     </view>
   </view>
   <view class="feedback-group">
-    <view class="cuIcon-titles">餐厅回复：</view>
+    <view class="cuIcon-titles">是否要求退款：</view>
+    <view class="content">
+      {{feedbackDetail.refund?'用户要求退款':'用户未要求退款'}}
+    </view>
+  </view>
+  <view wx:if="{{feedbackDetail.state && feedbackDetail.refund}}" class="feedback-group">
+    <view class="cuIcon-titles">退款结果：</view>
+    <view class="content">
+      {{feedbackDetail.state===2? '同意退款': '拒绝退款'}}
+    </view>
+  </view>
+  <view class="feedback-group">
+    <view class="cuIcon-titles">{{feedbackDetail.state===1 && feedbackDetail.refund? '拒绝理由': '餐厅回复'}}：</view>
     <view class="content">
       {{feedbackDetail.canteenFeedback? feedbackDetail.canteenFeedback: '暂无回复'}}
     </view>

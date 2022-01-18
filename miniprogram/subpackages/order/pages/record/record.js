@@ -11,6 +11,7 @@ Page({
     feedbackDetail: {
       canteenFeedback: '',
       userFeedback: '',
+      refund: false,
       state: 0
     },
     currPage: 0,
