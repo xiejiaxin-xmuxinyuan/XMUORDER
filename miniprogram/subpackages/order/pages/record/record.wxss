@@ -80,12 +80,12 @@ image {
   font-weight: bold;
 }
 
-.feedback-group {
+my-box .feedback-group {
   padding: 10rpx 15rpx;
   color: #333;
 }
 
-.feedback-group > .content{
+my-box .feedback-group > .content{
   padding: 10rpx 30rpx;
   color: #666;
 }

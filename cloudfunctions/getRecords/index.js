@@ -84,7 +84,8 @@ exports.main = async (event, context) => {
             newRoot: {
               state: '$state',
               userFeedback: '$feedback',
-              canteenFeedback: '$canteenFeedback'
+              canteenFeedback: '$canteenFeedback',
+              refund: '$refund'
             }
           }).done(),
         as: 'feedback'

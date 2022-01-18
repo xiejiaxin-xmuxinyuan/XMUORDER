@@ -35,7 +35,8 @@ Page({
           feedback: feedback,
           refund: that.data.refund,
           cID: info.shopInfo.cID,
-          record: info.record
+          record: info.record,
+          feeInfo: info.feeInfo
         }
       }).then(res => {
         wx.hideLoading()
