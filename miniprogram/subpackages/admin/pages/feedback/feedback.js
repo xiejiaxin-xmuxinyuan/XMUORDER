@@ -8,7 +8,9 @@ Page({
    * 页面的初始数据
    */
   data: {
-    feedbacks: []
+    feedbacks: [],
+    stateTypes: ['已处理','未处理'],
+    stateCurr: '未处理'
   },
   /**
    * 生命周期函数--监听页面加载
@@ -28,6 +30,12 @@ Page({
         })
       })
   },
+  stateTypeSelect:function(e){
+    var stateType = e.currentTarget.dataset.name
+    that.setData({
+      stateCurr : stateType
+    })
+  },
   dealFeedback: function (e) {
     var index = e.currentTarget.dataset.index
     var feedbacks = that.data.feedbacks
@@ -38,24 +46,27 @@ Page({
         showCancel: false,
         placeholderText: '请输入意见内容',
         success(res) {
-          console.log(res)
           if (res.confirm) {
-            wx.showToast({
-              title: '已接受',
-              icon: 'success'
-            })
+            util.showLoading('处理中')
             feedbacks[index].canteenFeedback = res.content
             feedbacks[index].state = 1
-            var identity = feedbacks[index]._id
-            var canteenFeedback = feedbacks[index].canteenFeedback
-            var state = feedbacks[index].state
+            var feedback=feedbacks[index]
             wx.cloud.callFunction({
-              name: 'dealFeedback',
-              data: {
-                identity: identity,
-                canteenFeedback: canteenFeedback,
-                state: state
+              name : 'dbUpdate',
+              data : {
+                table : 'userFeedbacks',
+                _id : feedback._id,
+                formData :{
+                  'canteenFeedback' : feedback.canteenFeedback,
+                  'state' : feedback.state
+                }
               },
+              success(res){
+                if(res.success){
+                  util.hideLoading()
+                  util.showToast('已接受')
+                }
+              }
             })
           }
         }
@@ -67,9 +78,21 @@ Page({
         confirmText: '确认退款',
         success(res) {
           if (res.confirm) {
-            that.refund()
-            feedbacks[index].canteenFeedback = '已退款',
-            feedbacks[index].state = 1
+            util.showLoading('处理中')
+            wx.cloud.callFunction({
+              name : 'payRefund',
+              data : {
+                outTradeNo: feedbacks[index].outTradeNo
+              },
+              success(RES){
+                if(RES.success){
+                  util.hideLoading()
+                  feedbacks[index].canteenFeedback = '已退款',
+                  feedbacks[index].state = 1
+                  util.showToast('已退款','success')
+                }
+              }
+            })
           } else {
             wx.showModal({
               title: '拒绝理由',
@@ -79,20 +102,24 @@ Page({
               success(Res) {
                 if (Res.confirm) {
                   feedbacks[index].state = 1
-                  wx.showToast({
-                    title: '已处理',
-                    icon: 'success'
-                  })
-                  var identity = feedbacks[index]._id
-                  var canteenFeedback = feedbacks[index].canteenFeedback
-                  var state = feedbacks[index].state
+                 util.showLoading('处理中')
+                  var feedback = feedbacks[index]
                   wx.cloud.callFunction({
-                    name: 'dealFeedback',
-                    data: {
-                      identity: identity,
-                      canteenFeedback: canteenFeedback,
-                      state: state
+                    name : 'dbUpdate',
+                    data : {
+                      table : 'userFeedbacks',
+                      _id : feedback._id,
+                      formData :{
+                        'canteenFeedback' : feedback.canteenFeedback,
+                        'state' : feedback.state
+                      }
                     },
+                    success(res){
+                      if(res.success){
+                        util.hideLoading()
+                        util.showToast('已处理','success')
+                      }
+                    }
                   })
                 }
               }
@@ -104,5 +131,8 @@ Page({
     that.setData({
       feedbacks: feedbacks
     })
+  },
+  refund:function(){
+    wx.cloud
   }
 })
