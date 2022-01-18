@@ -116,7 +116,7 @@ Page({
       proList.push(
         db.collection("canteen").where({
           cID: identity.cID
-        }).get()
+        }).limit(1).get()
       )
     } else { // 超管获取全部餐厅
       proList.push(
@@ -133,12 +133,12 @@ Page({
     }
 
     Promise.all(proList).then(res => {
-      //同步全局变量(无需保存本地)
-      var canteens = res[0].data //餐厅数据
-      app.globalData.canteens = canteens
-
       // 非超管，canteens中只有一个元素(此时显示order界面)
       if (identity.type !== 'superAdmin') {
+        //同步全局变量(无需保存本地)
+        var canteens = res[0].data //餐厅数据
+        app.globalData.canteens = canteens
+
         var canteen = canteens[0]
         canteen.inBusiness = false
         for (let i = 0; i < canteen.businessTime.length; i++) {
@@ -158,6 +158,8 @@ Page({
           'orders.totalPage': res[2].totalPage,
           'orders.totalCount': res[2].totalCount,
         })
+      } else { // 超管，仅需要保存canteens到全局
+        app.globalData.canteens = res[0]
       }
       wx.hideLoading()
     })
