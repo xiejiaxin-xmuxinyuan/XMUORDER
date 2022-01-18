@@ -98,6 +98,16 @@
   暂无反馈
 </view>
 
+<view class="my-bar">
+  <block wx:if="{{feedbackTotalPage > 1 && feedbacks.length}}">
+    <view class="page-bar">
+      <button catchtap="feedbackChangePage" class="cu-btn line-black  round shadow">上一页</button>
+      <text class="text-lg margin-sm">{{feedbackCurrPage}} / {{feedbackTotalPage}}</text>
+      <button catchtap="feedbackChangePage" data-add="{{true}}" class="cu-btn line-black  round shadow">下一页</button>
+    </view>
+  </block>
+</view>
+
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
