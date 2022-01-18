@@ -2,51 +2,88 @@
 var that
 const app = getApp()
 const db = wx.cloud.database()
+const _ = db.command
 const util = require('../../../../utils/util.js')
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     feedbacks: [],
-    stateTypes: ['已处理', '未处理'],
-    stateCurr: '未处理',
+    stateTypes: ['未处理', '已处理'],
+    stateCurrIndex: 0,
     feedbackCurrPage: 1,
     feedbackTotalCount: 0,
-    feedbackTotalPage: 0
+    feedbackTotalPage: 0,
+    shopPickerList: [],
+    shopPickerIndex: null,
+    showFbDetail: false,
+    feedbackDetail: {}
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   onLoad: function (options) {
     that = this
-  },
-  onShow: function (options) {
-    var cID = app.globalData.identity.cID
-    db.collection('userFeedbacks').where({
-        cID: cID
-      })
-      .orderBy('state', 'desc')
-      .orderBy('date', 'asc')
-      .get()
-      .then(res => {
-        that.setData({
-          feedbacks: res.data
-        })
-      })
-    util.showLoading('加载中')
-    that.getFeedbacks(that.data.feedbackCurrPage, cID).then(() => {
-      util.hideLoading()
+    const identity = app.globalData.identity
+    var shopPickerList = [] //餐厅名列表
+
+    app.globalData.canteens.forEach((canteen, index) => {
+      shopPickerList.push(canteen.name)
+      // 身份所属餐厅
+      if (identity.type !== 'superAdmin') {
+        if (canteen.cID === identity.cID) {
+          that.shopPickerChange(index)
+        }
+      }
+    })
+    that.setData({
+      shopPickerList,
+      identity
     })
   },
-  getFeedbacks: function (feedbackCurrPage = 1, cID, pageSize = 10, ) {
+  showHideFeedback: function (e) {
+    if (e.type === 'hideBox') {
+      that.setData({
+        showFbDetail: false
+      })
+    } else {
+      const index = e.currentTarget.dataset.index
+      const feedback = that.data.feedbacks[index]
+      that.setData({
+        showFbDetail: true,
+        feedbackDetail: {
+          feedback: feedback.feedback,
+          canteenFeedback: feedback.canteenFeedback,
+          refund: feedback.refund,
+          state: feedback.state,
+          index: index
+        }
+      })
+    }
+  },
+  shopPickerChange: function (e) {
+    if (typeof (e) === "number") { //非选择器触发
+      var shopIndex = e
+    } else { // 选择器触发
+      if (that.data.shopPickerIndex === e.detail.value) { //若选择项不变
+        return
+      }
+      var shopIndex = e.detail.value
+    }
+    shopIndex = parseInt(shopIndex)
+    //加载对应餐厅对应状态的反馈（第一页）
+    that.setData({
+      shopPickerIndex: shopIndex
+    })
+    that.getFeedbacks(shopIndex, that.data.stateCurrIndex)
+  },
+  getFeedbacks: function (shopIndex, state, feedbackCurrPage = 1, pageSize = 5) {
+    util.showLoading('加载中')
+    const cID = app.globalData.canteens[shopIndex].cID
+
     return new Promise(async (resolve, reject) => {
       if (feedbackCurrPage < 1) {
         feedbackCurrPage = 1
       }
       const countResult = await db.collection('userFeedbacks').where({
-        cID: cID
+        cID,
+        state: state === 0 ? 0 : _.gt(0)
       }).count()
       const feedbackTotalCount = countResult.total
       const feedbackTotalPage = feedbackTotalCount === 0 ? 0 : feedbackTotalCount <= pageSize ? 1 : Math.ceil(feedbackTotalCount / pageSize)
@@ -57,18 +94,18 @@ Page({
           feedbackTotalPage: 0,
           feedbackTotalCount: 0,
         })
+        wx.hideLoading()
         resolve()
         return
       }
       if (feedbackCurrPage > feedbackTotalPage) {
         feedbackCurrPage = feedbackTotalPage
       }
-      db.collection('userFeedbacks')
-        .where({
-          cID: cID
+      db.collection('userFeedbacks').where({
+          cID,
+          state: state === 0 ? 0 : _.gt(0)
         })
-        .orderBy('state','desc')
-        .orderBy('date','asc')
+        .orderBy('date', 'asc')
         .skip((feedbackCurrPage - 1) * pageSize).limit(pageSize)
         .get().then(res => {
           that.setData({
@@ -77,6 +114,7 @@ Page({
             feedbackTotalPage: feedbackTotalPage,
             feedbackTotalCount: feedbackTotalCount,
           })
+          wx.hideLoading()
           resolve()
           return
         })
@@ -85,127 +123,158 @@ Page({
   feedbackChangePage: function (e) {
     const currPage = that.data.feedbackCurrPage
     const totalPage = that.data.feedbackTotalPage
+    const shopIndex = that.data.shopPickerIndex
+    const state = that.data.stateCurrIndex
     if ('add' in e.currentTarget.dataset) { //增加
       if (currPage <= totalPage - 1) {
         util.showLoading('加载中')
-        that.getCanteens(currPage + 1).then(() => {
-          wx.hideLoading()
-        })
+        that.getFeedbacks(shopIndex, state, currPage + 1)
       } else {
         util.showToast('已经是最后一页啦')
       }
     } else { //减少
       if (currPage > 1) {
         util.showLoading('加载中')
-        that.getCanteens(currPage - 1).then(() => {
-          wx.hideLoading()
-        })
+        that.getFeedbacks(shopIndex, state, currPage - 1)
       } else {
         util.showToast('已经是第一页啦')
       }
     }
   },
   stateTypeSelect: function (e) {
-    var stateType = e.currentTarget.dataset.name
+    var stateCurrIndex = e.currentTarget.dataset.index
     that.setData({
-      stateCurr: stateType
+      stateCurrIndex
+    })
+    that.getFeedbacks(that.data.shopPickerIndex, stateCurrIndex)
+  },
+  denyRefund: function (e) {
+    //关闭my-box
+    that.showHideFeedback({
+      type: 'hideBox'
+    })
+
+    var index = e.currentTarget.dataset.index
+    var feedback = that.data.feedbacks[index]
+
+    wx.showModal({
+      title: '拒绝退款理由',
+      editable: true,
+      placeholderText: '请输入50字内拒绝理由',
+      success(res) {
+        if (res.confirm) {
+          if (res.content.length > 50) {
+            util.showToast('请输入50字符内回复内容！')
+            return
+          }
+          util.showLoading('处理中')
+          feedback.canteenFeedback = res.content
+          feedback.state = 1
+          wx.cloud.callFunction({
+            name: 'dbUpdate',
+            data: {
+              table: 'userFeedbacks',
+              _id: feedback._id,
+              formData: {
+                'canteenFeedback': feedback.canteenFeedback,
+                'state': feedback.state
+              }
+            }
+          }).then(res => {
+            that.setData({
+              ['feedbacks.[' + index + ']']: feedback
+            })
+            util.hideLoading()
+            util.showToast('回复完成', 'success')
+          })
+        }
+      }
+    })
+  },
+  confirmRefund: function (e) {
+    //关闭my-box
+    that.showHideFeedback({
+      type: 'hideBox'
+    })
+    var index = e.currentTarget.dataset.index
+    var feedback = that.data.feedbacks[index]
+
+    util.showLoading('处理中')
+    //退款
+    wx.cloud.callFunction({
+      name: 'payRefund',
+      data: {
+        outTradeNo: feedback.outTradeNo
+      }
+    }).then(res => {
+      if (res.result.success) {
+        // 修改数据库
+        feedback.canteenFeedback = '已退款'
+        feedback.state = 2 //2 表示退款
+        wx.cloud.callFunction({
+          name: 'dbUpdate',
+          data: {
+            table: 'userFeedbacks',
+            _id: feedback._id,
+            formData: {
+              'canteenFeedback': feedback.canteenFeedback,
+              'state': feedback.state
+            }
+          },
+        }).then(res => {
+          that.setData({
+            ['feedbacks.[' + index + ']']: feedback
+          })
+          util.hideLoading()
+          util.showToast('退款完成', 'success')
+        })
+      } else { //云函数退款失败，可能是该订单无法退款
+        util.showToast('退款失败', 'error')
+        return
+      }
     })
   },
   dealFeedback: function (e) {
-    var index = e.currentTarget.dataset.index
-    var feedbacks = that.data.feedbacks
-    if (!feedbacks[index].refund) {
-      wx.showModal({
-        title: '反馈',
-        editable: true,
-        showCancel: false,
-        placeholderText: '请输入意见内容',
-        success(res) {
-          if (res.confirm) {
-            util.showLoading('处理中')
-            feedbacks[index].canteenFeedback = res.content
-            feedbacks[index].state = 1
-            var feedback = feedbacks[index]
-            wx.cloud.callFunction({
-              name: 'dbUpdate',
-              data: {
-                table: 'userFeedbacks',
-                _id: feedback._id,
-                formData: {
-                  'canteenFeedback': feedback.canteenFeedback,
-                  'state': feedback.state
-                }
-              },
-              success(res) {
-                if (res.success) {
-                  util.hideLoading()
-                  util.showToast('已接受')
-                }
-              }
-            })
-          }
-        }
-      })
-    } else {
-      wx.showModal({
-        title: '退款',
-        cancelText: '拒绝退款',
-        confirmText: '确认退款',
-        success(res) {
-          if (res.confirm) {
-            util.showLoading('处理中')
-            wx.cloud.callFunction({
-              name: 'payRefund',
-              data: {
-                outTradeNo: feedbacks[index].outTradeNo
-              },
-              success(RES) {
-                if (RES.success) {
-                  util.hideLoading()
-                  feedbacks[index].canteenFeedback = '已退款',
-                    feedbacks[index].state = 1
-                  util.showToast('已退款', 'success')
-                }
-              }
-            })
-          } else {
-            wx.showModal({
-              title: '拒绝理由',
-              editable: true,
-              placeholderText: '请输入拒绝理由',
-              showCancel: false,
-              success(Res) {
-                if (Res.confirm) {
-                  feedbacks[index].state = 1
-                  util.showLoading('处理中')
-                  var feedback = feedbacks[index]
-                  wx.cloud.callFunction({
-                    name: 'dbUpdate',
-                    data: {
-                      table: 'userFeedbacks',
-                      _id: feedback._id,
-                      formData: {
-                        'canteenFeedback': feedback.canteenFeedback,
-                        'state': feedback.state
-                      }
-                    },
-                    success(res) {
-                      if (res.success) {
-                        util.hideLoading()
-                        util.showToast('已处理', 'success')
-                      }
-                    }
-                  })
-                }
-              }
-            })
-          }
-        }
-      })
-    }
-    that.setData({
-      feedbacks: feedbacks
+    //关闭my-box
+    that.showHideFeedback({
+      type: 'hideBox'
     })
-  },
 
+    var index = e.currentTarget.dataset.index
+    var feedback = that.data.feedbacks[index]
+    wx.showModal({
+      title: '反馈',
+      editable: true,
+      placeholderText: '请输入50字内回复内容',
+      success(res) {
+        if (res.confirm) {
+          if (res.content.length > 50) {
+            util.showToast('请输入50字内回复内容！')
+            return
+          }
+          util.showLoading('处理中')
+          feedback.canteenFeedback = res.content
+          feedback.state = 1
+          wx.cloud.callFunction({
+            name: 'dbUpdate',
+            data: {
+              table: 'userFeedbacks',
+              _id: feedback._id,
+              formData: {
+                'canteenFeedback': feedback.canteenFeedback,
+                'state': feedback.state
+              }
+            }
+          }).then(res => {
+            that.setData({
+              ['feedbacks.[' + index + ']']: feedback
+            })
+            util.hideLoading()
+            util.showToast('回复完成', 'success')
+          })
+        }
+      }
+    })
+    return
+  },
 })

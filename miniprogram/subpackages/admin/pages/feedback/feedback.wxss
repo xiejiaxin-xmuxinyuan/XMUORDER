@@ -1,9 +1,28 @@
+.main {
+  margin: 40rpx 20rpx;
+  margin-bottom: 10%;
+  background-color: white;
+}
+
+.main .my-top-bar {
+  padding: 10rpx 50rpx;
+}
+
 image {
   background-color: transparent !important;
 }
 
+.footer {
+  margin-bottom: 5rpx;
+}
+
+.feedback-box {
+  margin: 0 30rpx;
+  margin-bottom: 30rpx;
+}
+
 .no-record {
-  margin: 50% 100rpx;
+  margin: 35% 100rpx;
   text-align: center;
   font-size: larger;
 }
@@ -13,38 +32,28 @@ image {
   font-size: 150rpx;
 }
 
-.allLoaded {
-  margin: 30rpx;
-  text-align: center;
+
+.my-feedback {
+  margin: 30rpx 0;
+  padding: 30rpx 30rpx;
+  border-radius: 10rpx;
 }
 
-.myorder {
-  margin-bottom: 5rpx;
-  padding: 0 5%;
-}
 
-.myorder>.title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 1rpx solid #ddd;
-  padding: 0 !important;
-}
-
-.myorder .mycontent {
-  padding: 1rem 5rpx 0 5rpx;
+.my-feedback .my-content {
+  padding: 0 5rpx;
   flex-direction: column;
   border-bottom: 2rpx solid #eee;
 }
 
-.myorder .mycontent> view {
+.my-feedback .my-content>view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 30rpx 20rpx;
+  padding: 20rpx 20rpx;
 }
 
-.myorder .mycontent .info {
+.my-feedback .my-content .info {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
@@ -52,28 +61,28 @@ image {
   justify-content: center;
 }
 
-.myorder .mycontent .info > view {
+.my-feedback .my-content .info>view {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.myorder .my-bottom {
+.my-feedback .my-bottom {
   display: flex;
   flex-direction: column;
   margin: 15rpx;
 }
 
-.myorder .my-bottom >view{
+.my-feedback .my-bottom>view {
   margin: 15rpx 0;
 }
 
-.myorder .my-bottom .info {
+.my-feedback .my-bottom .info {
   display: flex;
   justify-content: space-between;
 }
 
-.myorder .my-bottom .other-price {
+.my-feedback .my-bottom .other-price {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -82,7 +91,7 @@ image {
 
 .my-bar {
   position: fixed;
-  bottom: 20rpx;
+  bottom: 80rpx;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -96,8 +105,25 @@ image {
   justify-content: space-between;
   align-items: center;
   padding: 15rpx 50rpx;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: white;
   border: 5rpx #eee solid;
   border-radius: 5000rpx;
-  width: 70%;
+  width: 80%;
+}
+
+my-box .feedback-group {
+  padding: 10rpx 15rpx;
+  color: #333;
+}
+
+my-box .feedback-group > .content{
+  padding: 10rpx 30rpx;
+  color: #666;
+}
+
+my-box .my-btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 30rpx;
 }

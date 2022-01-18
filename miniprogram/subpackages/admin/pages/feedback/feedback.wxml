@@ -2,100 +2,79 @@
   <view slot="content">反馈</view>
 </cu-custom>
 
-<view wx:if="{{feedbacks.length > 0}}">
-  <view wx:for="{{feedbacks}}" wx:key="_id">
-    <scroll-view scroll-x class="bg-white nav">
-    <view class="flex text-center">
-      <view class="cu-item flex-sub {{item===stateCurr?'text-blue cur':''}}" wx:for="{{stateTypes}}" wx:key="*this" bindtap="stateTypeSelect" data-name="{{item}}">
-        {{item}}
+<view class="main shadow-warp">
+  <!-- 餐厅选择 -->
+  <view class="cu-form-group my-top-bar">
+    <view class="title text-bold">商店</view>
+    <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange" value="{{shopPickerIndex}}" range="{{shopPickerList}}">
+      <view class="picker">
+        {{shopPickerIndex !== null? shopPickerList[shopPickerIndex] : '请选择所在商店'}}
       </view>
-    </view>
-  </scroll-view>
-    <view class="cu-card article ">
-      <view class="cu-item shadow-warp myorder" wx:if="{{item.state == 1 && stateCurr === '已处理'}}">
-        <view class="mycontent" data-index="{{index}}" catchtap="toRecoredDetail">
-          <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
-            <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
-            <view class="info">
-              <view>
-                <view class="text-cut text-bold">{{i.food}}</view>
-                <view class="text-bold">￥{{i.price}}</view>
-              </view>
-              <view class="text-gray">
-                <view>{{i.num}}件</view>
-                <view>×{{i.num}}</view>
-              </view>
-            </view>
-          </view>
-        </view>
-        <view class="my-bottom">
-          <view class="info">
-            <view class="cu-tag bg-brown light lg round">{{'反馈时间：' + item.date}}</view>
-            <view class="text-bold text-black text-right">
-              合计：<text class="text-red"> ￥{{i.num*i.price}}</text>
-            </view>
-          </view>
-        </view>
-        <view>
-          <text>用户反馈：{{item.feedback}}</text>
-        </view>
-        <view>
-          <view wx:if="{{item.refund}}" class="cu-btn bg-red round shadow">
-            <text class="text-bold">申请退款</text>
-          </view>
-          <view wx:else class="cu-btn bg-green round shadow">
-            <text class="text-bold">未申请退款</text>
-          </view>
-          <view class="cu-btn bg-blue round shadow">
-            <text class="text-bold">已处理</text>
-          </view>
-        </view>
-      </view>
-      <view class="cu-item shadow-warp myorder" wx:if="{{item.state == 0 && stateCurr === '未处理'}}">
-        <view class="mycontent" data-index="{{index}}" catchtap="toRecoredDetail">
-          <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
-            <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
-            <view class="info">
-              <view>
-                <view class="text-cut text-bold">{{i.food}}</view>
-                <view class="text-bold">￥{{i.price}}</view>
-              </view>
-              <view class="text-gray">
-                <view>{{i.num}}件</view>
-                <view>×{{i.num}}</view>
-              </view>
-            </view>
-          </view>
-        </view>
-        <view class="my-bottom">
-          <view class="info">
-            <view class="cu-tag bg-brown light lg round">{{'反馈时间：' + item.date}}</view>
-            <view class="text-bold text-black text-right">
-              合计：<text class="text-red"> ￥{{i.num*i.price}}</text>
-            </view>
-          </view>
-        </view>
-        <view>
-          <text>用户反馈：{{item.feedback}}</text>
-        </view>
-        <view>
-          <view wx:if="{{item.refund}}" class="cu-btn bg-red round shadow">
-            <text class="text-bold">申请退款</text>
-          </view>
-          <view wx:else class="cu-btn bg-green round shadow">
-            <text class="text-bold">未申请退款</text>
-          </view>
-          <view class="cu-btn bg-yellow round shadow" catchtap="dealFeedback" data-index="{{index}}" wx:if="{{item.state === 0}}">
-            <text class="text-bold">处理</text>
-          </view>
-        </view>
-      </view>
-    </view>
+    </picker>
+    <view class="margin-right-sm text-black" wx:else> {{shopPickerList[shopPickerIndex]}}</view>
   </view>
-</view>
-<view class="no-record text-gray" wx:else>
-  <view class="cuIcon-form"></view>
-  暂无反馈
+
+  <!-- 反馈 -->
+  <view class="feedback-box" wx:if="{{shopPickerIndex!==null}}">
+    <!-- 状态选择 -->
+    <scroll-view scroll-x class="bg-white nav margin-bottom">
+      <view class="flex text-center">
+        <view class="cu-item flex-sub {{item===stateTypes[stateCurrIndex]?'text-blue cur':''}}" wx:for="{{stateTypes}}" wx:key="*this" bindtap="stateTypeSelect" data-index="{{index}}">
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 反馈列表 -->
+    <view wx:if="{{!feedbacks.length}}" class="no-record text-gray">
+      <view class="cuIcon-form"></view>
+      暂无反馈
+    </view>
+    <block wx:else>
+      <view wx:for="{{feedbacks}}" wx:key="_id" class="my-feedback shadow-warp">
+        <view class="my-content" data-index="{{index}}" catchtap="toRecoredDetail">
+          <view wx:for="{{item.record}}" wx:for-item="i" wx:key="*this">
+            <image class="cu-avatar lg" src="{{i.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+            <view class="info">
+              <view>
+                <view class="text-cut text-bold">{{i.food}}</view>
+                <view class="text-bold">￥{{i.price}}</view>
+              </view>
+              <view class="text-gray">
+                <view>{{i.num}}件</view>
+                <view>×{{i.num}}</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="my-bottom">
+          <view class="other-price">
+            <view>其他费用</view>
+            <view> ￥{{item.feeInfo.otherFee/100}}</view>
+          </view>
+          <view class="other-price">
+            <view>优惠</view>
+            <view class="text-red"> -￥{{item.feeInfo.discount/100}}</view>
+          </view>
+          <view class="info">
+            <view class="cu-tag bg-brown light lg round">{{item.date}}</view>
+            <view class="text-bold text-black text-right">
+              合计：<text class="text-red"> ￥{{item.feeInfo.cashFee / 100}}</text>
+            </view>
+          </view>
+        </view>
+        <!-- 反馈相关按钮 -->
+        <view class="flex justify-between text-bold">
+          <button class="cu-btn bg-orange round shadow" data-index="{{index}}" catchtap="showHideFeedback">
+            反馈详情
+          </button>
+          <view class="cu-btn bg-{{item.state? 'green': 'red'}} round shadow">
+            {{item.state? '已处理': '未处理'}}
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
 </view>
 
 <view class="my-bar">
@@ -111,3 +90,34 @@
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
 </view>
+
+
+<!-- 自定义模态框 -->
+<my-box style="position: fixed;" show="{{!!showFbDetail}}" bind:hideBox="showHideFeedback" title="反馈详情">
+  <view class="feedback-group">
+    <view class="cuIcon-titles">用户反馈：</view>
+    <view class="content">
+      {{feedbackDetail.feedback}}
+    </view>
+  </view>
+  <view class="feedback-group">
+    <view class="cuIcon-titles">是否退款：</view>
+    <view class="content">
+      {{feedbackDetail.refund?'用户要求退款':'用户无退款要求'}}
+    </view>
+  </view>
+  <view wx:if="{{feedbackDetail.state}}" class="feedback-group">
+    <view class="cuIcon-titles">餐厅回复：</view>
+    <view class="content">
+      {{feedbackDetail.canteenFeedback? feedbackDetail.canteenFeedback: '暂未回复'}}
+    </view>
+  </view>
+  <view class="margin text-right" wx:elif="{{!feedbackDetail.refund}}">
+    <button class="cu-btn bg-blue shadow" data-index="{{feedbackDetail.index}}" catchtap="dealFeedback">回复反馈</button>
+  </view>
+  <view class="my-btn-group" wx:else>
+    <button class="cu-btn bg-green shadow" data-index="{{feedbackDetail.index}}" catchtap="confirmRefund">确认退款</button>
+    <button class="cu-btn bg-red shadow" data-index="{{feedbackDetail.index}}" catchtap="denyRefund">拒绝退款</button>
+  </view>
+
+</my-box>
