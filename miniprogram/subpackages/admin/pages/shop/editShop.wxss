@@ -1,1 +1,64 @@
 /* subpackages/admin/pages/shop/editShop.wxss */
+.main {
+  background-color: white;
+  margin: 30rpx 40rpx;
+  padding: 20rpx 30rpx;
+  border-radius: 15rpx;
+  box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.my-textarea {
+  display: flex;
+  flex-direction: column;
+  padding: 15rpx 30rpx;
+  border-top: 1rpx solid #eee;
+  height: 250rpx !important;
+}
+
+.my-textarea>.title {
+  padding-right: 30rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  line-height: 60rpx;
+}
+
+.my-textarea>textarea {
+  padding: 15rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.my-item-group,
+.my-title-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5rpx 0;
+}
+
+.my-title-group .my-title {
+  font-weight: bold;
+  font-size: 30rpx;
+}
+
+.my-item-group .my-title{
+  font-weight: 500;
+  font-size: 28rpx;
+  color: #666
+}
+
+.my-item-group .my-btn>button,
+.my-title-group .my-btn>button {
+  background: none;
+  font-size: 35rpx;
+  font-weight: bold;
+  padding: 0 15rpx;
+}
+
+.my-top-border{
+  border-top: 1rpx solid #eee;
+}
+
+.my-time{
+  padding: 10rpx 20rpx;
+}

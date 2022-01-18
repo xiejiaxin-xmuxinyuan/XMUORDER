@@ -6,6 +6,8 @@
   box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.1);
 }
 
+
+
 .my-textarea {
   display: flex;
   flex-direction: column;
