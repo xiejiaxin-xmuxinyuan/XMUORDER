@@ -68,7 +68,7 @@ exports.main = async (event, context) => {
     } else {
       console.log("退款失败", refundRes)
       formData['payInfo.tradeState'] = 'REFUNDERROR'
-      formData['payInfo.tradeStateMsg'] = '退款失败'
+      formData['payInfo.tradeStateMsg'] = '退款异常'
     }
 
     formData['orderInfo.timeInfo.endTime'] = getStrDate(new Date())
