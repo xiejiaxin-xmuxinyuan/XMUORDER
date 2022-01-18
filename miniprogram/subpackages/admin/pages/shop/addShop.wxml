@@ -33,10 +33,11 @@
         </view>
       </view>
       <!-- 类别列表 -->
-      <view class="my-item-group" wx:for="{{form.foodList}}" wx:key="*this">
+      <view class="my-item-group" wx:for="{{form.foodList}}" wx:key="*this" data-index="{{index}}">
         <text class="my-title cuIcon-title"> {{item.name}}</text>
         <view class="my-btn">
-          <button catchtap="delFoodType" class="cu-btn cuIcon-close text-grey"></button>
+          <button wx:if="{{item.name !== '默认'}}" catchtap="editFoodType" class="cu-btn cuIcon-edit text-grey" data-index="{{index}}"></button>
+          <button wx:if="{{item.name !== '默认'}}" catchtap="delFoodType" class="cu-btn cuIcon-close text-grey" data-index="{{index}}"></button>
         </view>
       </view>
     </view>
@@ -52,7 +53,7 @@
       <view class="my-item-group" wx:for="{{business}}" wx:key="*this">
         <text class="my-title cuIcon-title"> {{item[0]}}:{{item[1]}}-{{item[2]}}:{{item[3]}}</text>
         <view class="my-btn">
-          <button catchtap="delTime" class="cu-btn cuIcon-close text-grey"></button>
+          <button catchtap="delTime" class="cu-btn cuIcon-close text-grey" data-index="{{index}}"></button>
         </view>
       </view>
 

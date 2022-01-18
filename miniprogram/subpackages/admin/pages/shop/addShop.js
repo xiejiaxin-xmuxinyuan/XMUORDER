@@ -11,6 +11,7 @@ Page({
     timePeriodNum: 1, // 时间段
     identity: {},
     typePickerIndex: null,
+    foodTypePickerIndex: null,
     show: false,
     TypeToaddress: {
       翔安: 'XA',
@@ -47,7 +48,7 @@ Page({
     var canteens = app.globalData.canteens
     var form = that.data.form
     form.foodList.push({
-      name: "单品"
+      name: "默认"
     })
     form.businessTime.push(["0600", "2000"])
     that.timeExchange()
@@ -120,11 +121,12 @@ Page({
     })
   },
   delTime(e) {
+    var index = e.currentTarget.dataset.index
     var business = that.data.business
     var businessTime = that.data.form.businessTime
     var timePeriodNum = that.data.timePeriodNum
-    business.pop()
-    businessTime.pop()
+    business.splice(index, 1)
+    businessTime.splice(index, 1)
     timePeriodNum -= 1
     that.setData({
       business: business,
@@ -170,12 +172,49 @@ Page({
             })
           }
         }
+        else {
+          util.showToast('操作已取消')
+        }
       }
     })
   },
-  delFoodType: function (e) {
+  editFoodType(e) {
+    var index = e.currentTarget.dataset.index
     var foodList = that.data.form.foodList
-    foodList.pop()
+    var foodtype = foodList[index]
+    wx.showModal({
+      title: '修改商品类别',
+      content: foodtype.name,
+      confirmText: '确认修改',
+      editable: true,
+      success(res) {
+        if (res.confirm) {
+          var newTypeName = res.content
+          if (newTypeName === '') {
+            util.showToast('类别名不可为空')
+            return
+          }
+          foodList[index].name = newTypeName
+          that.setData({
+            'form.foodList': foodList
+          })
+        } else {
+          util.showToast('操作已取消')
+        }
+      }
+    })
+
+  },
+  delFoodType: function (e) {
+    var index = e.currentTarget.dataset.index
+    var foodList = that.data.form.foodList
+    var foodtype = foodList[index]
+    if( foodtype.name === '默认' ) 
+    {
+       util.showToast('默认类别无法删除')
+       return
+    }
+    foodList.splice(index, 1)
     that.setData({
       'form.foodList': foodList
     })
