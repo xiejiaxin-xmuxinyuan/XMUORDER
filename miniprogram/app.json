@@ -15,8 +15,7 @@
         "pages/infoForm/infoForm",
         "pages/feedback/feedback",
         "pages/record/record",
-        "pages/record/recordDetail",
-        "pages/setting/setting"
+        "pages/record/recordDetail"
       ]
     },
     {
