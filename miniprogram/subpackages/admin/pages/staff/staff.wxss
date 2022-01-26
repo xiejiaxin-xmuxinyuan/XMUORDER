@@ -52,6 +52,14 @@
   border-radius: 8rpx;
 }
 
+.my-item>image.img-admin {
+  border: 2px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: linear-gradient(to right, transparent, transparent)
+  , linear-gradient( 135deg, #FFE985 10%, #FA742B 100%);
+}
+
 .my-item .info {
   margin-left: 20rpx;
   width: 45vw;

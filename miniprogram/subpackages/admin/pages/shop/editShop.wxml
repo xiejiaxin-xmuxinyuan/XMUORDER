@@ -15,7 +15,7 @@
           {{typePickerIndex !== null ? typePicker[typePickerIndex]: '请选择餐厅所在地区'}}
         </view>
       </picker>
-      <view wx:else class="margin-right-sm text-black">{{canteen.address}}</view>
+      <view wx:else class="margin-right-sm text-black">{{typePicker[typePickerIndex]}}</view>
     </view>
     <view class="cu-form-group">
       <view class="title text-bold">餐厅地址</view>

@@ -121,17 +121,23 @@ Page({
     })
   },
   delTime(e) {
-    var index = e.currentTarget.dataset.index
-    var business = that.data.business
-    var businessTime = that.data.form.businessTime
-    var timePeriodNum = that.data.timePeriodNum
-    business.splice(index, 1)
-    businessTime.splice(index, 1)
-    timePeriodNum -= 1
-    that.setData({
-      business: business,
-      'form.businessTime': businessTime,
-      timePeriodNum: timePeriodNum
+
+    wx.showModal({
+      title: '提示',
+      content: '确认删除该营业时段吗？'
+    }).then(res => {
+      var index = e.currentTarget.dataset.index
+      var business = that.data.business
+      var businessTime = that.data.form.businessTime
+      var timePeriodNum = that.data.timePeriodNum
+      business.splice(index, 1)
+      businessTime.splice(index, 1)
+      timePeriodNum -= 1
+      that.setData({
+        business: business,
+        'form.businessTime': businessTime,
+        timePeriodNum: timePeriodNum
+      })
     })
   },
   beginTimeChange(e) {
@@ -171,8 +177,7 @@ Page({
               'form.foodList': foodList
             })
           }
-        }
-        else {
+        } else {
           util.showToast('操作已取消')
         }
       }
@@ -209,10 +214,9 @@ Page({
     var index = e.currentTarget.dataset.index
     var foodList = that.data.form.foodList
     var foodtype = foodList[index]
-    if( foodtype.name === '默认' ) 
-    {
-       util.showToast('默认类别无法删除')
-       return
+    if (foodtype.name === '默认') {
+      util.showToast('默认类别无法删除')
+      return
     }
     foodList.splice(index, 1)
     that.setData({

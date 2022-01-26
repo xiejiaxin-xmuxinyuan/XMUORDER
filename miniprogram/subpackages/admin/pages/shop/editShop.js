@@ -116,17 +116,24 @@ Page({
     })
   },
   delTime(e) {
-    var index = e.currentTarget.dataset.index
-    var business = that.data.business
-    var businessTime = that.data.canteen.businessTime
-    var timePeriodNum = that.data.timePeriodNum
-    business.splice(index, 1)
-    businessTime.splice(index, 1)
-    timePeriodNum -= 1
-    that.setData({
-      business: business,
-      'canteen.businessTime': businessTime,
-      timePeriodNum: timePeriodNum
+    wx.showModal({
+      title: '提示',
+      content: '确认删除该营业时段吗？'
+    }).then(res=>{
+      if (res.confirm) {
+        var index = e.currentTarget.dataset.index
+        var business = that.data.business
+        var businessTime = that.data.canteen.businessTime
+        var timePeriodNum = that.data.timePeriodNum
+        business.splice(index, 1)
+        businessTime.splice(index, 1)
+        timePeriodNum -= 1
+        that.setData({
+          business: business,
+          'canteen.businessTime': businessTime,
+          timePeriodNum: timePeriodNum
+        })
+      }
     })
   },
   getFood: function (cID, typeName) {

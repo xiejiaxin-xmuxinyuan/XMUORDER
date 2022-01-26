@@ -65,7 +65,7 @@ exports.main = async (event, context) => {
               type: _.in(["member", "admin"]),
               cID: cID
             }
-          }).skip((currPage - 1) * pageSize).limit(pageSize).get()
+          }).orderBy('identity.type', 'asc').skip((currPage - 1) * pageSize).limit(pageSize).get()
           .then(res => {
             resolve({
               success: true,

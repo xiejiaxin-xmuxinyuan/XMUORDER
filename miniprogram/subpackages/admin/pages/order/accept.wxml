@@ -6,7 +6,7 @@
   <view class="order">
     <view class="top-info">
       <view class="title cuIcon-titles">未送出订单：<text class="text-orange">{{totalCount}}</text></view>
-      <view class="text-gray">提示：送至取餐点后，点击 “已送出” 即可完成订单送出</view>
+      <view class="text-gray">提示：送至取餐点后，点击 “确认已送出” 即可完成订单送出</view>
     </view>
     <view class="content">
       <view class="text-gray text-center margin-lg" wx:if="{{orders.length === 0}}">
@@ -62,7 +62,7 @@
         </view>
         <view class="bottom">
           <button catchtap="finishOrder" data-index="{{index}}" class="cu-btn lines-olive round">
-            <text class="cuIcon-roundcheckfill"> 已送出</text>
+            <text class="cuIcon-roundcheckfill"> 确认已送出</text>
           </button>
         </view>
       </view>
