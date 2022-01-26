@@ -163,6 +163,7 @@ Page({
             'orderInfo.orderState': 'SUCCESS',
             'orderInfo.orderStateMsg': '已完成',
             'getFoodInfo.getState': 'SUCCESS',
+            'getFoodInfo.getStateMsg': '已取餐',
             'orderInfo.timeInfo.endTime': that.getStrDate(new Date())
           }
         }

@@ -8,7 +8,6 @@ Page({
     identity: {},
     canteens: [],
     shopPickerList: [],
-    users: [],
     staffList: [],
     shopPickerIndex: null,
     currPage: 0,
