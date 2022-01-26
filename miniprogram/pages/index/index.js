@@ -17,9 +17,9 @@ Page({
       title: '获取信息中',
     })
     app.init()
-      .then(() => {
+      .then(globalData => {
         that.setData({
-          identity: app.globalData.identity
+          identity: globalData.identity
         })
         wx.hideLoading()
       })
