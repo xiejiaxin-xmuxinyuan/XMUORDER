@@ -12,6 +12,7 @@ cloud.init({
 
 const db = cloud.database()
 const _ = db.command
+const $ = db.command.aggregate
 
 
 //返回14位字符串日期20210102030405
@@ -40,10 +41,67 @@ async function orderGetFoodTimeout() {
     })
     console.log('订单取餐超时检测：修改订单', res.stats.updated, '条')
   } catch (e) {
-    console.error('订单取餐超时检测错误：',e)
+    console.error('订单取餐超时检测错误：', e)
   }
 }
 
+// 保存对应餐厅今日统计数据
+async function saveTodayStatistics(data, date) {
+  console.log('正在保存餐厅统计数据', data)
+  const countRes = await db.collection('statistics').where({
+    date: date
+  }).count()
+
+  if (countRes.total) { // 执行更新
+    console.log(data.cID, '已有今日记录，执行update')
+    await db.collection('statistics').where({
+      date: date
+    }).update({
+      data: {
+        orderCount: data.orderCount,
+        orderMoney: data.orderMoney,
+      }
+    })
+  } else { // 执行新增
+    console.log(data.cID, '无今日记录，执行add')
+    await db.collection('statistics').add({
+      data: {
+        ...data,
+        date
+      }
+    })
+  }
+}
+
+// 统计餐厅今日数据（仅统计有订单的）
+async function orderTodayStatistics() {
+  var lDate = new Date()
+  var rDate = new Date()
+  lDate.setHours(0, 0, 0, 0)
+  rDate.setHours(24, 0, 0, 0)
+  lStrDate = getStrDate(lDate)
+  rStrDate = getStrDate(rDate)
+
+  db.collection('orders').aggregate().match({
+    'orderInfo.orderState': 'SUCCESS',
+    'orderInfo.timeInfo.createTime': _.and(_.gt(lStrDate), _.lt(rStrDate))
+  }).group({
+    _id: '$goodsInfo.shopInfo.cID',
+    orderMoney: $.sum('$payInfo.feeInfo.cashFee'),
+    orderCount: $.sum(1)
+  }).project({
+    cID: '$_id',
+    orderMoney: 1,
+    orderCount: 1,
+    _id: 0
+  }).end().then(res => {
+    res.list.forEach(result => {
+      saveTodayStatistics(result, lStrDate.substr(0, 8))
+    })
+  })
+}
+
 exports.main = async (event, context) => {
-    await orderGetFoodTimeout()
+  await orderGetFoodTimeout()
+  await orderTodayStatistics()
 }

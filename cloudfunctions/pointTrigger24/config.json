@@ -3,7 +3,7 @@
     {
       "name": "pointTrigger24",
       "type": "timer",
-      "config": "0 0 0 * * * *"
+      "config": "0 59 23 * * * *"
     }
   ]
 }
