@@ -48,14 +48,17 @@ async function orderGetFoodTimeout() {
 // 保存对应餐厅今日统计数据
 async function saveTodayStatistics(data, date) {
   console.log('正在保存餐厅统计数据', data)
+  const cID = data.cID
   const countRes = await db.collection('statistics').where({
-    date: date
+    cID,
+    date
   }).count()
 
   if (countRes.total) { // 执行更新
     console.log(data.cID, '已有今日记录，执行update')
     await db.collection('statistics').where({
-      date: date
+      cID,
+      date
     }).update({
       data: {
         orderCount: data.orderCount,
