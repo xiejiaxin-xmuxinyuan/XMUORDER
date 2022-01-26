@@ -291,9 +291,8 @@ Page({
     })
   },
   toSetting: function (e) {
-    wx.showToast({
-      title: '功能未开放',
-      icon: 'none'
+    wx.navigateTo({
+      url: '../setting/setting',
     })
   },
   getUserProfile: function (e) {
