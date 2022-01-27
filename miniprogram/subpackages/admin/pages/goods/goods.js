@@ -255,57 +255,6 @@ Page({
     }
 
   },
-  addGoodsType: function (e) {
-    let shopPickerIndex = that.data.shopPickerIndex
-    if (shopPickerIndex === null) {
-      util.showToast('请先选择商店')
-      return
-    }
-    wx.showModal({
-      title: that.data.shopPickerList[shopPickerIndex] + ': 添加商品类别',
-      confirmText: '添加',
-      editable: true,
-      placeholderText: '输入新商品类别名称',
-      success(res) {
-        if (res.confirm) {
-          let newTypeName = res.content
-          let foodTypePickerList = that.data.foodTypePickerList
-          if (foodTypePickerList.indexOf(newTypeName) >= 0) {
-            util.showToast('商品类别名称重复')
-          } else {
-            util.showLoading('上传中')
-            let _id = that.data.canteens[shopPickerIndex]._id
-            wx.cloud.callFunction({
-                name: 'dbUpdate',
-                data: {
-                  table: 'canteen',
-                  _id: _id,
-                  path: 'foodList',
-                  formData: {
-                    name: newTypeName
-                  },
-                  push: true
-                }
-              })
-              .then(res => {
-                util.hideLoading()
-                if (res.result.success) {
-                  util.showToast('新增成功', 'success', 1500)
-                  that.getCurrCanteenFoodTypes()
-                } else {
-                  util.showToast('数据提交失败', 'error', 1500)
-                }
-              })
-              .catch(e => {
-                util.hideLoading()
-              })
-          }
-        } else if (res.cancel) {
-          util.showToast('操作已取消')
-        }
-      }
-    })
-  },
   getCurrCanteenFoodTypes: () => {
     let shopPickerIndex = that.data.shopPickerIndex
     let _id = that.data.canteens[shopPickerIndex]._id

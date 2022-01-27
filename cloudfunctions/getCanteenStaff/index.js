@@ -24,6 +24,7 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 const db = cloud.database()
+const _ = db.command
 exports.main = async (event, context) => {
   const cID = event.cID
   const pageSize = "pageSize" in event ? event.pageSize : 5 // 每页数据量
@@ -36,7 +37,7 @@ exports.main = async (event, context) => {
     db.collection('users')
       .where({
         identity: {
-          type: "member",
+          type: _.in(["member", "admin"]),
           cID: cID
         }
       })
@@ -61,10 +62,10 @@ exports.main = async (event, context) => {
 
         db.collection('users').where({
             identity: {
-              type: "member",
+              type: _.in(["member", "admin"]),
               cID: cID
             }
-          }).skip((currPage - 1) * pageSize).limit(pageSize).get()
+          }).orderBy('identity.type', 'asc').skip((currPage - 1) * pageSize).limit(pageSize).get()
           .then(res => {
             resolve({
               success: true,

@@ -69,11 +69,6 @@
       商品
     </view>
   </view>
-  <view class="fixedBtn" style="left: 5%;">
-    <view catchtap="addGoodsType" class="cuIcon-add text-black bg-white round shadow">
-      类别
-    </view>
-  </view>
 </view>
 
 <view class="footer">

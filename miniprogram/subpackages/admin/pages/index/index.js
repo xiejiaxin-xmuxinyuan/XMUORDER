@@ -59,7 +59,7 @@ Page({
         icon: 'taoxiaopu',
         color: 'blue',
         name: '商店管理',
-        path: '../shop/shop'
+        path: 'toShop'
       }, {
         icon: 'goodsnewfill',
         color: 'orange',
@@ -205,6 +205,8 @@ Page({
     if (path) {
       if (path === 'toStaff') {
         that.toStaff()
+      } else if (path === 'toShop') {
+        that.toShop()
       } else {
         wx.navigateTo({
           url: e.currentTarget.dataset.path,
@@ -223,6 +225,21 @@ Page({
     wx.navigateTo({
       url: '../staff/staff',
     })
+  },
+  toShop: () => {
+    const identity = that.data.user.identity
+    if (identity.type === 'superAdmin') {
+      wx.navigateTo({
+        url: '../shop/shop',
+      })
+    } else if (identity.type === 'admin') {
+      const canteen = that.data.canteen
+      wx.navigateTo({
+        url: '../shop/editShop?canteen=' + JSON.stringify(canteen)
+      })
+    } else {
+      util.showToast('非管理员无权限进入')
+    }
   },
   watchOrder: function (e, flag = null) { //订单监听
     var watchOrderFlag
@@ -502,6 +519,13 @@ Page({
   toAccept: function () {
     wx.navigateTo({
       url: '../order/accept',
+      events: {
+        changeAcceptedOrdersCount: function (acceptedOrdersCount) {
+          that.setData({
+            'orders.acceptedOrdersCount': acceptedOrdersCount
+          })
+        }
+      }
     })
   },
   toNotGet: function () {

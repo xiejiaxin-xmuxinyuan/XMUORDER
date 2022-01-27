@@ -26,7 +26,8 @@ exports.main = async (event, context) => {
         name: true,
         address: true,
         identity: true,
-        nickName: true
+        nickName: true,
+        img: true
       }).get()
 
     if (userRes.data.length) {

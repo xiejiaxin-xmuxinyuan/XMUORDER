@@ -2,7 +2,7 @@
   <cu-custom bgColor="bg-gradual-blue" isBack="true">
     <view slot="content">修改公告</view>
   </cu-custom>
-  <view class="bg-white margin-lg shadow-warp radius">
+  <view class="bg-white margin-lg shadow radius">
     <form catchsubmit="editNoticesSubmit">
 
       <view class="cu-form-group">

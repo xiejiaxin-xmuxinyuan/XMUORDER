@@ -192,45 +192,51 @@ Page({
     })
   },
   confirmRefund: function (e) {
-    //关闭my-box
-    that.showHideFeedback({
-      type: 'hideBox'
-    })
-    var index = e.currentTarget.dataset.index
-    var feedback = that.data.feedbacks[index]
-
-    util.showLoading('处理中')
-    //退款
-    wx.cloud.callFunction({
-      name: 'payRefund',
-      data: {
-        outTradeNo: feedback.outTradeNo
-      }
+    wx.showModal({
+      title: '提示',
+      content: '确认退款？',
     }).then(res => {
-      if (res.result.success) {
-        // 修改数据库
-        feedback.canteenFeedback = '已退款'
-        feedback.state = 2 //2 表示退款
-        wx.cloud.callFunction({
-          name: 'dbUpdate',
-          data: {
-            table: 'userFeedbacks',
-            _id: feedback._id,
-            formData: {
-              'canteenFeedback': feedback.canteenFeedback,
-              'state': feedback.state
-            }
-          },
-        }).then(res => {
-          that.setData({
-            ['feedbacks.[' + index + ']']: feedback
-          })
-          util.hideLoading()
-          util.showToast('退款完成', 'success')
+      if (res.confirm) {
+        //关闭my-box
+        that.showHideFeedback({
+          type: 'hideBox'
         })
-      } else { //云函数退款失败，可能是该订单无法退款
-        util.showToast('退款失败', 'error')
-        return
+        var index = e.currentTarget.dataset.index
+        var feedback = that.data.feedbacks[index]
+        util.showLoading('处理中')
+        //退款
+        wx.cloud.callFunction({
+          name: 'payRefund',
+          data: {
+            outTradeNo: feedback.outTradeNo
+          }
+        }).then(res => {
+          if (res.result.success) {
+            // 修改数据库
+            feedback.canteenFeedback = '已退款'
+            feedback.state = 2 //2 表示退款
+            wx.cloud.callFunction({
+              name: 'dbUpdate',
+              data: {
+                table: 'userFeedbacks',
+                _id: feedback._id,
+                formData: {
+                  'canteenFeedback': feedback.canteenFeedback,
+                  'state': feedback.state
+                }
+              },
+            }).then(res => {
+              that.setData({
+                ['feedbacks.[' + index + ']']: feedback
+              })
+              util.hideLoading()
+              util.showToast('退款完成', 'success')
+            })
+          } else { //云函数退款失败，可能是该订单无法退款
+            util.showToast('退款失败', 'error')
+            return
+          }
+        })
       }
     })
   },

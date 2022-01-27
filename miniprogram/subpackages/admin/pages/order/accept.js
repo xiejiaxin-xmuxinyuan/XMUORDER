@@ -29,6 +29,10 @@ Page({
       }).count()
 
       const totalCount = countRes.total
+      // 刷新首页中的未送出订单数量
+      const eventChannel = that.getOpenerEventChannel()
+      eventChannel.emit('changeAcceptedOrdersCount', totalCount);
+
       const totalPage = totalCount === 0 ? 0 : totalCount <= pageSize ? 1 : Math.ceil(totalCount / pageSize)
       if (totalPage === 0) { //如果没有任何记录
         wx.hideLoading()

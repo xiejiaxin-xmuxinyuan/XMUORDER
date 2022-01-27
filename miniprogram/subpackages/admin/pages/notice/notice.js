@@ -80,14 +80,14 @@ Page({
     const identity = app.globalData.identity
     if (identity.type !== 'superAdmin') {
       if (identity.cID !== notice.orgID) {
-        util.showToast('您没有该公告的编辑权限')
+        util.showToast('您没有该公告的删除权限')
         return
       }
     }
 
     wx.showModal({
       title: '提示',
-      content: '确认删除吗？',
+      content: '确认删除？公告将永久删除',
       success(res) {
         if (res.confirm) {
           util.showLoading('正在删除公告')

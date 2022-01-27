@@ -21,7 +21,7 @@
     <block wx:else>
       <view wx:for="{{staffList}}" wx:key="_id" wx:for-item="staff">
         <view class="flex my-item align-center">
-          <image src="{{staff.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
+          <image class="{{staff.identity.type==='admin'? 'img-admin':''}}" src="{{staff.img}}" mode="aspectFill" lazy-load="{{true}}"></image>
           <view class="info margin-right-xs">
             <view class="flex align-center" style="margin-top:10rpx;">
               <view class="text-black">姓名：{{staff.name}}</view>
@@ -31,7 +31,7 @@
             </view>
           </view>
           <view class="other">
-            <view class="btn-group ">
+            <view wx:if="{{staff.identity.type!=='admin'}}" class="btn-group ">
               <button catchtap="delStaff" data-index="{{index}}" class="cu-btn cuIcon text-xl">
                 <text class="cuIcon-roundclose text-orange"></text>
               </button>
