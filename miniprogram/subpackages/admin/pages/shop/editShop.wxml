@@ -128,8 +128,9 @@
     <view style="text-align: center;padding: 1rem 0;">
       <button form-type="submit" class="cu-btn round bg-gradual-blue shadow text-lg" style="padding: 35rpx 120rpx;">提交</button>
     </view>
-    <view wx:if="{{identity.type==='superAdmin'}}" class="padding text-center">
-      <button catchtap="delShop" class="cu-btn bg-red shadow text-lg" style="padding: 35rpx 120rpx;">删除餐厅</button>
+    <view class="padding-xl">
+      <button class="cu-btn block line-blue lg text-bold" catchtap="delShop">
+        <text class="cuIcon-close"></text>删除餐厅</button>
     </view>
   </form>
 </view>
