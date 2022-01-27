@@ -3,21 +3,17 @@
 
 .user-avatar {
   overflow: hidden;
-  display: block;
-  width: 200rpx;
-  height: 200rpx;
-  margin: 0rpx;
-  margin-top: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
   border: 5rpx solid #fff;
   box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
 }
 
-.update-btn {
-  position: absolute;
-  top: 30rpx;
-  left: 30rpx;
-  z-index: 9999;
+.user-avatar>image {
+  width: 200rpx;
+  height: 200rpx;
 }
 
 .tab-page {

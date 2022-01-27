@@ -11,11 +11,6 @@ Page({
    */
   data: {
     pageCurr: "info",
-    name: '',
-    nickName: '',
-    phone: '',
-    address: '',
-    identity: '',
     canteens: [],
     notices: [],
     noticeTypes: ['公共', '翔安', '思明', '海韵'],
@@ -45,11 +40,14 @@ Page({
       that.setData({
         isLoaded: true, // 表示加载完毕
         //用户信息
-        name: app.globalData.name,
-        nickName: app.globalData.nickName,
-        phone: app.globalData.phone,
-        address: app.globalData.address,
-        identity: app.globalData.identity
+        user:{
+          name: app.globalData.name,
+          nickName: app.globalData.nickName,
+          phone: app.globalData.phone,
+          address: app.globalData.address,
+          identity: app.globalData.identity,
+          img: app.globalData.img
+        }
       })
     })
   },
@@ -294,45 +292,6 @@ Page({
     wx.navigateTo({
       url: '../setting/setting',
     })
-  },
-  getUserProfile: function (e) {
-    util.showToast('加载中')
-    wx.getUserProfile({
-        desc: '用于完善会员资料'
-      })
-      .then(res => {
-        let userInfo = res.userInfo
-        //更新数据库内信息
-        wx.cloud.callFunction({
-            name: "userUpdate",
-            data: {
-              formData: {
-                nickName: userInfo.nickName
-              }
-            }
-          })
-          .then(res => {
-            wx.hideLoading()
-            if (res.result.success) {
-              app.globalData.nickName = userInfo.nickName
-              that.setData({
-                nickName: userInfo.nickName,
-                // avatarUrl: userInfo.avatarUrl
-              })
-              util.showToast('更新成功', 'success', 1000)
-            } else {
-              util.showToast('更新信息失败', 'error', 2000)
-            }
-          })
-          .catch(e => {
-            wx.hideLoading()
-            util.showToast('更新信息失败', 'error', 2000)
-          })
-      })
-      .catch(erro => {
-        wx.hideLoading()
-        util.showToast('更新信息失败', 'error', 2000)
-      })
   },
   noticeChangePage: function (e) {
     const currPage = that.data.noticeCurrPage

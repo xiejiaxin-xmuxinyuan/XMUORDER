@@ -91,36 +91,35 @@
   <view class="cu-list menu card-menu margin-top shadow-warp">
     <view class="flex justify-center bg-white padding">
       <view class="user-avatar">
-        <open-data type="userAvatarUrl"></open-data>
-        <text catchtap="getUserProfile" class="update-btn text-gray">点击更新个人信息</text>
+        <image mode="aspectFill" src="{{user.img}}"></image>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-people text-gray"></text>
         <text>姓名</text>
-        <text class="fr">{{name}}</text>
+        <text class="fr">{{user.name}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-emoji text-gray"></text>
         <text>昵称</text>
-        <text class="fr">{{nickName}}</text>
+        <text class="fr">{{user.nickName}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-phone text-gray"></text>
         <text>电话</text>
-        <text class="fr">{{phone}}</text>
+        <text class="fr">{{user.phone}}</text>
       </view>
     </view>
     <view class="cu-item">
       <view class="content">
         <text class="cuIcon-locationfill text-gray"></text>
         <text>地址</text>
-        <text class="fr">{{address}}</text>
+        <text class="fr">{{user.address}}</text>
       </view>
     </view>
     <view class="cu-item arrow" bindtap="toRecord">
@@ -136,7 +135,7 @@
       </view>
     </view>
 
-    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{identity.type === 'admin' || identity.type === 'superAdmin'|| identity.type === 'member'}}">
+    <view class="cu-item arrow" bindtap="toAdmin" wx:if="{{user.identity.type === 'admin' || user.identity.type === 'superAdmin'|| user.identity.type === 'member'}}">
       <view class="content">
         <text class="cuIcon-commandfill text-blue"></text>
         <text class="text-blue">管理中心</text>
