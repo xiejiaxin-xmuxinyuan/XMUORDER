@@ -5,10 +5,11 @@ const app = getApp()
 Page({
 
   data: {
-    identity: null
+    identity: null,
     //"unregistered"说明未注册身份
     //对象说明已注册
     // 管理员admin 员工member 超级管理员superAdmin
+    img: ''
   },
 
   onLoad: function (options) {
@@ -19,7 +20,8 @@ Page({
     app.init()
       .then(() => {
         that.setData({
-          identity: app.globalData.identity
+          identity: app.globalData.identity,
+          img: app.globalData.img
         })
         wx.hideLoading()
       })

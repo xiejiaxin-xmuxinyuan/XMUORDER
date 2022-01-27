@@ -3,9 +3,9 @@
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
-  <view class="flex justify-center bg-white padding">
+  <view class="flex justify-center bg-white padding margin-top-xl">
     <view class="user-avatar animation-slide-top" style="animation-delay: 0.6s;">
-      <open-data type="userAvatarUrl"></open-data>
+      <image mode="aspectFill" src="{{img}}"></image>
     </view>
   </view>
   <view class="text-center animation-scale-up" style="margin-top: 5vh;width: 100%;animation-delay: 0.2s;">
@@ -32,9 +32,9 @@
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">欢迎</view>
   </cu-custom>
-  <view class="flex justify-center bg-white padding">
+  <view class="flex justify-center bg-white padding margin-top-xl">
     <view class="user-avatar animation-slide-top" style="animation-delay: 0.6s;">
-      <open-data type="userAvatarUrl"></open-data>
+      <image mode="aspectFill" src="{{img}}"></image>
     </view>
   </view>
   <view class="text-center animation-scale-up" style="margin-top: 10vh;width: 100%;animation-delay: 0.2s;">

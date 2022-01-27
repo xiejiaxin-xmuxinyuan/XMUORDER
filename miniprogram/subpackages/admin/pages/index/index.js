@@ -102,6 +102,7 @@ Page({
         name: app.globalData.name,
         phone: app.globalData.phone,
         address: app.globalData.address,
+        img: app.globalData.img,
         intCurTime
       }
     }

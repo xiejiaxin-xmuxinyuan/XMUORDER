@@ -6,23 +6,38 @@ var that
 
 Page({
     data: {
-        user: {
-            name: '名字',
-            img: 'cloud://cloud1-4g4b6j139b4e50e0.636c-cloud1-4g4b6j139b4e50e0-1307666009/头像图片/images/avatar/0.jpg'
-        },
+        user: {},
         showBox: false,
         tapImgIndex: null
     },
 
     onLoad: function (options) {
         that = this
+        that.setData({
+            user: {
+                name: app.globalData.name,
+                nickName: app.globalData.nickName,
+                phone: app.globalData.phone,
+                address: app.globalData.address,
+                identity: app.globalData.identity,
+                img: app.globalData.img
+            }
+        })
+
+        // 静默获取头像列表
         db.collection('avatar').get().then(res => {
             var imgs = []
+            var tapImgIndex = null
             for (let index = 0; index < res.data.length; index++) {
-                imgs.push(res.data[index]['url'])
+                const img = res.data[index]['url']
+                if (app.globalData.img === img) {
+                    tapImgIndex = index
+                }
+                imgs.push(img)
             }
             that.setData({
-                imgs: imgs
+                imgs,
+                tapImgIndex
             })
         })
     },
@@ -53,15 +68,12 @@ Page({
             }).then(res => {
                 wx.hideLoading()
                 util.showToast('头像修改成功！')
-                this.setData(
-                    {
-                        showBox:false,
-                        'user.img':img
-                    }
-                )
+                this.setData({
+                    showBox: false,
+                    'user.img': img
+                })
             })
-        }
-        else{
+        } else {
             util.showToast('请选择你要更换的头像')
         }
     },

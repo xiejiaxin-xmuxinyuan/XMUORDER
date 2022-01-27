@@ -7,18 +7,19 @@
         <view class="user-avatar">
             <image catchtap="chooseImg" mode="scaleToFill" src="{{user.img}}"></image>
         </view>
+        <view class="edit-btn"><button catchtap="chooseImg" class="cu-btn cuIcon-write"></button></view>
     </view>
 </view>
 
 
 <!-- 自定义模态框 -->
 <my-box style="position: fixed;" show="{{!!showBox}}" bind:hideBox="showHideBox">
-    <view class="my-box-content" style="display: flex;">
+    <scroll-view scroll-y="{{true}}" class="my-box-content">
         <view class="big-container">
             <view wx:for="{{imgs}}">
                 <image class="{{tapImgIndex===index?'tapImg':''}}" catchtap="tapImg" data-index="{{index}}" mode="aspectFill" style="width: 150rpx;height: 150rpx;margin-right: 10rpx;" src="{{item}}"></image>
             </view>
         </view>
-    </view>
+    </scroll-view>
     <button catchtap="changeImg" class="cu-btn bg-blue shadow" style="margin-left: 28%;margin-top: 30rpx;">选择更换头像</button>
 </my-box>
