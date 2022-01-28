@@ -92,12 +92,8 @@ Page({
         // 用户点击确认
         if (res.confirm) {
           util.showLoading('上传中')
-          for (const k in userInfo) {
-            app.globalData[k] = userInfo[k]
-          }
-
-          // 添加用户信息到集合 users 
-          db.collection('users').add({
+          wx.cloud.callFunction({
+            name: 'userRegistration',
             data: {
               isActive: true,
               phone: userInfo.phone,
@@ -109,16 +105,23 @@ Page({
                 type: 'user'
               }
             }
-          }).then(() => {
+          }).then(res => {
             wx.hideLoading()
-            // 更新登录状态
-            app.globalData.isActive = true
-            util.showToast('上传成功', 'success')
-            setTimeout(() => {
-              wx.redirectTo({
-                url: '../index/index'
-              })
-            }, 1000);
+            if (res.result.success) {
+              for (const k in userInfo) {
+                app.globalData[k] = userInfo[k]
+              }
+              // 更新登录状态
+              app.globalData.isActive = true
+              util.showToast('上传成功', 'success')
+              setTimeout(() => {
+                wx.redirectTo({
+                  url: '../index/index'
+                })
+              }, 1000);
+            } else {
+              util.showToast('上传失败', 'error')
+            }
           }).catch(err => {
             console.error(err)
             wx.hideLoading()
