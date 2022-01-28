@@ -34,7 +34,7 @@
   </cu-custom>
   <view class="flex justify-center bg-white padding margin-top-xl">
     <view class="user-avatar animation-slide-top" style="animation-delay: 0.6s;">
-      <image mode="aspectFill" src="{{img}}"></image>
+      <image mode="aspectFill" src="{{identity === 'unregistered'?'ico.jpg':img}}"></image>
     </view>
   </view>
   <view class="text-center animation-scale-up" style="margin-top: 10vh;width: 100%;animation-delay: 0.2s;">

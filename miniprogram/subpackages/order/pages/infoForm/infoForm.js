@@ -1,42 +1,87 @@
 // pages/infoForm/infoForm.js
 const db = wx.cloud.database()
 const app = getApp()
+const util = require('../../../../utils/util.js')
 var that
+
+
 import WxValidate from '../../../../utils/WxValidate.js'
 Page({
   /**
    * 页面的初始数据
    */
   data: {
-    avatarUrl: "",
+    imgs: [],
+    tapImgIndex: null,
+    img: '',
     nickName: "",
     phoneNumber: "",
+    showBox: false
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad: function (options) {
     that = this
     that.initWxValidate()
-  },
 
+    // 静默获取头像列表
+    db.collection('avatar').get().then(res => {
+      var imgs = []
+      for (let index = 0; index < res.data.length; index++) {
+        const img = res.data[index]['url']
+        imgs.push(img)
+      }
+      that.setData({
+        imgs,
+        img: imgs[0]
+      })
+    })
+  },
+  chooseImg: function (e) {
+    that.setData({
+      showBox: true
+    })
+  },
+  tapImg: function (e) {
+    const index = e.currentTarget.dataset.index
+    that.setData({
+      tapImgIndex: index
+    })
+  },
+  changeImg: function (e) {
+    const tapImgIndex = that.data.tapImgIndex
+    const imgs = that.data.imgs
+    if (tapImgIndex != null) {
+      const img = imgs[tapImgIndex]
+      that.setData({
+        img,
+        showBox: false
+      })
+    } else {
+      util.showToast('请选择你要更换的头像')
+    }
+  },
+  showHideBox: function (e) {
+    if (e.type === 'hideBox') {
+      that.setData({
+        showBox: false
+      })
+    }
+  },
   onSubmit: async function (e) {
     // 如果信息不完整或填写错误
     if (!that.WxValidate.checkForm(e.detail.value)) {
       const errMsg = that.WxValidate.errorList[0].msg
-      wx.showToast({
-        title: errMsg,
-        icon: "none"
-      })
+      util.showToast(errMsg)
       return
     }
 
-    let userInfo = {}
-    userInfo.name = e.detail.value.name
-    userInfo.address = e.detail.value.address
-    userInfo.phone = e.detail.value.phone
-    userInfo.nickName = that.data.nickName
+    const userInfo = {
+      name: e.detail.value.name,
+      address: e.detail.value.address,
+      phone: e.detail.value.phone,
+      nickName: that.data.nickName,
+      img: that.data.img
+    }
 
     // 提示
     wx.showModal({
@@ -46,131 +91,81 @@ Page({
       success: res => {
         // 用户点击确认
         if (res.confirm) {
-          wx.showLoading({
-            title: '上传中',
-            mask: true
-          })
-          app.globalData.name = userInfo.name,
-          app.globalData.userID = userInfo.userID,
-          app.globalData.address = userInfo.address
-          app.globalData.phone = userInfo.phone
-          app.globalData.nickName = userInfo.nickName
+          util.showLoading('上传中')
+          for (const k in userInfo) {
+            app.globalData[k] = userInfo[k]
+          }
 
           // 添加用户信息到集合 users 
-          db.collection('users')
-            .add({
-              data: {
-                _id: '{openid}',
-                phone: userInfo.phone, //that.data.phoneNumber,
-                isActive: true,
-                name: userInfo.name,
-                address: userInfo.address,
-                nickName: userInfo.nickName,
-                identity: {
-                  type: 'user'
-                }
+          db.collection('users').add({
+            data: {
+              isActive: true,
+              phone: userInfo.phone,
+              name: userInfo.name,
+              address: userInfo.address,
+              nickName: userInfo.nickName,
+              img: userInfo.img,
+              identity: {
+                type: 'user'
               }
-            })
-            .then(() => {
-              // 更新登录状态
-              app.globalData.isActive = true
-              wx.hideLoading()
-              // 上传成功后，前往主页
-              wx.showToast({
-                title: '上传成功',
-                icon: "success",
-                duration: 1000
-              }).then(res => {
-                setTimeout(() => {
-                  wx.redirectTo({
-                    url: '../index/index'
-                  })
-                }, 1000);
+            }
+          }).then(() => {
+            wx.hideLoading()
+            // 更新登录状态
+            app.globalData.isActive = true
+            util.showToast('上传成功', 'success')
+            setTimeout(() => {
+              wx.redirectTo({
+                url: '../index/index'
               })
-            })
-            .catch(err => {
-              console.error(err)
-              wx.hideLoading()
-              wx.showToast({
-                title: '上传失败',
-                icon: "error"
-              })
-            })
+            }, 1000);
+          }).catch(err => {
+            console.error(err)
+            wx.hideLoading()
+            util.showToast('上传失败', 'error')
+          })
         }
-      },
-      fail: err => console.error(err)
+      }
     })
-
   },
-
   getUserProfile: function (e) {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    util.showLoading('加载中')
     wx.getUserProfile({
-        desc: '用于完善会员资料'
+      desc: '用于完善会员资料'
+    }).then(res => {
+      wx.hideLoading()
+      let userInfo = res.userInfo
+      that.setData({
+        nickName: userInfo.nickName
       })
-      .then(res => {
-        wx.hideLoading()
-        let userInfo = res.userInfo
-        that.setData({
-          nickName: userInfo.nickName,
-          avatarUrl: userInfo.avatarUrl
-        })
-      })
-      .catch(erro => {
-        wx.hideLoading()
-        wx.showToast({
-          title: '获取信息失败',
-          icon: 'error',
-          duration: 2000
-        })
-      })
+    }).catch(erro => {
+      wx.hideLoading()
+      util.showToast('获取失败', 'error')
+    })
   },
-
-  /**
-   * 调用云函数 getPhoneNumber 获取用户手机号码
-   */
   getPhoneNumber: function (e) {
     // 用户拒绝
     if (e.detail.errMsg === "getPhoneNumber:fail user deny") {
-      wx.showToast({
-        title: '请绑定手机号后使用',
-        icon: 'none',
-        duration: 2000
-      })
+      util.showToast('请绑定手机号后使用')
     } else {
-      wx.showLoading({
-        title: '获取中',
-        mask: true
-      })
+      util.showLoading('获取中')
       wx.cloud.callFunction({
         name: "decodePhoneNumber",
         data: {
           phoneNumInfo: wx.cloud.CloudID(e.detail.cloudID),
         }
-      }).then(val => {
+      }).then(res => {
         wx.hideLoading()
-        let res = val.result
-        if (res.success) {
+        if (res.result.success) {
           that.setData({
-            phoneNumber: res.phoneNumber
+            phoneNumber: res.result.phoneNumber
           })
         } else {
-          wx.showToast({
-            title: '获取手机号失败',
-            icon: 'none',
-            duration: 2000
-          })
+          util.showToast('手机获取失败', 'error')
         }
       }).catch(err => {
         wx.hideLoading()
-        wx.showToast({
-          title: '获取手机号失败',
-          icon: 'none',
-          duration: 2000
-        })
+        util.showToast('手机获取失败', 'error')
       })
     }
   },

@@ -60,7 +60,7 @@ Page({
             const img = imgs[tapImgIndex]
 
             db.collection('users').where({
-                _openid: '$openid'
+                _openid: '{openid}'
             }).update({
                 data: {
                     img: img
