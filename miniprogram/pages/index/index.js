@@ -31,11 +31,11 @@ Page({
       })
   },
   redictoUser: function (e) {
-    if (that.data.identity==='unregistered') {
+    if (that.data.identity === 'unregistered') {
       wx.redirectTo({
         url: '../../subpackages/order/pages/infoForm/infoForm',
-      }) 
-    }else{
+      })
+    } else {
       wx.redirectTo({
         url: '../../subpackages/order/pages/index/index',
       })
@@ -45,5 +45,5 @@ Page({
     wx.navigateTo({
       url: '../../subpackages/admin/pages/index/index',
     })
-  }
+  },
 })
