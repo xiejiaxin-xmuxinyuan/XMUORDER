@@ -668,6 +668,10 @@ function getDataPoints(data, minRange, maxRange, xAxisPoints, eachSpacing, opts,
     return points;
 }
 
+
+
+
+
 function getYAxisTextList(series, opts, config) {
     var data = dataCombine(series);
     // remove null from data
@@ -703,6 +707,9 @@ function getYAxisTextList(series, opts, config) {
     return range.reverse();
 }
 
+
+
+
 function calYAxisData(series, opts, config) {
 
     var ranges = getYAxisTextList(series, opts, config);
@@ -719,6 +726,8 @@ function calYAxisData(series, opts, config) {
 
     return { rangesFormat: rangesFormat, ranges: ranges, yAxisWidth: yAxisWidth };
 }
+
+
 
 function drawPointShape(points, color, shape, context) {
     context.beginPath();
@@ -765,6 +774,9 @@ function drawPointShape(points, color, shape, context) {
     context.stroke();
 }
 
+
+
+
 function drawRingTitle(opts, config, context) {
     var titlefontSize = opts.title.fontSize || config.titleFontSize;
     var subtitlefontSize = opts.subtitle.fontSize || config.subtitleFontSize;
@@ -805,6 +817,8 @@ function drawRingTitle(opts, config, context) {
     }
 }
 
+
+
 function drawPointText(points, series, config, context) {
     // 绘制数据文案
     var data = series.data;
@@ -821,6 +835,8 @@ function drawPointText(points, series, config, context) {
     context.closePath();
     context.stroke();
 }
+
+
 
 function drawRadarLabel(angleList, radius, centerPosition, opts, config, context) {
     var radarOption = opts.extra.radar || {};
@@ -846,6 +862,9 @@ function drawRadarLabel(angleList, radius, centerPosition, opts, config, context
     context.stroke();
     context.closePath();
 }
+
+
+
 
 function drawPieText(series, opts, config, context, radius, center) {
     var lineRadius = radius + config.pieChartLinePadding;
@@ -945,6 +964,8 @@ function drawPieText(series, opts, config, context, radius, center) {
         context.closePath();
     });
 }
+
+
 
 function drawToolTipSplitLine(offsetX, opts, config, context) {
     var startY = config.padding;

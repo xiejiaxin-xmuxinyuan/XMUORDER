@@ -49,7 +49,6 @@
   <cu-custom bgColor="bg-gradual-blue">
     <view slot="content">我知盘中餐</view>
   </cu-custom>
-
   <view class="canteen shadow-warp radius" wx:for="{{canteens}}" wx:key="_id">
     <view class="mycontent animation-fade" bindtap="toCanteen" data-index="{{index}}" style="animation-delay: 0.5s;">
       <image src="{{item.thumb}}" mode="aspectFill" class="image {{!item.inBusiness ? 'img-disable':''}}">
@@ -59,7 +58,6 @@
         </view>
         <view wx:elif="{{item.favor >= 50 && item.favor > item.bad}}" class="cu-tag bg-blue mytag">好评</view>
         <view wx:elif="{{item.bad >= 50 && item.favor<item.bad}}" class="cu-tag bg-red mytag">差评</view>
-
         <view class="text-xl margin-bottom-sm">
           <view class="text-bold text-cut">{{item.name}}</view>
         </view>
@@ -83,6 +81,9 @@
     </view>
   </view>
 </view>
+
+
+
 <!-- 个人中心页面 -->
 <view class="tab-page" wx:if="{{pageCurr === 'user'}}">
   <cu-custom bgColor="bg-gradual-blue">
