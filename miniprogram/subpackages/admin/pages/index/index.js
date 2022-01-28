@@ -491,6 +491,7 @@ Page({
         const order = that.data.orders.newOrders[index]
         //接单请求
         util.showLoading('接单请求中')
+        var endDate = new Date()
         wx.cloud.callFunction({
             name: 'dbUpdate',
             data: {
@@ -499,13 +500,21 @@ Page({
               formData: {
                 'orderInfo.orderState': 'ACCEPT',
                 'orderInfo.orderStateMsg': '已受理',
-                'orderInfo.timeInfo.confirmTime': getStrDate(new Date())
+                'orderInfo.timeInfo.confirmTime': getStrDate(endDate)
               }
             }
           }).then(res => {
             util.hideLoading()
             if (res.result.success && res.result.res.stats.updated === 1) {
               util.showToast('接单成功', 'success')
+              wx.cloud.callFunction({
+                name: 'sendMessage',
+                data: {
+                  type: 'orderAccept',
+                  order,
+                  endDate
+                }
+              })
             } else {
               util.showToast('接单失败', 'error')
             }

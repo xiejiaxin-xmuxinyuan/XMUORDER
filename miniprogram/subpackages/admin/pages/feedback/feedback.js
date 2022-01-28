@@ -186,6 +186,7 @@ Page({
             })
             util.hideLoading()
             util.showToast('回复完成', 'success')
+            that.sendFeedbackMessage(feedback, '拒绝退款', new Date())
           })
         }
       }
@@ -231,6 +232,7 @@ Page({
               })
               util.hideLoading()
               util.showToast('退款完成', 'success')
+              that.sendFeedbackMessage(feedback, '退款成功', new Date())
             })
           } else { //云函数退款失败，可能是该订单无法退款
             util.showToast('退款失败', 'error')
@@ -277,10 +279,36 @@ Page({
             })
             util.hideLoading()
             util.showToast('回复完成', 'success')
+            that.sendFeedbackMessage(feedback, '反馈已处理', new Date())
           })
         }
       }
     })
     return
   },
+  sendFeedbackMessage: function (feedback, result, endDate) {
+    var content = feedback.feedback.substr(0, 10)
+    if (content.length == 10) {
+      content += '...'
+    }
+    if (feedback.refund) {
+      content += '(请求退款)'
+    }
+
+    if (feedback.canteenFeedback.length > 15) {
+      var reply = feedback.canteenFeedback.substr(0, 15) + '...'
+    } else {
+      var reply = feedback.canteenFeedback
+    }
+    wx.cloud.callFunction({
+      name: 'sendMessage',
+      data: {
+        type: 'feedbackResult',
+        content,
+        result,
+        reply,
+        endDate
+      }
+    })
+  }
 })
