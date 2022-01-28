@@ -68,7 +68,7 @@
         </view>
       </block>
       <block wx:elif="{{order.orderInfo.orderState==='CLOSED'}}">
-        <view wx:if="{{order.payInfo.tradeState==='TIMEOUT'}}">
+        <view wx:if="{{order.payInfo.tradeState==='TIMEOUT'||order.payInfo.tradeState==='NOTPAY'}}">
           <text>订单已关闭，</text>
           <text class="text-orange">您可以在点餐界面重新下单</text>
         </view>

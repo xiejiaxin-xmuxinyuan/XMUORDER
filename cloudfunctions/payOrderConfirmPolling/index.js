@@ -13,14 +13,48 @@ function getNonceStr() {
 }
 
 //返回14位字符串日期20210102030405
-function getStrDate(date) {
+function getStrDate(date, format = false) {
   let year = date.getFullYear()
   let month = (date.getMonth() + 1).toString().padStart(2, '0')
   let day = date.getDate().toString().padStart(2, '0')
   let hour = date.getHours().toString().padStart(2, '0')
   let min = date.getMinutes().toString().padStart(2, '0')
   let sec = date.getSeconds().toString().padStart(2, '0')
-  return year + month + day + hour + min + sec
+  if (format) {
+    return year + '年' + month + '月' + day + '日 ' + hour + ':' + min + ':' + sec
+  } else {
+    return year + month + day + hour + min + sec
+  }
+}
+
+
+function sendMessage(order, endDate, reason, note = null) {
+  console.log('发送订单取消的订阅消息')
+  //发送订单取消订阅消息
+  cloud.openapi.subscribeMessage.send({
+    "touser": order.userInfo.openid,
+    "page": '/subpackages/order/pages/record/recordDetail?outTradeNo=' + order.orderInfo.outTradeNo,
+    "lang": 'zh_CN',
+    "data": {
+      "thing1": {
+        "value": order.goodsInfo.shopInfo.name
+      },
+      "thing2": {
+        "value": reason
+      },
+      "character_string4": {
+        "value": order.orderInfo.outTradeNo
+      },
+      "thing8": {
+        "value": note === null ? '无' : note
+      },
+      "time3": {
+        "value": getStrDate(endDate, true)
+      }
+    },
+    "templateId": 'Q_EQhMx9pJeohoPN3oln0_ZIAqGDj_yJyilqOnwkYfY',
+    "miniprogramState": 'trial'
+  })
 }
 
 const db = cloud.database()
@@ -58,10 +92,11 @@ exports.main = async (event, context) => {
 
         if (order.orderInfo.confirmPollingTimes > 20) { // 达到第21次轮询则设置为被拒绝并退款再释放库存
           console.log(index, '超时自动拒单')
+          var endDate = new Date()
           formData['orderInfo.orderState'] = 'NOTACCEPT'
           formData['orderInfo.orderStateMsg'] = '被拒'
-          formData['orderInfo.notAcceptReason'] = '买家未及时接单'
-          formData['orderInfo.timeInfo.endTime'] = getStrDate(new Date())
+          formData['orderInfo.notAcceptReason'] = '商家未及时接单'
+          formData['orderInfo.timeInfo.endTime'] = getStrDate(endDate)
           // 退款
           var refundRes = await cloud.cloudPay.refund({
             envId: 'cloud1-4g4b6j139b4e50e0',
@@ -82,6 +117,8 @@ exports.main = async (event, context) => {
             formData['payInfo.tradeState'] = 'REFUNDERROR'
             formData['payInfo.tradeStateMsg'] = '退款失败'
           }
+
+          sendMessage(order, endDate, '订单被拒', '商家未及时接单')
 
           try { //释放库存
             let record = order.goodsInfo.record

@@ -13,14 +13,48 @@ function getNonceStr() {
 }
 
 //返回14位字符串日期20210102030405
-function getStrDate(date) {
+function getStrDate(date, format = false) {
   let year = date.getFullYear()
   let month = (date.getMonth() + 1).toString().padStart(2, '0')
   let day = date.getDate().toString().padStart(2, '0')
   let hour = date.getHours().toString().padStart(2, '0')
   let min = date.getMinutes().toString().padStart(2, '0')
   let sec = date.getSeconds().toString().padStart(2, '0')
-  return year + month + day + hour + min + sec
+  if (format) {
+    return year + '年' + month + '月' + day + '日 ' + hour + ':' + min + ':' + sec
+  } else {
+    return year + month + day + hour + min + sec
+  }
+}
+
+
+function sendMessage(order, endDate, reason, note = null) {
+  console.log('发送订单取消的订阅消息')
+  //发送订单取消订阅消息
+  cloud.openapi.subscribeMessage.send({
+    "touser": order.userInfo.openid,
+    "page": '/subpackages/order/pages/record/recordDetail?outTradeNo=' + order.orderInfo.outTradeNo,
+    "lang": 'zh_CN',
+    "data": {
+      "thing1": {
+        "value": order.goodsInfo.shopInfo.name
+      },
+      "thing2": {
+        "value": reason
+      },
+      "character_string4": {
+        "value": order.orderInfo.outTradeNo
+      },
+      "thing8": {
+        "value": note === null ? '无' : note
+      },
+      "time3": {
+        "value": getStrDate(endDate, true)
+      }
+    },
+    "templateId": 'Q_EQhMx9pJeohoPN3oln0_ZIAqGDj_yJyilqOnwkYfY',
+    "miniprogramState": 'trial'
+  })
 }
 
 const db = cloud.database()
@@ -38,7 +72,6 @@ exports.main = async (event, context) => {
 
     const subMchId = order.goodsInfo.shopInfo.subMchId
     const totalFee = order.payInfo.feeInfo.totalFee
-
 
     //定义修改对象
     var formData = {
@@ -58,10 +91,15 @@ exports.main = async (event, context) => {
         refundFee: totalFee
       })
 
-      if ('rejectOrder' in event) { // 卖家拒单
+      if ('rejectOrder' in event) { // 卖家主动拒单
+        const rejectReason = 'rejectReason' in event ? event.rejectReason : '其他原因'
+
         formData['orderInfo.orderState'] = 'NOTACCEPT'
         formData['orderInfo.orderStateMsg'] = '被拒'
-        formData['orderInfo.notAcceptReason'] = 'rejectReason' in event? event.rejectReason: '其他原因'
+        formData['orderInfo.notAcceptReason'] = rejectReason
+
+        var endDate = new Date()
+        sendMessage(order, endDate, '订单被拒', rejectReason)
       }
 
       if (refundRes.resultCode === 'SUCCESS' && refundRes.returnCode === 'SUCCESS') {
@@ -81,7 +119,9 @@ exports.main = async (event, context) => {
         sub_mch_id: subMchId,
         nonce_str: getNonceStr()
       })
-      console.log('接口关闭订单')
+
+      var endDate = new Date()
+      sendMessage(order, endDate, '用户取消订单')
     } else { // 其他订单状态无法取消订单
       return {
         success: false,
@@ -89,7 +129,7 @@ exports.main = async (event, context) => {
       }
     }
 
-    formData['orderInfo.timeInfo.endTime'] = getStrDate(new Date())
+    formData['orderInfo.timeInfo.endTime'] = getStrDate(endDate)
 
     // 修改订单状态
     await db.collection('orders').doc(order._id).update({
