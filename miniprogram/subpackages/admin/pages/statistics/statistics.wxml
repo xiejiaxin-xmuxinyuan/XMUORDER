@@ -2,38 +2,53 @@
   <view slot="content">统计信息</view>
 </cu-custom>
 
-<scroll-view scroll-x class="bg-white nav">
+<scroll-view scroll-x class="bg-white nav margin-bottom">
   <view class="flex text-center">
     <view class="cu-item flex-sub {{item===informCurrType?'text-orange cur':''}}" wx:for="{{informTypes}}" wx:key="*this" bindtap="informTypeSelect" data-name="{{item}}">
       {{item}}
     </view>
   </view>
 </scroll-view>
-<view class="container" wx:if="{{informCurrType === orderType}}">
-  <view class="title">
+
+<view class="cu-form-group shadow-warp" style="margin: 0 15px;">
+  <view class="title text-bold">商店</view>
+  <picker wx:if="{{identity.type === 'superAdmin'}}" bindchange="shopPickerChange" value="{{shopPickerIndex}}" range="{{shopPickerList}}">
+    <view class="picker">
+      {{shopPickerIndex !== null? shopPickerList[shopPickerIndex] : '请选择所在商店'}}
+    </view>
+  </picker>
+  <view class="margin-right-sm text-black" wx:else> {{shopPickerList[shopPickerIndex]}}</view>
+</view>
+
+<view class="container" wx:if="{{informCurrType==='交易笔数'}}">
+  <view class="shadow-warp">
+    <view class="title">交易笔数统计</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="countColumnCanvas" class="canvas"></canvas>
   </view>
-  <canvas canvas-id="orderColumnCanvas" class="canvas"></canvas>
-</view>
-
-<view class="container" wx:if="{{informCurrType === orderType}}">
-  <canvas canvas-id="orderMonthLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="orderMonthTouchHandler" bindtouchmove="orderMonthMoveHandler" bindtouchend="orderMonthTouchEndHandler"></canvas>
-</view>
-<view class="container" wx:if="{{informCurrType === orderType}}">
-  <canvas canvas-id="orderWeekLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="orderWeekTouchHandler" bindtouchmove="orderWeekMoveHandler" bindtouchend="orderWeekTouchEndHandler"></canvas>
-</view>
-
-<view class="container" wx:if="{{informCurrType === feeType}}">
-  <view class="title">
+  <view class="shadow-warp">
+    <view class="title">近7天交易笔数</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="countWeekLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="countWeekTouchHandler" bindtouchmove="countWeekMoveHandler" bindtouchend="countWeekTouchEndHandler"></canvas>
   </view>
-  <canvas canvas-id="feeColumnCanvas" class="canvas"></canvas>
-</view>
-<view class="container" wx:if="{{informCurrType === feeType}}">
-  <canvas canvas-id="feeMonthLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="feeMonthTouchHandler" bindtouchmove="feeMonthMoveHandler" bindtouchend="feeMonthTouchEndHandler"></canvas>
-</view>
-<view class="container" wx:if="{{informCurrType === feeType}}">
-  <canvas canvas-id="feeWeekLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="feeWeekTouchHandler" bindtouchmove="feeWeekMoveHandler" bindtouchend="feeWeekTouchEndHandler"></canvas>
+  <view class="shadow-warp">
+    <view class="title">近30天交易笔数</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="countMonthLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="countMonthTouchHandler" bindtouchmove="countMonthMoveHandler" bindtouchend="countMonthTouchEndHandler"></canvas>
+  </view>
 </view>
 
+<view class="container" wx:else>
+  <view class="shadow-warp">
+    <view class="title">交易额统计</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="feeColumnCanvas" class="canvas"></canvas>
+  </view>
+  <view class="shadow-warp">
+    <view class="title">近7天交易额</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="feeWeekLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="feeWeekTouchHandler" bindtouchmove="feeWeekMoveHandler" bindtouchend="feeWeekTouchEndHandler"></canvas>
+  </view>
+  <view class="shadow-warp">
+    <view class="title">近30天交易额</view>
+    <canvas style="width: {{canvaWidth}}px;" canvas-id="feeMonthLineCanvas" disable-scroll="true" class="canvas" bindtouchstart="feeMonthTouchHandler" bindtouchmove="feeMonthMoveHandler" bindtouchend="feeMonthTouchEndHandler"></canvas>
+  </view>
+</view>
 
 <view class="footer">
   <view class="text-grey padding">Copyright © 2021 厦门大学智能点餐项目组</view>
