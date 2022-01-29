@@ -96,6 +96,13 @@ Page({
         util.hideLoading()
         if (res.result.success && res.result.res.stats.updated === 1) {
           util.showToast('请求成功', 'success')
+          wx.cloud.callFunction({
+            name: 'sendMessage',
+            data: {
+              type: 'orderNotGet',
+              order
+            }
+          })
         } else {
           util.showToast('请求失败', 'error')
         }

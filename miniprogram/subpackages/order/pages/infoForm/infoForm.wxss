@@ -1,24 +1,36 @@
+.tapImg {
+  border: 7rpx solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: linear-gradient(to right, transparent, transparent), linear-gradient(135deg, #C592E8 10%, #FEE29A 100%);
+}
+
 .user-avatar {
   overflow: hidden;
-  display: block;
-  width: 200rpx;
-  height: 200rpx;
-  margin: 0rpx;
-  margin-top: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
   border: 5rpx solid #fff;
   box-shadow: 6rpx 6rpx 20rpx rgba(0, 0, 0, 0.2);
+  margin: 40rpx 0;
 }
 
 .user-avatar>image {
-  width: 100%;
-  height: 100%;
+  width: 200rpx;
+  height: 200rpx;
 }
 
-.user-avatar>view {
-  width: 100%;
-  text-align: center;
-  margin-top: 40%;
+.edit-btn {
+  position: relative;
+}
+
+.edit-btn > button{
+  position: absolute;
+  bottom: 20rpx;
+  left: -30rpx;
+  background: none !important;
+  font-size: 40rpx;
 }
 
 .my-form {
@@ -29,9 +41,29 @@
 }
 
 .save {
-  margin: 60rpx 60rpx;
+  margin: 40rpx;
+  text-align: center;
 }
 
 .save > button{
-  width: 15rem;
+  width: 10rem;
+}
+
+.my-box-content {
+  height: 550rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.big-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.big-container image {
+  border: 7rpx solid transparent;
+  border-radius: 15rpx;
+  margin: 5rpx !important;
 }

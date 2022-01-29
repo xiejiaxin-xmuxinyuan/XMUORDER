@@ -10,7 +10,6 @@ Page({
         showBox: false,
         tapImgIndex: null
     },
-
     onLoad: function (options) {
         that = this
         that.setData({
@@ -58,17 +57,13 @@ Page({
         if (tapImgIndex != null) {
             util.showLoading('保存中')
             const img = imgs[tapImgIndex]
-
-            db.collection('users').where({
-                _openid: '$openid'
-            }).update({
-                data: {
-                    img: img
-                }
+            app.globalData.img = img
+            that.userUpdate({
+                img
             }).then(res => {
                 wx.hideLoading()
                 util.showToast('头像修改成功！')
-                this.setData({
+                that.setData({
                     showBox: false,
                     'user.img': img
                 })
@@ -83,5 +78,35 @@ Page({
                 showBox: false
             })
         }
-    }
+    },
+    userUpdate: function (data) {
+        return db.collection('users').where({
+            _openid: '{openid}'
+        }).update({
+            data
+        })
+    },
+    getUserProfile: function (e) {
+        util.showLoading('加载中')
+        wx.getUserProfile({
+            desc: '用于完善会员资料'
+        }).then(res => {
+            wx.hideLoading()
+            const nickName = res.userInfo.nickName
+            app.globalData.nickName = nickName
+            that.userUpdate({
+                nickName
+            }).then(res => {
+                wx.hideLoading()
+                util.showToast('昵称更新成功！')
+                that.setData({
+                    showBox: false,
+                    'user.nickName': nickName
+                })
+            })
+        }).catch(erro => {
+            wx.hideLoading()
+            util.showToast('获取失败', 'error')
+        })
+    },
 })

@@ -31,13 +31,19 @@ Page({
       })
   },
   redictoUser: function (e) {
-    wx.redirectTo({
-      url: '../../subpackages/order/pages/index/index',
-    })
+    if (that.data.identity === 'unregistered') {
+      wx.redirectTo({
+        url: '../../subpackages/order/pages/infoForm/infoForm',
+      })
+    } else {
+      wx.redirectTo({
+        url: '../../subpackages/order/pages/index/index',
+      })
+    }
   },
   toAdmin: function (e) {
     wx.navigateTo({
       url: '../../subpackages/admin/pages/index/index',
     })
-  }
+  },
 })

@@ -2,12 +2,24 @@
     <view slot="content">设置</view>
 </cu-custom>
 
-<view class="cu-list menu card-menu margin-top shadow-warp">
+<view class="cu-list menu card-menu margin-top shadow-warp" style="background-color: white;">
     <view class="flex justify-center bg-white padding">
         <view class="user-avatar">
             <image catchtap="chooseImg" mode="scaleToFill" src="{{user.img}}"></image>
         </view>
         <view class="edit-btn"><button catchtap="chooseImg" class="cu-btn cuIcon-write"></button></view>
+    </view>
+    <view catchtap="getUserProfile" class="cu-item">
+        <view class="content">
+            <text class="cuIcon-emoji text-gray"></text>
+            <text>昵称</text>
+            <view class="text-right fr flex">
+                <button class="sm cu-btn bg-white radius shadow">
+                    更新用户昵称
+                </button>
+                <text class="margin-left">{{user.nickName}}</text>
+            </view>
+        </view>
     </view>
 </view>
 
@@ -16,7 +28,7 @@
 <my-box style="position: fixed;" show="{{!!showBox}}" bind:hideBox="showHideBox">
     <scroll-view scroll-y="{{true}}" class="my-box-content">
         <view class="big-container">
-            <view wx:for="{{imgs}}">
+            <view wx:for="{{imgs}}" wx:key="*this">
                 <image class="{{tapImgIndex===index?'tapImg':''}}" catchtap="tapImg" data-index="{{index}}" mode="aspectFill" style="width: 150rpx;height: 150rpx;margin-right: 10rpx;" src="{{item}}"></image>
             </view>
         </view>

@@ -15,14 +15,18 @@ const _ = db.command
 
 
 //返回14位字符串日期20210102030405
-function getStrDate(date) {
+function getStrDate(date, format = false) {
   let year = date.getFullYear()
   let month = (date.getMonth() + 1).toString().padStart(2, '0')
   let day = date.getDate().toString().padStart(2, '0')
   let hour = date.getHours().toString().padStart(2, '0')
   let min = date.getMinutes().toString().padStart(2, '0')
   let sec = date.getSeconds().toString().padStart(2, '0')
-  return year + month + day + hour + min + sec
+  if (format) {
+    return year + '年' + month + '月' + day + '日 ' + hour + ':' + min + ':' + sec
+  } else {
+    return year + month + day + hour + min + sec
+  }
 }
 
 // 返回长度为16位的随机字母字符串
@@ -90,6 +94,9 @@ exports.main = async (event, context) => {
           })
           if (closeRes.resultCode === 'SUCCESS' && closeRes.returnCode === 'SUCCESS') {
             console.log(index, '关闭订单成功')
+
+            const endDate = new Date()
+
             //修改订单状态
             await db.collection('orders').doc(order._id).update({
               data: {
@@ -97,8 +104,35 @@ exports.main = async (event, context) => {
                 'orderInfo.orderStateMsg': '已取消',
                 'payInfo.tradeState': 'TIMEOUT',
                 'payInfo.tradeStateMsg': '支付超时',
-                'orderInfo.timeInfo.endTime': getStrDate(new Date())
+                'orderInfo.timeInfo.endTime': getStrDate(endDate)
               }
+            })
+
+            console.log(index, '发送订单取消的订阅消息')
+            //发送订单取消订阅消息
+            cloud.openapi.subscribeMessage.send({
+              "touser": order.userInfo.openid,
+              "page": '/subpackages/order/pages/record/recordDetail?outTradeNo=' + order.orderInfo.outTradeNo,
+              "lang": 'zh_CN',
+              "data": {
+                "thing1": {
+                  "value": order.goodsInfo.shopInfo.name
+                },
+                "thing2": {
+                  "value": '订单支付超时'
+                },
+                "character_string4": {
+                  "value": order.orderInfo.outTradeNo
+                },
+                "thing8": {
+                  "value": '无'
+                },
+                "time3": {
+                  "value": getStrDate(endDate, true)
+                }
+              },
+              "templateId": 'Q_EQhMx9pJeohoPN3oln0_ZIAqGDj_yJyilqOnwkYfY',
+              "miniprogramState": 'trial'
             })
 
             try { //释放库存

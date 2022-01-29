@@ -51,9 +51,9 @@
   </view>
 
   <form bindsubmit="onSubmit">
-    <textarea placeholder="请输入反馈意见、理由等等" name="feedback" maxlength="150"></textarea>
+    <textarea value="{{info.feedback}}" placeholder="请输入反馈意见、理由等等" name="feedback" maxlength="150"></textarea>
     <view class="save">
-      <button form-type="submit" class="cu-btn round bg-gradual-blue shadow">提交</button>
+      <button catchtap="submitBtn" form-type="submit" class="cu-btn round bg-gradual-blue shadow">提交</button>
     </view>
   </form>
 </view>
