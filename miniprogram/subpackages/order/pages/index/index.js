@@ -19,11 +19,10 @@ Page({
     noticeTotalPage: 0,
     noticeTotalCount: 0,
     intCurTime: null,
-    isLoaded: false
+    isLoaded: false,
+    user: {}
   },
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   onLoad: function (options) {
     that = this
     if (!app.globalData.isActive) {
@@ -40,7 +39,7 @@ Page({
       that.setData({
         isLoaded: true, // 表示加载完毕
         //用户信息
-        user:{
+        user: {
           name: app.globalData.name,
           nickName: app.globalData.nickName,
           phone: app.globalData.phone,
@@ -55,6 +54,13 @@ Page({
   onShow: () => {
     if (that.data.isLoaded) { //再次显示主页时触发
       that.canteenInBusiness(app.globalData.canteens)
+      if (app.globalData.img) {
+        if (app.globalData.img !== that.data.user.img) {
+          that.setData({
+            'user.img': app.globalData.img
+          })
+        }
+      }
     }
   },
   showNoticeDetail: function (event) {
@@ -218,8 +224,8 @@ Page({
           .skip((currPage - 1) * pageSize).limit(pageSize).get()
         )
       }
-      
-      Promise.all(proList).then(res=>{
+
+      Promise.all(proList).then(res => {
         var canteens = []
         res.forEach(r => {
           canteens.push(...r.data)

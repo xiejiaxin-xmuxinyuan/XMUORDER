@@ -12,6 +12,16 @@ Page({
     img: ''
   },
 
+  onShow: function () {
+    if (app.globalData.img) {
+      that = this
+      if (app.globalData.img !== that.data.img) {
+        that.setData({
+          img: app.globalData.img
+        })
+      }
+    }
+  },
   onLoad: function (options) {
     that = this
     wx.showLoading({
