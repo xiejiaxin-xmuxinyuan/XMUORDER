@@ -69,7 +69,7 @@ Page({
         icon: 'rankfill',
         color: 'red',
         name: '统计',
-        path: ''
+        path: '../statistics/statistics'
       }, {
         icon: 'settingsfill',
         color: 'olive',

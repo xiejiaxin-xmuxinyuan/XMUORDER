@@ -1,6 +1,5 @@
-.tab-page {
-	min-height: 75vh;
-	margin-bottom: 5vh;
+page{
+	background-color: white;
 }
 
 .footer {
@@ -8,7 +7,17 @@
 }
 
 .container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.container > view {
 	height: 100%;
+	padding: 20rpx 10px;
+	margin: 20rpx 15px;
+	background-color: white;
+	border-radius: 15rpx;
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
@@ -19,14 +28,13 @@
 	font-family: Helvetica, Arial, "Helvetica Neue", "Droid Sans", "Microsoft YaHei", sans-serif;
 }
 
-.canvas {
-	width: 100%;
+.container .canvas {
 	height: 200px;
 }
 
-.title {
+.container .title {
+	font-size: 30rpx;
+	color: #333;
 	text-align: center;
-	position: relative;
-	margin-top: 20rpx;
-	margin-bottom: 20rpx;
+	padding: 15rpx;
 }
