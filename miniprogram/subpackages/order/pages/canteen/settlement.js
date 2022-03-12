@@ -3,7 +3,7 @@ var that
 const app = getApp()
 
 var outTradeNo //订单号
-
+var isTimePick = false
 Page({
 
   data: {
@@ -16,7 +16,6 @@ Page({
     goodsPrice: 0, //食物价格（单位元）
     otherFee: 0, //打包费等等（单位元）
     discount: 0, //优惠（单位元）
-    isTimePick: false
   },
 
 
@@ -38,8 +37,8 @@ Page({
 
   },
   timePickerChange: function (e) {
+    isTimePick = true
     that.setData({
-      isTimePick: true,
       pickedIndex: e.detail.value
     })
   },
@@ -73,7 +72,7 @@ Page({
     const canteen = that.data.canteen
     const user = that.data.user
 
-    if (!that.data.isTimePick) {
+    if (!isTimePick) {
       util.showToast('时间未选择', 'error')
     } else {
       // 订阅门店接单和订单取消通知

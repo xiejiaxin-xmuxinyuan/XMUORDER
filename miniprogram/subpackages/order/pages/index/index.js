@@ -4,7 +4,9 @@ const db = wx.cloud.database()
 const util = require('../../../../utils/util.js')
 var that
 
-
+var noticeTotalCount = 0
+var intCurTime = null
+var isLoaded = false
 Page({
   /**
    * 页面的初始数据
@@ -17,9 +19,6 @@ Page({
     noticeCurrType: "公共",
     noticeCurrPage: 1,
     noticeTotalPage: 0,
-    noticeTotalCount: 0,
-    intCurTime: null,
-    isLoaded: false,
     user: {}
   },
 
@@ -36,8 +35,8 @@ Page({
 
     Promise.all([p0, p1]).then(res => {
       wx.hideLoading()
+      isLoaded = true
       that.setData({
-        isLoaded: true, // 表示加载完毕
         //用户信息
         user: {
           name: app.globalData.name,
@@ -52,7 +51,7 @@ Page({
   },
 
   onShow: () => {
-    if (that.data.isLoaded) { //再次显示主页时触发
+    if (isLoaded) { //再次显示主页时触发
       that.canteenInBusiness(app.globalData.canteens)
       if (app.globalData.img) {
         if (app.globalData.img !== that.data.user.img) {
@@ -109,13 +108,12 @@ Page({
       let date = new Date()
       let h = date.getHours().toString().padStart(2, '0')
       let m = date.getMinutes().toString().padStart(2, '0')
-      let intCurTime = parseInt(h + m)
+      intCurTime = parseInt(h + m)
 
       for (let i = 0; i < businessTime.length; i++) {
         const time = businessTime[i];
         if (intCurTime > parseInt(time[0]) && intCurTime < parseInt(time[1])) {
           that.setData({
-            intCurTime,
             ['canteens[' + index + '].inBusiness']: true
           })
           wx.navigateTo({
@@ -127,7 +125,6 @@ Page({
 
       util.showToast('不在营业时间', 'error')
       that.setData({
-        intCurTime,
         ['canteens[' + index + '].inBusiness']: false
       })
     }
@@ -193,7 +190,7 @@ Page({
     let date = new Date()
     let h = date.getHours().toString().padStart(2, '0')
     let m = date.getMinutes().toString().padStart(2, '0')
-    var intCurTime = parseInt(h + m)
+    intCurTime = parseInt(h + m)
 
     canteens.forEach(canteen => {
       for (let i = 0; i < canteen.businessTime.length; i++) {
@@ -208,7 +205,6 @@ Page({
 
     that.setData({
       canteens, //餐厅数据
-      intCurTime, //当前int格式时间
     })
   },
   getCanteens: function (pageSize = 20) { //获取所有餐厅
@@ -247,7 +243,7 @@ Page({
         hidden: false
       }).count()
 
-      const noticeTotalCount = countResult.total
+      noticeTotalCount = countResult.total
       const noticeTotalPage = noticeTotalCount === 0 ? 0 : noticeTotalCount <= pageSize ? 1 : Math.ceil(noticeTotalCount / pageSize)
 
       if (noticeTotalPage === 0) { //如果没有任何记录
@@ -255,8 +251,8 @@ Page({
           notices: [],
           noticeCurrPage: 1,
           noticeTotalPage: 0,
-          noticeTotalCount: 0,
         })
+        noticeTotalCount = 0
         resolve()
         return
       }
@@ -277,7 +273,6 @@ Page({
             notices: res.data,
             noticeCurrPage: noticeCurrPage,
             noticeTotalPage: noticeTotalPage,
-            noticeTotalCount: noticeTotalCount,
           })
           resolve()
           return

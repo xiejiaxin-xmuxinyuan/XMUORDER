@@ -1,6 +1,7 @@
 var util = require('../../../../utils/util.js')
 var that
 const app = getApp()
+var load = true
 Page({
   /**
    * 页面的初始数据
@@ -11,7 +12,6 @@ Page({
     TabCur: 0,
     MainCur: 0,
     VerticalNavTop: 0,
-    load: true,
     showInfo: false,
     foodList: [],
     money: 0,
@@ -139,7 +139,7 @@ Page({
     let that = this;
     let foodList = that.data.foodList;
     let tabHeight = 0;
-    if (that.data.load) {
+    if (load) {
       for (let i = 0; i < foodList.length; i++) {
         let view = wx.createSelectorQuery().select("#main-" + foodList[i].id);
         view.fields({
@@ -150,8 +150,8 @@ Page({
           foodList[i].bottom = tabHeight;
         }).exec();
       }
+      load = false
       that.setData({
-        load: false,
         foodList: foodList
       })
     }
